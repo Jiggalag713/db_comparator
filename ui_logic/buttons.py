@@ -2,7 +2,7 @@
 import logging
 import pymysql
 
-from PyQt5.QtWidgets import QMessageBox, QStatusBar, QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QStatusBar
 
 from configuration.main_config import Configuration
 from configuration.default_variables import DefaultValues
