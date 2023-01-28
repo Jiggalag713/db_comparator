@@ -20,5 +20,5 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        echo "PYTHONPATH=dbComparator" >> $GITHUB_ENV
+        echo "::set-env name=PYTHONPATH::home/runner/work/dbComparator"
         pylint $(git ls-files '*.py')
