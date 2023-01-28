@@ -23,4 +23,5 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         printenv
+        pwd
         pylint $(git ls-files '*.py')
