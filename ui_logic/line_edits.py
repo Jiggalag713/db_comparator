@@ -56,11 +56,13 @@ class LineEditsLogic:
 
     def set_prod_db(self) -> None:
         """Method sets prod database"""
-        self.set_db(self.main_ui.line_edits.prod.db, self.configuration.sql_variables.prod.databases)
+        self.set_db(self.main_ui.line_edits.prod.db,
+                    self.configuration.sql_variables.prod.databases)
 
     def set_test_db(self) -> None:
         """Method sets test database"""
-        self.set_db(self.main_ui.line_edits.test.db, self.configuration.sql_variables.test.databases)
+        self.set_db(self.main_ui.line_edits.test.db,
+                    self.configuration.sql_variables.test.databases)
 
     @staticmethod
     def set_db(line_edit: QLineEdit, db_list: List[str]) -> None:

@@ -22,9 +22,12 @@ class MainUI(QWidget):
         self.status_bar = status_bar
         self.configuration = Configuration(self.status_bar)
         self.setLayout(self.configuration.ui_elements.positions.grid)
-        self.configuration.default_values.set_default_values(self.configuration.ui_elements.line_edits,
-                                                             self.configuration.ui_elements.checkboxes,
-                                                             self.configuration.ui_elements.radio_buttons)
+        line_edits = self.configuration.ui_elements.line_edits
+        checkboxes = self.configuration.ui_elements.checkboxes
+        radio_buttons = self.configuration.ui_elements.radio_buttons
+        self.configuration.default_values.set_default_values(line_edits,
+                                                             checkboxes,
+                                                             radio_buttons)
         self.advanced_settings = AdvancedSettingsItem(self.configuration)
         self.setWindowTitle('dbComparator')
         self.setWindowIcon(QIcon('./resources/slowpoke.png'))
