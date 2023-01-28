@@ -23,5 +23,4 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
-        poetry install
         pylint $(git ls-files '*.py')
