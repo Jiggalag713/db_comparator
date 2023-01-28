@@ -21,5 +21,5 @@ jobs:
         printenv
     - name: Analysing the code with pylint
       run: |
-        echo "/home/runner/work/dbComparator" >> $GITHUB_PATH
+        echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
         pylint $(git ls-files '*.py')
