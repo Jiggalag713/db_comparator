@@ -18,7 +18,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint
-        export PYTHONPATH="$PYTHONPATH:/."
     - name: Analysing the code with pylint
       run: |
+        echo "PYTHONPATH=dbComparator" >> $GITHUB_ENV
         pylint $(git ls-files '*.py')
