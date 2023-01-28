@@ -2,8 +2,6 @@ name: Pylint
 
 on: [push]
 
-env: PYTHONPATH=$PYTHONPATH:/home/runner/work/dbComparator
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,6 +20,5 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        printenv
-        pwd
+        echo "/home/runner/work/dbComparator" >> $GITHUB_PATH
         pylint $(git ls-files '*.py')
