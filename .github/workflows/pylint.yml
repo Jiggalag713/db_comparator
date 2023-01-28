@@ -23,4 +23,5 @@ jobs:
       run: |
         echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
         printenv
+        pwd
         pylint $(git ls-files '*.py')
