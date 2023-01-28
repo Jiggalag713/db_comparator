@@ -29,7 +29,7 @@ class MainUI(QWidget):
                                                              checkboxes,
                                                              radio_buttons)
         self.advanced_settings = AdvancedSettingsItem(self.configuration)
-        self.setWindowTitle('dbComparator')
+        self.setWindowTitle('db_comparator')
         self.setWindowIcon(QIcon('./resources/slowpoke.png'))
         self.show()
 
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         self.add_connects()
 
         self.setGeometry(300, 300, 900, 600)
-        self.setWindowTitle('dbComparator')
+        self.setWindowTitle('db_comparator')
         self.setWindowIcon(QIcon('./resources/slowpoke.png'))
         self.show()
 

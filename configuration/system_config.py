@@ -37,7 +37,7 @@ class SystemConfig:
 
     def get_logger(self) -> logging.Logger:
         """Method returns logger"""
-        logger = logging.getLogger("dbComparator")
+        logger = logging.getLogger("db_comparator")
         logger.setLevel(level=self.logging_level)
         formatter = logging.Formatter('%(asctime)s [%(levelname)s] - %(message)s')
         stream_handler = logging.StreamHandler()
