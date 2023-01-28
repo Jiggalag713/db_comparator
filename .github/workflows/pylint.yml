@@ -2,7 +2,7 @@ name: Pylint
 
 on: [push]
 
-env: PYTHONPATH=$PYTHONPATH:/home/runner/work/acpype
+env: PYTHONPATH=$PYTHONPATH:/home/runner/work/dbComparator
 
 jobs:
   build:
