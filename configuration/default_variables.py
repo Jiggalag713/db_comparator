@@ -1,14 +1,18 @@
 """Module contains class intended for storing default variables"""
 from typing import List
 from configuration.system_config import SystemConfig
-from configuration.checks_customization_config import ChecksConfig
 
 
 class DefaultValues:
     """Class intended for storing default variables"""
     def __init__(self):
         self.system_config: SystemConfig = SystemConfig()
-        self.checks_customization = ChecksConfig()
+        self.checks_customization = {'check_schema': True,
+                                     'fail_fast': False,
+                                     'check_reports': True,
+                                     'check_entities': True,
+                                     'use_dataframes': True,
+                                     'report_check_type': 'detailed'}
         self.default_excluded_tables: List[str] = ['databasechangelog',
                                                    'download',
                                                    'migrationhistory',
@@ -59,8 +63,11 @@ class DefaultValues:
         line_edits.excluded_tables.setCursorPosition(0)
         line_edits.excluded_columns.setText(','.join(self.default_excluded_columns))
         line_edits.excluded_columns.setCursorPosition(0)
-        checkboxes.check_schema.setChecked(True)
-        checkboxes.fail_fast.setChecked(True)
+        checkboxes.get('check_schema').setChecked(self.checks_customization.get('check_schema'))
+        checkboxes.get('fail_fast').setChecked(self.checks_customization.get('fail_fast'))
+        checkboxes.get('check_reports').setChecked(self.checks_customization.get('check_reports'))
+        checkboxes.get('check_entities').setChecked(self.checks_customization.get('check_entities'))
+        checkboxes.get('use_dataframes').setChecked(self.checks_customization.get('use_dataframes'))
         radio_buttons.day_summary_mode.setChecked(True)
         radio_buttons.section_summary_mode.setChecked(False)
         radio_buttons.detailed_mode.setChecked(False)

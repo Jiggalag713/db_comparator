@@ -55,7 +55,7 @@ class AdvancedWindowLogic:
 
     def set_default(self) -> None:
         """Method set default values on advanced settings window"""
-        self.main_ui.combo_boxes.cb_logging_level.setCurrentIndex(4)
+        self.main_ui.combo_boxes.setCurrentIndex(4)
         le_comparing_step = self.main_ui.line_edits.comparing_step
         comparing_step = self.default_values.comparing_step
         self.default_values.comparing_step = self.set_default_value(le_comparing_step,

@@ -49,11 +49,11 @@ class ConfigSerialization:
         checkboxes = self.main_ui.checkboxes
         radio_buttons = self.main_ui.radio_buttons
         return {
-            'check_entities': checkboxes.check_entities.isChecked(),
-            'check_reports': checkboxes.check_reports.isChecked(),
-            'check_schema': checkboxes.check_schema.isChecked(),
-            'fail_fast': checkboxes.fail_fast.isChecked(),
-            'use_dataframes': checkboxes.use_dataframes.isChecked(),
+            'check_entities': checkboxes.get('check_entities').isChecked(),
+            'check_reports': checkboxes.get('check_reports').isChecked(),
+            'check_schema': checkboxes.get('check_schema').isChecked(),
+            'fail_fast': checkboxes.get('fail_fast').isChecked(),
+            'use_dataframes': checkboxes.get('use_dataframes').isChecked(),
             'report_check_type': self.get_check_type(radio_buttons)
         }
 
@@ -136,10 +136,10 @@ class ConfigSerialization:
                         'excluded_columns': self.main_ui.line_edits.excluded_columns
                     }
                     checkbox_mapping = {
-                        'check_schema': self.main_ui.checkboxes.check_schema,
-                        'fail_fast': self.main_ui.checkboxes.fail_fast,
-                        'check_reports': self.main_ui.checkboxes.check_reports,
-                        'check_entities': self.main_ui.checkboxes.check_entities
+                        'check_schema': self.main_ui.checkboxes.get('check_schema'),
+                        'fail_fast': self.main_ui.checkboxes.get('fail_fast'),
+                        'check_reports': self.main_ui.checkboxes.get('check_reports'),
+                        'check_entities': self.main_ui.checkboxes.get('check_entities')
                     }
                     values = [
                         'comparing_step',

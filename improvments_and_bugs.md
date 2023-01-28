@@ -11,4 +11,7 @@
 *[ ] ui_elements/advanced_line_edits.py:11:9: W0511: TODO: [improve] add possibility for useful redacting of schema columns parameter (fixme)
 *[ ] ui_elements/line_edits.py:33:9: W0511: TODO: commenting of strings like this disables autoconnection to db feature (fixme)
 *[ ] Pylint should be run before commit and shouldn't grant commit if errors. 
+*[ ] Write abstract classes for ui elements, and inherit main and advanced window elements from this class (made them dataclasses)
+Idea for abstract classes 2 methods. One of them should be set_tooltips
+*[ ] ui_elements/advanced_line_edits.py:11:9: W0511: TODO: [improve] add possibility for useful redacting of schema columns parameter (fixme)
 *[ ] 

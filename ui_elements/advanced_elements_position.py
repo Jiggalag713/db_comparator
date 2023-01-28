@@ -10,10 +10,10 @@ class ElementPositions:
         self.grid: QGridLayout = QGridLayout()
         self.grid.setSpacing(10)
 
-    def locate_elements(self, labels, line_edits, checkboxes, buttons) -> None:
+    def locate_elements(self, labels, line_edits, combo_box, buttons) -> None:
         """Method locates elements on a grid"""
         self.grid.addWidget(labels.logging_level_label, 0, 0)
-        self.grid.addWidget(checkboxes.cb_logging_level, 0, 1)
+        self.grid.addWidget(combo_box, 0, 1)
         self.grid.addWidget(labels.comparing_step_label, 1, 0)
         self.grid.addWidget(line_edits.comparing_step, 1, 1)
         self.grid.addWidget(labels.depth_report_check_label, 2, 0)
@@ -28,6 +28,6 @@ class ElementPositions:
         self.grid.addWidget(line_edits.table_timeout, 6, 1)
         self.grid.addWidget(labels.strings_amount_label, 7, 0)
         self.grid.addWidget(line_edits.strings_amount, 7, 1)
-        self.grid.addWidget(buttons.btn_ok, 8, 0)
-        self.grid.addWidget(buttons.btn_cancel, 8, 1)
-        self.grid.addWidget(buttons.btn_reset, 9, 0)
+        self.grid.addWidget(buttons.get('btn_ok'), 8, 0)
+        self.grid.addWidget(buttons.get('btn_cancel'), 8, 1)
+        self.grid.addWidget(buttons.get('btn_reset'), 9, 0)

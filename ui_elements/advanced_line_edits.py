@@ -8,7 +8,6 @@ class LineEdits:
         self.comparing_step: QLineEdit = QLineEdit()
         self.depth_report_check: QLineEdit = QLineEdit()
         self.schema_columns: QLineEdit = QLineEdit()
-        # TODO: [improve] add possibility for useful redacting of schema columns parameter
         self.retry_attempts: QLineEdit = QLineEdit()
         self.path_to_logs: QLineEdit = QLineEdit()
         self.table_timeout: QLineEdit = QLineEdit()
