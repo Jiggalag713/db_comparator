@@ -1,0 +1,27 @@
+Enchancements:
+
+1. Comparing step should be moved from UI. Instead of manually possibility of setting comparing step I should implement
+feature which automatically changes comparing step in case of slow or fast connection. Logic: if comparing speed lower
+than some hardcoded value, I should decrease comparing step.
+? 2. Status bar should updates in background, application should ping servers by some timeout
+3. Bug. datetime writed to result file in format datetime(2018-08-09) it's incorrect.
+4. Fix sendmail. # probably with configuring on gmail side.
+5. Add special search lineedits to modal windows like "skip_tables".
+6. Only first error flag not works.
+7. Fix hanging of comparator on huge tables (like creative_page_position for irving).
+
+
+Epics:
+0. Support dataframe comparing.
+1. Present summary information more flexible.
+2. Implement unit tests.
+
+MUST!
+
+1. Implement importing diff-results to html.
+
+Support dataframes roadmap:
+
+0. Check correctness of day-summary mode.
+1. Check correctness of section-summary mode.
+2. Check correctness of detailed mode.

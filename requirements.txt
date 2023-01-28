@@ -1,0 +1,4 @@
+PyMySQL==1.0.2
+PyQt5==5.15.7
+SQLAlchemy==1.4.46
+pandas==1.5.3
