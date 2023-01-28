@@ -30,7 +30,6 @@ class SqlLineEdits:
     """Intended for specific line edits, related to sql variables"""
     def __init__(self):
         self.host: QLineEdit = QLineEdit()
-        # TODO: commenting of strings like this disables autoconnection to db feature
         # self.prod.le_host.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.user: QLineEdit = QLineEdit()
         # self.prod.le_user.textChanged.connect(lambda: self.check_sqlhost('prod'))

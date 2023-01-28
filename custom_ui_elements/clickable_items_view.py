@@ -5,23 +5,22 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView, QDialog, QGridLayout, QPushButton
 
 
-# TODO: add types
 class ClickableItemsView(QDialog):
     """Class implements custom clickable item view"""
     def __init__(self, item_list: List, selected_items: List[str]):
         super().__init__()
-        grid = QGridLayout()
+        grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
         self.selected_items: List[str] = selected_items
         self.item_list: List = item_list
         self.model: QStandardItemModel = QStandardItemModel()
 
-        btn_ok = QPushButton('OK', self)
+        btn_ok: QPushButton = QPushButton('OK', self)
         btn_ok.clicked.connect(self.ok_pressed)
-        btn_cancel = QPushButton('Cancel', self)
+        btn_cancel: QPushButton = QPushButton('Cancel', self)
         btn_cancel.clicked.connect(self.cancel_pressed)
-        btn_clear_all = QPushButton('Clear all', self)
+        btn_clear_all: QPushButton = QPushButton('Clear all', self)
         btn_clear_all.clicked.connect(self.clear_all)
 
         self.view: QListView = self.init_items()
@@ -65,7 +64,6 @@ class ClickableItemsView(QDialog):
         for idx in range(0, amount - 1):
             item = self.model.item(idx, 0)
             if item.checkState() == 2:
-                # TODO: fix: expected type CheckState, got int instead
                 item.setCheckState(0)
         self.selected_items = []
         self.init_items()

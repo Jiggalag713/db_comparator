@@ -7,7 +7,6 @@ from helpers import df_compare_helper
 from helpers.sql_helper import SqlAlchemyHelper
 
 
-# TODO: potentially should be merged with table_data.Info
 class SqlVariables:
     """Class contains some sql-related data which would be useful during comparing of databases"""
     def __init__(self, logger):
@@ -32,7 +31,6 @@ class SqlVariables:
                                                                 self.logger)
         if not diff_df.empty:
             self.logger.error(f"Schema of tables {prod_table} differs!")
-            # TODO: [improve] adding serializing to html file on disc
         schema_comparing_time = datetime.datetime.now() - start_time
         self.logger.debug(f"Schema of table {prod_table} compared in {schema_comparing_time}")
         return True

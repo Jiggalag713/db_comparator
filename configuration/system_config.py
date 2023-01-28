@@ -55,8 +55,6 @@ class SystemConfig:
         """Method intended for checking if given directory exists.
         In case of directory not exists, method creates it."""
         if self.operating_system == "Windows":
-            # TODO: [improve] add creation of directory below
-            # TODO: [improve] check if disk C:/ is not exist
             return win_path
         directory_name = os.path.expanduser('~') + linux_path
         Path(directory_name).mkdir(parents=True, exist_ok=True)

@@ -10,7 +10,6 @@ class ClickableLineEdit(QLineEdit):
     def __init__(self):
         super().__init__()
 
-    # TODO: fix clickable lineedit, now it is not worked
     def mousePressEvent(self, event):
         """Method should do something, but now it's not worked"""
         self.clicked.emit()
