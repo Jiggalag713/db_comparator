@@ -24,4 +24,5 @@ jobs:
         echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
         printenv
         pwd
+        poetry install
         pylint $(git ls-files '*.py')
