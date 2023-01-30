@@ -5,11 +5,10 @@ import sys
 from typing import NoReturn
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QMenu, QStatusBar
 
 from configuration.main_config import Configuration
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
-from ui_elements.menu import Menu
 from ui_logic.buttons import ButtonsLogic
 from ui_logic.config_serialization import ConfigSerialization
 from ui_logic.line_edits import LineEditsLogic
@@ -19,7 +18,7 @@ class MainUI(QWidget):
     """Class, contained almost all application UI elements"""
     def __init__(self, status_bar):
         super().__init__()
-        self.status_bar = status_bar
+        self.status_bar: QStatusBar = status_bar
         self.configuration = Configuration(self.status_bar)
         self.setLayout(self.configuration.ui_elements.positions.grid)
         line_edits = self.configuration.ui_elements.line_edits
@@ -54,7 +53,8 @@ class MainWindow(QMainWindow):
                                          self.status_bar)
         self.line_edits_logic = LineEditsLogic(self.main_window.configuration)
         self.serialization = ConfigSerialization(self.common_logic, self.main_window.configuration)
-        self.menu = Menu(self.main_window, self.common_logic, self.serialization, self.menubar)
+        # self.menu = Menu(self.main_window, self.common_logic, self.serialization, self.menubar)
+        self.menu: QMenu = self.get_menu()
         self.add_connects()
 
         self.setGeometry(300, 300, 900, 600)
@@ -75,8 +75,37 @@ class MainWindow(QMainWindow):
         line_edits.excluded_tables.clicked.connect(self.line_edits_logic.set_excluded_tables)
         line_edits.excluded_columns.clicked.connect(self.line_edits_logic.set_excluded_columns)
         line_edits.included_tables.clicked.connect(self.line_edits_logic.set_included_tables)
-        line_edits.prod.db.clicked.connect(self.line_edits_logic.set_prod_db)
-        line_edits.test.db.clicked.connect(self.line_edits_logic.set_test_db)
+        line_edits.prod.base.clicked.connect(self.line_edits_logic.set_prod_db)
+        line_edits.test.base.clicked.connect(self.line_edits_logic.set_test_db)
+
+    def get_menu(self) -> QMenu:
+        """Method builds main window menu"""
+        open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
+        open_action.setShortcut('Ctrl+O')
+        open_action.setStatusTip('Open custom file with cmp_properties')
+        open_action.triggered.connect(self.serialization.load_configuration)
+
+        compare_action: QAction = QAction(QIcon('compare.png'), '&Compare', self.main_window)
+        compare_action.setShortcut('Ctrl+F')
+        compare_action.setStatusTip('Run comparing')
+        compare_action.triggered.connect(self.common_logic.start_work)
+
+        save_action: QAction = QAction(QIcon('save.png'), '&Save', self.main_window)
+        save_action.setShortcut('Ctrl+S')
+        save_action.setStatusTip('Save current configuration to file')
+        save_action.triggered.connect(self.serialization.save_configuration)
+
+        exit_action = QAction(QIcon('exit.png'), '&Exit', self.main_window)
+        exit_action.setShortcut('Ctrl+Q')
+        exit_action.setStatusTip('Exit application')
+        exit_action.triggered.connect(qApp.quit)
+
+        file_menu = self.menubar.addMenu('&File')
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
+        file_menu.addAction(compare_action)
+        file_menu.addAction(exit_action)
+        return file_menu
 
 
 if __name__ == '__main__':

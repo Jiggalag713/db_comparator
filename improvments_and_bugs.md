@@ -14,4 +14,6 @@
 *[ ] Write abstract classes for ui elements, and inherit main and advanced window elements from this class (made them dataclasses)
 Idea for abstract classes 2 methods. One of them should be set_tooltips
 *[ ] ui_elements/advanced_line_edits.py:11:9: W0511: TODO: [improve] add possibility for useful redacting of schema columns parameter (fixme)
-*[ ] 
+*[ ] configuration/main_config.py:7:0: R0903: Too few public methods (0/2) (too-few-public-methods) should be refactored to dict
+*[ ] [bug] press Ctrl+O, then press cancel. AR: All previous values in UI will be reset to default. ER: previous variables will be displayed.
+*[ ]

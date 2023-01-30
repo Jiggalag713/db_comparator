@@ -14,14 +14,15 @@ class UIElements:
     def __init__(self):
         self.labels: Labels = Labels()
         self.line_edits: LineEdits = LineEdits()
-        self.combo_boxes: QComboBox = self.get_comboboxes()
+        self.line_edits.set_tooltip()
+        self.combo_boxes: QComboBox = self.get_combo_boxes()
         self.buttons: Dict = {'btn_ok': QPushButton('OK'),
                               'btn_cancel': QPushButton('Cancel'),
                               'btn_reset': QPushButton('Default settings')}
-        self.positions: ElementPositions = ElementPositions()
-        self.positions.locate_elements(self.labels, self.line_edits, self.combo_boxes, self.buttons)
+        self.positions: ElementPositions = self.locate_elements()
 
-    def get_comboboxes(self) -> QComboBox:
+    @staticmethod
+    def get_combo_boxes() -> QComboBox:
         """Method intended to get logging_level combobox on advanced settings window"""
         cb_logging_level: QComboBox = QComboBox()
         cb_logging_level.addItems(['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'])
@@ -31,3 +32,9 @@ class UIElements:
         cb_logging_level.setToolTip('Messages with this label and higher '
                                     'will be written to logs')
         return cb_logging_level
+
+    def locate_elements(self) -> ElementPositions:
+        """Method intended for location elements"""
+        positions: ElementPositions = ElementPositions()
+        positions.locate_elements(self.labels, self.line_edits, self.combo_boxes, self.buttons)
+        return positions

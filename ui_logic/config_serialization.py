@@ -9,7 +9,6 @@ from PyQt5.QtWidgets import QFileDialog
 from configuration.main_config import Configuration
 from configuration.system_config import SystemConfig
 from helpers.sql_helper import SqlAlchemyHelper
-from ui_elements.radiobuttons import RadioButtons
 from ui_logic.buttons import ButtonsLogic
 from ui_logic.common import set_value
 
@@ -58,11 +57,11 @@ class ConfigSerialization:
         }
 
     @staticmethod
-    def get_check_type(radio_buttons: RadioButtons) -> str:
+    def get_check_type(radio_buttons: Dict) -> str:
         """Method intended for getting type of report check"""
-        if radio_buttons.day_summary_mode.isChecked():
+        if radio_buttons.get('day_summary_mode').isChecked():
             return 'day-sum'
-        if radio_buttons.detailed_mode.isChecked():
+        if radio_buttons.get('detailed_mode').isChecked():
             return 'section-sum'
         return 'detailed'
 
@@ -74,7 +73,7 @@ class ConfigSerialization:
             f'{instance_type}.host': instance.host,
             f'{instance_type}.user': instance.user,
             f'{instance_type}.password': instance.password,
-            f'{instance_type}.db': instance.db
+            f'{instance_type}.db': instance.base
         }
 
     @staticmethod
@@ -92,12 +91,12 @@ class ConfigSerialization:
         system_config = self.default_values.__dict__.get('system_config')
         property_dict = self.system_variables_to_json(system_config)
         property_dict.update({
-            'comparing_step': self.default_values.comparing_step,
-            'depth_report_check': self.default_values.depth_report_check,
-            'retry_attempts': self.default_values.retry_attempts,
-            'strings_amount': self.default_values.strings_amount,
-            'table_timeout': self.default_values.table_timeout,
-            'schema_columns': self.default_values.schema_columns
+            'comparing_step': self.default_values.constants.get('comparing_step'),
+            'depth_report_check': self.default_values.constants.get('depth_report_check'),
+            'retry_attempts': self.default_values.constants.get('retry_attempts'),
+            'strings_amount': self.default_values.constants.get('strings_amount'),
+            'table_timeout': self.default_values.constants.get('table_timeout'),
+            'schema_columns': self.default_values.constants.get('schema_columns')
         })
         return property_dict
 
@@ -123,13 +122,13 @@ class ConfigSerialization:
                         'prod.host': self.main_ui.line_edits.prod.host,
                         'prod.user': self.main_ui.line_edits.prod.user,
                         'prod.password': self.main_ui.line_edits.prod.password,
-                        'prod.db': [self.main_ui.labels.prod.db,
-                                    self.main_ui.line_edits.prod.db],
+                        'prod.db': [self.main_ui.labels.prod.base,
+                                    self.main_ui.line_edits.prod.base],
                         'test.host': self.main_ui.line_edits.test.host,
                         'test.user': self.main_ui.line_edits.test.user,
                         'test.password': self.main_ui.line_edits.test.password,
-                        'test.db': [self.main_ui.labels.test.db,
-                                    self.main_ui.line_edits.test.db],
+                        'test.db': [self.main_ui.labels.test.base,
+                                    self.main_ui.line_edits.test.base],
                         'included_tables': self.main_ui.line_edits.included_tables,
                         'excluded_tables': self.main_ui.line_edits.excluded_tables,
                         'send_mail_to': self.main_ui.line_edits.send_mail_to,

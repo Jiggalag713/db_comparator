@@ -11,6 +11,6 @@ class ClickableLineEdit(QLineEdit):
         super().__init__()
 
     def mousePressEvent(self, event):
-        """Method should do something, but now it's not worked"""
+        """Method returns modal window by click on element"""
         self.clicked.emit()
         QLineEdit.mousePressEvent(self, event)

@@ -15,6 +15,7 @@ class Labels:
         self.path_to_logs_label = QLabel('Path to logs')
         self.table_timeout_label = QLabel('Timeout for single table, min')
         self.strings_amount_label = QLabel('Amount of stored uniq strings')
+        self.set_tooltips()
 
     def set_tooltips(self) -> None:
         """Method sets tooltips to labels on advanced setting window"""

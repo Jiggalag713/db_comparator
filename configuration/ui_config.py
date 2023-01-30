@@ -2,11 +2,11 @@
 from typing import Dict
 
 from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QRadioButton
 from ui_elements.buttons import Buttons
 from ui_elements.elements_position import ElementPositions
 from ui_elements.labels import Labels
 from ui_elements.line_edits import LineEdits
-from ui_elements.radiobuttons import RadioButtons
 from ui_logic.checkboxes import toggle
 
 
@@ -28,10 +28,14 @@ class UIElements:
         toggle(self.checkboxes)
 
         self.buttons: Buttons = Buttons()
-        self.radio_buttons: RadioButtons = RadioButtons()
+        self.radio_buttons: Dict = {
+            'day_summary_mode': QRadioButton('Day summary'),
+            'section_summary_mode': QRadioButton('Section summary'),
+            'detailed_mode': QRadioButton('Detailed')
+        }
         self.positions: ElementPositions = ElementPositions()
-        self.positions.locate_elements(self.labels, self.line_edits, self.checkboxes,
-                                       self.buttons, self.radio_buttons)
+        self.positions.locate_labels_line_edits(self.labels, self.line_edits)
+        self.positions.locate_other(self.checkboxes, self.buttons, self.radio_buttons)
 
     def checkboxes_states(self, is_toggled) -> None:
         """Method intended for setting checkboxes states"""
@@ -39,6 +43,22 @@ class UIElements:
         self.checkboxes.get('check_reports').setChecked(is_toggled)
         self.checkboxes.get('check_entities').setChecked(is_toggled)
         self.checkboxes.get('use_dataframes').setChecked(is_toggled)
+
+    def radio_buttons_states(self) -> None:
+        """Method intended for setting radio_buttons states"""
+        self.radio_buttons.get('day_summary_mode').setChecked(True)
+        self.radio_buttons.get('section_summary_mode').setChecked(False)
+        self.radio_buttons.get('detailed_mode').setChecked(False)
+
+    def set_radio_buttons_tooltips(self) -> None:
+        """Method intended for setting tooltips to radio_buttons"""
+        day_summary_mode = self.radio_buttons.get('day_summary_mode')
+        day_summary_mode.setToolTip('Compare sums of impressions for each date')
+        section_summary_mode = self.radio_buttons.get('section_summary_mode')
+        section_summary_mode.setToolTip('Compare sums of impressions '
+                                        'for each date and each section')
+        detailed_mode = self.radio_buttons.get('detailed_mode')
+        detailed_mode.setToolTip('Compare all records from table for set period')
 
     def set_checkboxes_tooltips(self) -> None:
         """Method intended for setting tooltips to checkboxes"""

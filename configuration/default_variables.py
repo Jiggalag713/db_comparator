@@ -31,11 +31,13 @@ class DefaultValues:
                                                     'dayOfWeekS',
                                                     'impCost',
                                                     'id']
-        self.comparing_step: int = 10000
-        self.depth_report_check: int = 7
-        self.retry_attempts: int = 5
-        self.table_timeout: int = 5
-        self.strings_amount: int = 1000
+        self.constants = {
+            'comparing_step': 10000,
+            'depth_report_check': 7,
+            'retry_attempts': 5,
+            'table_timeout': 5,
+            'strings_amount': 1000
+        }
         self.schema_columns: List[str] = []
         # self.schema_columns: List[str] = ['TABLE_CATALOG',
         #                                   'TABLE_NAME',
@@ -59,15 +61,28 @@ class DefaultValues:
 
     def set_default_values(self, line_edits, checkboxes, radio_buttons) -> None:
         """Method sets default values to some UI elements on main window."""
+        self.line_edits_default_values(line_edits)
+        self.check_boxes_default_values(checkboxes)
+        self.radio_buttons_default_values(radio_buttons)
+
+    def line_edits_default_values(self, line_edits) -> None:
+        """Method sets default values for line_edits"""
         line_edits.excluded_tables.setText(','.join(self.default_excluded_tables))
         line_edits.excluded_tables.setCursorPosition(0)
         line_edits.excluded_columns.setText(','.join(self.default_excluded_columns))
         line_edits.excluded_columns.setCursorPosition(0)
+
+    def check_boxes_default_values(self, checkboxes) -> None:
+        """Method sets default values for check_boxes"""
         checkboxes.get('check_schema').setChecked(self.checks_customization.get('check_schema'))
         checkboxes.get('fail_fast').setChecked(self.checks_customization.get('fail_fast'))
         checkboxes.get('check_reports').setChecked(self.checks_customization.get('check_reports'))
         checkboxes.get('check_entities').setChecked(self.checks_customization.get('check_entities'))
         checkboxes.get('use_dataframes').setChecked(self.checks_customization.get('use_dataframes'))
-        radio_buttons.day_summary_mode.setChecked(True)
-        radio_buttons.section_summary_mode.setChecked(False)
-        radio_buttons.detailed_mode.setChecked(False)
+
+    @staticmethod
+    def radio_buttons_default_values(radio_buttons) -> None:
+        """Method sets default values for radio_buttons"""
+        radio_buttons.get('day_summary_mode').setChecked(True)
+        radio_buttons.get('section_summary_mode').setChecked(False)
+        radio_buttons.get('detailed_mode').setChecked(False)

@@ -12,6 +12,7 @@ class LineEdits:
         self.excluded_tables: ClickableLineEdit = ClickableLineEdit()
         self.included_tables: ClickableLineEdit = ClickableLineEdit()
         self.excluded_columns: ClickableLineEdit = ClickableLineEdit()
+        self.set_tooltips()
 
     def set_tooltips(self) -> None:
         """Method sets tooltips for non-specific line edits"""
@@ -34,13 +35,19 @@ class SqlLineEdits:
         self.user: QLineEdit = QLineEdit()
         # self.prod.le_user.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.password: QLineEdit = QLineEdit()
-        self.password.setEchoMode(QLineEdit.Password)
         # self.prod.le_password.textChanged.connect(lambda: self.check_sqlhost('prod'))
-        self.db: ClickableLineEdit = ClickableLineEdit()
-        self.db.hide()
+        self.base: ClickableLineEdit = ClickableLineEdit()
+        self.prepare_line_edits()
+        self.set_tooltip()
 
     def set_tooltip(self) -> None:
         """Method sets tooltips to instance of class sql-related line edits"""
         self.host.setToolTip(self.host.text())
         self.user.setToolTip(self.user.text())
-        self.db.setToolTip(self.db.text())
+        self.base.setToolTip(self.base.text())
+
+    def prepare_line_edits(self) -> None:
+        """Method intended for default hiding database line_edit
+        and setting echo mode to password line_edit"""
+        self.password.setEchoMode(QLineEdit.Password)
+        self.base.hide()

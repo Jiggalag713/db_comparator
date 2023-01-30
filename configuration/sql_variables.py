@@ -3,20 +3,20 @@ be useful during comparing of databases"""
 import datetime
 import logging
 from typing import List
+from dataclasses import dataclass, field
 from helpers import df_compare_helper
-from helpers.sql_helper import SqlAlchemyHelper
+from helpers.sql_helper import SqlAlchemyHelper, SqlCredentials
 
 
 class SqlVariables:
     """Class contains some sql-related data which would be useful during comparing of databases"""
     def __init__(self, logger):
-        self.prod: SqlAlchemyHelper = SqlAlchemyHelper('', '', '', '', logger)
-        self.test: SqlAlchemyHelper = SqlAlchemyHelper('', '', '', '', logger)
-        self.included_tables: List = []
+        default_connection = SqlCredentials()
+        self.prod: SqlAlchemyHelper = SqlAlchemyHelper(default_connection, logger)
+        self.test: SqlAlchemyHelper = SqlAlchemyHelper(default_connection, logger)
+        self.inc_exc = IncludeExclude()
         self.tables_for_ui: List = []
         self.columns: List = []
-        self.excluded_tables: List = []
-        self.excluded_columns: List = []
         self.logger: logging.Logger = logger
 
     def compare_table_metadata(self) -> bool:
@@ -51,3 +51,11 @@ class SqlVariables:
         data_comparing_time = datetime.datetime.now() - start_time
         self.logger.info(f'Comparing finished in {data_comparing_time}')
         return True
+
+
+@dataclass
+class IncludeExclude:
+    """Class intended for included and excluded tables and columns"""
+    included_tables: List = field(default_factory=lambda: [])
+    excluded_tables: List = field(default_factory=lambda: [])
+    excluded_columns: List = field(default_factory=lambda: [])
