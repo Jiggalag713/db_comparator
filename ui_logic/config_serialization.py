@@ -111,7 +111,6 @@ class ConfigSerialization:
         """Method loads application configuration from file"""
         file_name = QFileDialog.getOpenFileName(QFileDialog(), 'Open file',
                                                 f'{os.getcwd()}/resources/properties/')[0]
-        self.common.clear_all()
         try:
             with open(file_name, 'r', encoding="utf-8") as file:
                 data = file.read()
