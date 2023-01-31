@@ -14,7 +14,6 @@ class UIElements:
     def __init__(self):
         self.labels: Labels = Labels()
         self.line_edits: LineEdits = LineEdits()
-        self.line_edits.set_tooltip()
         self.combo_boxes: QComboBox = self.get_combo_boxes()
         self.buttons: Dict = {'btn_ok': QPushButton('OK'),
                               'btn_cancel': QPushButton('Cancel'),

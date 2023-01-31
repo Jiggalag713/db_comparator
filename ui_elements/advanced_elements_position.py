@@ -19,14 +19,14 @@ class ElementPositions:
 
     def locate_labels(self, labels) -> None:
         """Method intended for location labels"""
-        self.grid.addWidget(labels.logging_level_label, 0, 0)
-        self.grid.addWidget(labels.comparing_step_label, 1, 0)
-        self.grid.addWidget(labels.depth_report_check_label, 2, 0)
-        self.grid.addWidget(labels.schema_columns_label, 3, 0)
-        self.grid.addWidget(labels.retry_attempts_label, 4, 0)
-        self.grid.addWidget(labels.path_to_logs_label, 5, 0)
-        self.grid.addWidget(labels.table_timeout_label, 6, 0)
-        self.grid.addWidget(labels.strings_amount_label, 7, 0)
+        self.grid.addWidget(labels.text_labels.get('logging_level_label'), 0, 0)
+        self.grid.addWidget(labels.number_labels.get('comparing_step_label'), 1, 0)
+        self.grid.addWidget(labels.number_labels.get('depth_report_check_label'), 2, 0)
+        self.grid.addWidget(labels.text_labels.get('schema_columns_label'), 3, 0)
+        self.grid.addWidget(labels.number_labels.get('retry_attempts_label'), 4, 0)
+        self.grid.addWidget(labels.text_labels.get('path_to_logs_label'), 5, 0)
+        self.grid.addWidget(labels.number_labels.get('table_timeout_label'), 6, 0)
+        self.grid.addWidget(labels.number_labels.get('strings_amount_label'), 7, 0)
 
     def locate_line_edits(self, line_edits) -> None:
         """Method intended for location line_edits"""

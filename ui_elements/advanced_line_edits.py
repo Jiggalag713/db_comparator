@@ -12,6 +12,7 @@ class LineEdits:
         self.path_to_logs: QLineEdit = QLineEdit()
         self.table_timeout: QLineEdit = QLineEdit()
         self.strings_amount: QLineEdit = QLineEdit()
+        self.set_tooltip()
 
         # set tooltips
     def set_tooltip(self) -> None:
@@ -28,3 +29,7 @@ class LineEdits:
         self.strings_amount.setToolTip('If amount of different records more than this '
                                        'threshold, another unique \n records will not '
                                        'be stored in result file')
+
+    def state(self) -> None:
+        """Method stub"""
+        return
