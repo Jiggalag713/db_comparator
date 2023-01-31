@@ -17,13 +17,14 @@ class TableCalculation:
         prod = self.configuration.sql_variables.prod
         test = self.configuration.sql_variables.test
         if all([prod.tables, test.tables]):
+            self.configuration.sql_variables.inc_exc.included_tables = []
             tables = list(set(prod.tables.keys()) & set(test.tables.keys()))
             tables.sort()
             for table in tables:
                 prod_columns = prod.tables.get(table)
                 test_columns = test.tables.get(table)
                 if prod_columns == test_columns:
-                    self.configuration.sql_variables.included_tables.append(table)
+                    self.configuration.sql_variables.inc_exc.included_tables.append(table)
                 else:
                     self.logger.error(f"There is different columns for table {table}.")
                     self.logger.warning(f"Table {table} excluded from comparing")
@@ -33,7 +34,7 @@ class TableCalculation:
                         self.logger.info(f"Uniq columns for prod {table}: {prod_uniq_columns}")
                     if test_uniq_columns:
                         self.logger.info(f"Uniq columns for test {table}: {test_uniq_columns}")
-            copy = self.configuration.sql_variables.included_tables.copy()
+            copy = self.configuration.sql_variables.inc_exc.included_tables.copy()
             self.configuration.sql_variables.tables_for_ui = copy
             self.configuration.sql_variables.columns = self.calculate_column_list()
             self.calculate_excluded_columns()
@@ -41,7 +42,7 @@ class TableCalculation:
     def get_tables_for_ui(self) -> Dict:
         """Method returns dictionary in format {table_name: [column_list]}"""
         result = {}
-        for table in self.configuration.sql_variables.included_tables:
+        for table in self.configuration.sql_variables.inc_exc.included_tables:
             result.update({table: self.configuration.sql_variables.prod.tables})
         return result
 
@@ -61,10 +62,10 @@ class TableCalculation:
         set_value(line_edits.excluded_tables, line_edits.excluded_tables.text())
         set_value(line_edits.excluded_columns, line_edits.excluded_columns.text())
         for table in self.configuration.sql_variables.tables_for_ui:
-            if table in self.configuration.sql_variables.excluded_tables:
+            if table in self.configuration.sql_variables.inc_exc.excluded_tables:
                 columns = self.configuration.sql_variables.tables_for_ui.get(table)
                 for column in columns:
-                    excluded_columns = self.configuration.sql_variables.excluded_column
+                    excluded_columns = self.configuration.sql_variables.inc_exc.excluded_column
                     if column not in excluded_columns:
                         excluded_columns.append(f'{table}.{column}')
-        self.configuration.sql_variables.excluded_columns.sort()
+        self.configuration.sql_variables.inc_exc.excluded_columns.sort()

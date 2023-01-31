@@ -10,28 +10,8 @@
     "included_tables": [
         "Username"
     ],
-    "excluded_tables": [
-        "databasechangelog",
-        "download",
-        "forecaststatistics",
-        "migrationhistory",
-        "migrationhistory",
-        "mntapplog",
-        "reportinfo",
-        "synchistory",
-        "syncpersistentjob",
-        "syncstage",
-        "synctrace",
-        "synctracelink"
-    ],
-    "excluded_columns": [
-        "addonFields",
-        "archived",
-        "dayOfWeekS",
-        "hourOfDayS",
-        "id",
-        "impCost"
-    ],
+    "excluded_tables": [],
+    "excluded_columns": [],
     "logging_level": 10,
     "path_to_logs": "/home/polter/comparator/DbComparator.log",
     "service_dir": "/home/polter/comparator/",
@@ -48,6 +28,6 @@
     "check_reports": false,
     "check_schema": false,
     "fail_fast": false,
-    "use_dataframes": false,
+    "use_dataframes": true,
     "report_check_type": "day-sum"
 }

@@ -17,14 +17,17 @@ class Labels:
     def set_tooltips(self) -> None:
         """Method intended for setting tooltips to UI labels elements"""
         self.send_mail_to.setToolTip('Add one or list of e-mails for '
-                                           'receiving results of comparing')
+                                     'receiving results of comparing')
         self.included_tables.setToolTip('Set comma-separated list of '
-                                              'tables, which should be compared')
-        self.excluded_tables.setToolTip('Set tables, which should not '
-                                              'be checked')
+                                        'tables, which should be compared')
+        self.excluded_tables.setToolTip('Set tables, which should not be checked')
         self.excluded_columns.setToolTip('Set columns, which should not '
-                                           'be compared during checking')
+                                         'be compared during checking')
         self.checking_mode.setToolTip('Select type of checking')
+
+    def prepare_labels(self) -> None:
+        """Method intended for some label logic"""
+        return
 
 
 class SqlLabels:
@@ -34,9 +37,9 @@ class SqlLabels:
         self.host: QLabel = QLabel(f'{instance_type}.host')
         self.user: QLabel = QLabel(f'{instance_type}.user')
         self.password: QLabel = QLabel(f'{instance_type}.password')
-        self.db: QLabel = QLabel(f'{instance_type}.db')
-        self.db.hide()
+        self.base: QLabel = QLabel(f'{instance_type}.db')
         self.set_tooltips()
+        self.prepare_labels()
 
     def set_tooltips(self) -> None:
         """Method sets tooltips on sql-related labels"""
@@ -46,5 +49,9 @@ class SqlLabels:
                              f'Example: {self.instance_type}')
         self.password.setToolTip(f'Input password for user from '
                                  f'{self.instance_type}.user field')
-        self.db.setToolTip(f'Input {self.instance_type}-db name.\n'
-                           f'Example: {self.instance_type}')
+        self.base.setToolTip(f'Input {self.instance_type}-db name.\n'
+                             f'Example: {self.instance_type}')
+
+    def prepare_labels(self) -> None:
+        """Method intended for some label logic"""
+        self.base.hide()

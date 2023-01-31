@@ -33,8 +33,9 @@ class LineEditsLogic:
 
     def set_excluded_columns(self) -> None:
         """Method sets excluded columns"""
+        exc_columns = self.configuration.sql_variables.inc_exc.excluded_columns
         excluded_columns = ClickableItemsView(self.configuration.sql_variables.columns,
-                                              self.configuration.sql_variables.excluded_columns)
+                                              exc_columns)
         excluded_columns.exec_()
         self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
         text = self.main_ui.line_edits.excluded_columns.text().replace(',', ',\n')
@@ -56,11 +57,13 @@ class LineEditsLogic:
 
     def set_prod_db(self) -> None:
         """Method sets prod database"""
-        self.set_db(self.main_ui.line_edits.prod.db, self.configuration.sql_variables.prod.databases)
+        self.set_db(self.main_ui.line_edits.prod.base,
+                    self.configuration.sql_variables.prod.databases)
 
     def set_test_db(self) -> None:
         """Method sets test database"""
-        self.set_db(self.main_ui.line_edits.test.db, self.configuration.sql_variables.test.databases)
+        self.set_db(self.main_ui.line_edits.test.base,
+                    self.configuration.sql_variables.test.databases)
 
     @staticmethod
     def set_db(line_edit: QLineEdit, db_list: List[str]) -> None:
