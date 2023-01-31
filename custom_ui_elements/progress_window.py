@@ -48,9 +48,9 @@ class ProgressWindow(QDialog):
                 self.progress_schema.setValue(completed)
                 self.schema_label.setText(f'Processing of {table} table...')
                 if dataframes_enabled:
-                    self.configuration.sql_variables.compare_table_metadata()
+                    result = self.configuration.sql_variables.compare_table_metadata(table)
                 else:
-                    self.configuration.sql_variables.compare_table_metadata()
+                    result = self.configuration.sql_variables.compare_table_metadata(table)
                 QApplication.processEvents()
             comparing_time = datetime.datetime.now() - schema_start_time
             self.logger.info(f'Comparing of schemas finished in {comparing_time}')

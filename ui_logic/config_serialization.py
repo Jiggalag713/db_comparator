@@ -31,8 +31,10 @@ class ConfigSerialization:
             if key in ['prod', 'test']:
                 config.update(self.host_properties_to_json(key,
                                                            self.sql_variables.__dict__.get(key)))
-            elif key in ['included_tables', 'excluded_tables', 'excluded_columns']:
-                config.update({key: self.sql_variables.__dict__.get(key)})
+        for key in self.sql_variables.inc_exc.__dict__:
+            if key in ['included_tables', 'excluded_tables', 'excluded_columns']:
+                value = self.configuration.ui_elements.line_edits.__dict__.get(key).text().split(',')
+                config.update({key: value})
         config.update(self.variables_to_json())
         config.update(self.serialize_check_customization_state())
         file_name, _ = QFileDialog.getSaveFileName(QFileDialog(),
@@ -70,10 +72,10 @@ class ConfigSerialization:
         """Method intended for serializing part of SqlAlchemyHelper instance
         to config file"""
         return {
-            f'{instance_type}.host': instance.host,
-            f'{instance_type}.user': instance.user,
-            f'{instance_type}.password': instance.password,
-            f'{instance_type}.db': instance.base
+            f'{instance_type}.host': instance.credentials.host,
+            f'{instance_type}.user': instance.credentials.user,
+            f'{instance_type}.password': instance.credentials.password,
+            f'{instance_type}.db': instance.credentials.base
         }
 
     @staticmethod
@@ -117,51 +119,52 @@ class ConfigSerialization:
                 config = json.loads(data)
                 for key in config:
                     value = self.get_value(config.get(key))
-                    lineedit_mapping = {
-                        'prod.host': self.main_ui.line_edits.prod.host,
-                        'prod.user': self.main_ui.line_edits.prod.user,
-                        'prod.password': self.main_ui.line_edits.prod.password,
-                        'prod.db': [self.main_ui.labels.prod.base,
-                                    self.main_ui.line_edits.prod.base],
-                        'test.host': self.main_ui.line_edits.test.host,
-                        'test.user': self.main_ui.line_edits.test.user,
-                        'test.password': self.main_ui.line_edits.test.password,
-                        'test.db': [self.main_ui.labels.test.base,
-                                    self.main_ui.line_edits.test.base],
-                        'included_tables': self.main_ui.line_edits.included_tables,
-                        'excluded_tables': self.main_ui.line_edits.excluded_tables,
-                        'send_mail_to': self.main_ui.line_edits.send_mail_to,
-                        'excluded_columns': self.main_ui.line_edits.excluded_columns
-                    }
-                    checkbox_mapping = {
-                        'check_schema': self.main_ui.checkboxes.get('check_schema'),
-                        'fail_fast': self.main_ui.checkboxes.get('fail_fast'),
-                        'check_reports': self.main_ui.checkboxes.get('check_reports'),
-                        'check_entities': self.main_ui.checkboxes.get('check_entities')
-                    }
-                    values = [
-                        'comparing_step',
-                        'depth_report_check',
-                        'retry_attempts',
-                        'path_to_logs',
-                        'logging_level',
-                        'table_timeout'
-                    ]
-                    if key in lineedit_mapping:
-                        if '.db' in key:
-                            for item in lineedit_mapping.get(key):
-                                item.show()
-                            set_value(lineedit_mapping.get(key)[1], value)
-                        else:
-                            set_value(lineedit_mapping.get(key), value)
-                    elif key in checkbox_mapping:
-                        checkbox_mapping.get(key).setChecked(value)
-                    elif key in values:
-                        self.default_values.__dict__.update({key: value})
-                    elif 'schema_columns' in key:
-                        self.default_values.schema_columns = value.split(',')
-                    elif 'mode' in key:
-                        self.load_radio_buttons_state(self.main_ui.radio_buttons, value)
+                    if value:
+                        lineedit_mapping = {
+                            'prod.host': self.main_ui.line_edits.prod.host,
+                            'prod.user': self.main_ui.line_edits.prod.user,
+                            'prod.password': self.main_ui.line_edits.prod.password,
+                            'prod.db': [self.main_ui.labels.prod.base,
+                                        self.main_ui.line_edits.prod.base],
+                            'test.host': self.main_ui.line_edits.test.host,
+                            'test.user': self.main_ui.line_edits.test.user,
+                            'test.password': self.main_ui.line_edits.test.password,
+                            'test.db': [self.main_ui.labels.test.base,
+                                        self.main_ui.line_edits.test.base],
+                            'included_tables': self.main_ui.line_edits.included_tables,
+                            'excluded_tables': self.main_ui.line_edits.excluded_tables,
+                            'send_mail_to': self.main_ui.line_edits.send_mail_to,
+                            'excluded_columns': self.main_ui.line_edits.excluded_columns
+                        }
+                        checkbox_mapping = {
+                            'check_schema': self.main_ui.checkboxes.get('check_schema'),
+                            'fail_fast': self.main_ui.checkboxes.get('fail_fast'),
+                            'check_reports': self.main_ui.checkboxes.get('check_reports'),
+                            'check_entities': self.main_ui.checkboxes.get('check_entities')
+                        }
+                        values = [
+                            'comparing_step',
+                            'depth_report_check',
+                            'retry_attempts',
+                            'path_to_logs',
+                            'logging_level',
+                            'table_timeout'
+                        ]
+                        if key in lineedit_mapping:
+                            if '.db' in key:
+                                for item in lineedit_mapping.get(key):
+                                    item.show()
+                                set_value(lineedit_mapping.get(key)[1], value)
+                            else:
+                                set_value(lineedit_mapping.get(key), value)
+                        elif key in checkbox_mapping:
+                            checkbox_mapping.get(key).setChecked(value)
+                        elif key in values:
+                            self.default_values.__dict__.update({key: value})
+                        elif 'schema_columns' in key:
+                            self.default_values.schema_columns = value.split(',')
+                        elif 'mode' in key:
+                            self.load_radio_buttons_state(self.main_ui.radio_buttons, value)
             self.common.check_prod_host()
             self.common.check_test_host()
             self.configuration.sql_variables.prod.warming_up()
@@ -179,6 +182,6 @@ class ConfigSerialization:
             'detailed': [False, False, True]
         }
         actual_state = states.get(mode)
-        radio_buttons.day_summary_mode.setChecked(actual_state[0])
-        radio_buttons.section_summary_mode.setChecked(actual_state[1])
-        radio_buttons.detailed_mode.setChecked(actual_state[2])
+        radio_buttons.get('day_summary_mode').setChecked(actual_state[0])
+        radio_buttons.get('section_summary_mode').setChecked(actual_state[1])
+        radio_buttons.get('detailed_mode').setChecked(actual_state[2])

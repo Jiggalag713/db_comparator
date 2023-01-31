@@ -19,21 +19,43 @@ class SqlVariables:
         self.columns: List = []
         self.logger: logging.Logger = logger
 
-    def compare_table_metadata(self) -> bool:
+    # TODO: [improve] strongly refactor this
+    def compare_table_metadata(self, table) -> bool:
         """Method intended to compare metadata of two tables"""
         start_time = datetime.datetime.now()
-        prod_table = self.prod.tables
-        test_table = self.test.tables
-        self.logger.info(f"Compare schema for table {prod_table}...")
-        if prod_table == test_table:
-            pass
-        diff_df = df_compare_helper.get_metadata_dataframe_diff(prod_table, test_table,
-                                                                self.logger)
+        self.logger.info(f"Compare schema for table {table}...")
+        if self.is_columns_list_differs(table):
+            return False
+        else:
+            diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
+                                                                    table, self.logger)
         if not diff_df.empty:
-            self.logger.error(f"Schema of tables {prod_table} differs!")
+            self.logger.error(f"Schema of tables {table} differs!")
         schema_comparing_time = datetime.datetime.now() - start_time
-        self.logger.debug(f"Schema of table {prod_table} compared in {schema_comparing_time}")
+        self.logger.debug(f"Schema of table {table} compared in {schema_comparing_time}")
         return True
+
+    def is_columns_list_differs(self, table) -> bool:
+        """Method intended to check if column lists of some table in two
+        databases equals"""
+        prod_columns = set(self.prod.tables.get(table))
+        test_columns = set(self.test.tables.get(table))
+        unique_prod = prod_columns - test_columns
+        unique_test = test_columns - prod_columns
+        if unique_prod:
+            self.warn_columns_differs(table, unique_prod)
+        if unique_test:
+            self.warn_columns_differs(table, unique_test)
+        if any([unique_prod, unique_test]):
+            return True
+        return False
+
+    def warn_columns_differs(self, table, uniques) -> None:
+        """Print warning logs about differs columns"""
+        host = self.prod.credentials.host
+        base = self.prod.credentials.base
+        self.logger.warning(f"There is some unique columns in {host / base} "
+                            f"table {table}: {','.join(uniques)}")
 
     def compare_data(self, table: str) -> bool:
         """Method intended to compare data of two tables"""

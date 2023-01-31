@@ -75,7 +75,7 @@ class ButtonsLogic:
                     result_tables.update({table: value})
                 self.configuration.sql_variables.inc_exc.included_tables = result_tables
             else:
-                for table in self.configuration.default_values.excluded_tables:
+                for table in self.configuration.sql_variables.inc_exc.excluded_tables:
                     if table in self.configuration.sql_variables.inc_exc.included_tables:
                         self.configuration.sql_variables.inc_exc.included_tables.pop(table)
                         self.logger.debug(f'Deleted table {table} from self.tables list')
