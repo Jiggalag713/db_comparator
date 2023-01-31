@@ -2,7 +2,6 @@
 *[ ] configuration/sql_variables.py:10:1: W0511: TODO: potentially should be merged with table_data.Info (fixme)
 *[ ] configuration/system_config.py:58:13: W0511: TODO: [improve] add creation of directory below (fixme)
 *[ ] configuration/system_config.py:59:13: W0511: TODO: [improve] check if disk C:/ is not exist (fixme)
-*[ ] custom_ui_elements/clickable_lineedit.py:13:5: W0511: TODO: fix clickable lineedit, now it is not worked (fixme)
 *[ ] custom_ui_elements/clickable_items_view.py:68:17: W0511: TODO: fix: expected type CheckState, got int instead (fixme)
 *[ ] helpers/df_compare_helper.py:13:5: W0511: TODO: clarify, how I can dynamically set indexes for different tables (fixme)
 *[ ] helpers/df_compare_helper.py:25:13: W0511: TODO: add logic for comparing non-identically labeled DataFrame object (fixme)
@@ -14,6 +13,5 @@
 *[ ] Write abstract classes for ui elements, and inherit main and advanced window elements from this class (made them dataclasses)
 Idea for abstract classes 2 methods. One of them should be set_tooltips
 *[ ] ui_elements/advanced_line_edits.py:11:9: W0511: TODO: [improve] add possibility for useful redacting of schema columns parameter (fixme)
-*[ ] configuration/main_config.py:7:0: R0903: Too few public methods (0/2) (too-few-public-methods) should be refactored to dict
 *[ ] [bug] press Ctrl+O, then press cancel. AR: All previous values in UI will be reset to default. ER: previous variables will be displayed.
-*[ ]
+*[ ] Remove all stub function, refactor.
