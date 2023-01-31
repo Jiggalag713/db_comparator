@@ -52,7 +52,7 @@ class ButtonsLogic:
         """Method works after pressing advanced button in main window"""
         self.advanced_settings.exec_()
         logging_level = self.configuration.default_values.system_config.logging_level
-        self.configuration.default_values.logger.setLevel(logging_level)
+        self.configuration.default_values.system_config.logger.setLevel(logging_level)
 
     def start_work(self) -> None:
         """Method starts process of comparing databases"""

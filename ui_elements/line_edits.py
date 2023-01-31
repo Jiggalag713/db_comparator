@@ -1,6 +1,8 @@
 """Module intended to store LineEdits class for main window"""
 from PyQt5.QtWidgets import QLineEdit
 
+from custom_ui_elements.clickable_lineedit import ClickableLineEdit
+
 
 class LineEdits:
     """Class intended for line edits of main window"""
@@ -8,12 +10,9 @@ class LineEdits:
         self.prod: SqlLineEdits = SqlLineEdits()
         self.test: SqlLineEdits = SqlLineEdits()
         self.send_mail_to: QLineEdit = QLineEdit()
-        self.excluded_tables: QLineEdit = QLineEdit()
-        # self.excluded_tables: ClickableLineEdit = ClickableLineEdit()
-        self.included_tables: QLineEdit = QLineEdit()
-        # self.included_tables: ClickableLineEdit = ClickableLineEdit()
-        self.excluded_columns: QLineEdit = QLineEdit()
-        # self.excluded_columns: ClickableLineEdit = ClickableLineEdit()
+        self.excluded_tables: ClickableLineEdit = ClickableLineEdit()
+        self.included_tables: ClickableLineEdit = ClickableLineEdit()
+        self.excluded_columns: ClickableLineEdit = ClickableLineEdit()
         self.set_tooltips()
 
     def set_tooltips(self) -> None:
@@ -38,8 +37,7 @@ class SqlLineEdits:
         # self.prod.le_user.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.password: QLineEdit = QLineEdit()
         # self.prod.le_password.textChanged.connect(lambda: self.check_sqlhost('prod'))
-        self.base: QLineEdit = QLineEdit()
-        # self.base: ClickableLineEdit = ClickableLineEdit()
+        self.base: ClickableLineEdit = ClickableLineEdit()
         self.prepare_line_edits()
         self.set_tooltip()
 

@@ -34,6 +34,7 @@ class ClickableItemsView(QDialog):
 
     def init_items(self) -> QListView:
         """Method init items"""
+        self.model = QStandardItemModel()
         for table in self.item_list:
             item = QStandardItem(table)
             item.setCheckState(0)
@@ -61,7 +62,7 @@ class ClickableItemsView(QDialog):
     def clear_all(self) -> None:
         """Method clears all"""
         amount = self.model.rowCount()
-        for idx in range(0, amount - 1):
+        for idx in range(amount):
             item = self.model.item(idx, 0)
             if item.checkState() == 2:
                 item.setCheckState(0)

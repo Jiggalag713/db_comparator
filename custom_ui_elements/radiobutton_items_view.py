@@ -39,8 +39,8 @@ class RadiobuttonItemsView(QDialog):
         self.layout.addWidget(scroll, 0, 0)
         self.layout.addWidget(btn_ok, 0, 1)
         self.layout.addWidget(btn_cancel, 0, 2)
-        self.setStyleSheet("QScrollArea{min-width:300 px; min-height: 400px}")
 
+        self.setWindowTitle('Select database')
         self.setLayout(self.layout)
         self.setModal(True)
         self.show()
