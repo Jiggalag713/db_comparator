@@ -8,6 +8,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QMenu, QStatusBar
 
 from configuration.main_config import Configuration
+from configuration.system_config import SystemConfig
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from ui_logic.buttons import ButtonsLogic
 from ui_logic.config_serialization import ConfigSerialization
@@ -19,7 +20,8 @@ class MainUI(QWidget):
     def __init__(self, status_bar):
         super().__init__()
         self.status_bar: QStatusBar = status_bar
-        self.configuration = Configuration(self.status_bar)
+        self.system_config = SystemConfig()
+        self.configuration = Configuration(self.status_bar, self.system_config)
         self.setLayout(self.configuration.ui_elements.positions.grid)
         line_edits = self.configuration.ui_elements.line_edits
         checkboxes = self.configuration.ui_elements.checkboxes
@@ -53,7 +55,6 @@ class MainWindow(QMainWindow):
                                          self.status_bar)
         self.line_edits_logic = LineEditsLogic(self.main_window.configuration)
         self.serialization = ConfigSerialization(self.common_logic, self.main_window.configuration)
-        # self.menu = Menu(self.main_window, self.common_logic, self.serialization, self.menubar)
         self.menu: QMenu = self.get_menu()
         self.add_connects()
 

@@ -1,36 +1,18 @@
 """Module contains class intended for storing default variables"""
 from typing import List
-from configuration.system_config import SystemConfig
 
 
 class DefaultValues:
     """Class intended for storing default variables"""
     def __init__(self):
-        self.system_config: SystemConfig = SystemConfig()
         self.checks_customization = {'check_schema': True,
                                      'fail_fast': False,
                                      'check_reports': True,
                                      'check_entities': True,
                                      'use_dataframes': True,
                                      'report_check_type': 'detailed'}
-        self.default_excluded_tables: List[str] = ['databasechangelog',
-                                                   'download',
-                                                   'migrationhistory',
-                                                   'mntapplog',
-                                                   'reportinfo',
-                                                   'synchistory',
-                                                   'syncstage',
-                                                   'synctrace',
-                                                   'synctracelink',
-                                                   'syncpersistentjob',
-                                                   'forecaststatistics',
-                                                   'migrationhistory']
-        self.default_excluded_columns: List[str] = ['archived',
-                                                    'addonFields',
-                                                    'hourOfDayS',
-                                                    'dayOfWeekS',
-                                                    'impCost',
-                                                    'id']
+        self.default_excluded_tables: List[str] = []
+        self.default_excluded_columns: List[str] = []
         self.constants = {
             'comparing_step': 10000,
             'depth_report_check': 7,
@@ -38,7 +20,9 @@ class DefaultValues:
             'table_timeout': 5,
             'strings_amount': 1000
         }
+        self.send_mail_to = ''
         self.schema_columns: List[str] = []
+        self.mode = 'detailed'
         # self.schema_columns: List[str] = ['TABLE_CATALOG',
         #                                   'TABLE_NAME',
         #                                   'COLUMN_NAME',

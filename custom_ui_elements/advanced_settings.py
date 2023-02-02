@@ -13,7 +13,7 @@ class AdvancedSettingsItem(QDialog):
         self.main_ui = UIElements()
         self.setLayout(self.main_ui.positions.grid)
         self.default_values = configuration.default_values
-        self.advanced_logic = AdvancedWindowLogic(self, self.main_ui, self.default_values)
+        self.advanced_logic = AdvancedWindowLogic(self, self.main_ui, configuration)
         self.main_ui.buttons.get('btn_ok').clicked.connect(self.advanced_logic.ok_pressed)
         self.main_ui.buttons.get('btn_cancel').clicked.connect(self.advanced_logic.cancel_pressed)
         self.main_ui.buttons.get('btn_reset').clicked.connect(self.advanced_logic.set_default)

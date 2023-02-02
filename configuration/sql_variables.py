@@ -11,9 +11,8 @@ from helpers.sql_helper import SqlAlchemyHelper, SqlCredentials
 class SqlVariables:
     """Class contains some sql-related data which would be useful during comparing of databases"""
     def __init__(self, logger):
-        default_connection = SqlCredentials()
-        self.prod: SqlAlchemyHelper = SqlAlchemyHelper(default_connection, logger)
-        self.test: SqlAlchemyHelper = SqlAlchemyHelper(default_connection, logger)
+        self.prod: SqlAlchemyHelper = SqlAlchemyHelper(SqlCredentials(), logger)
+        self.test: SqlAlchemyHelper = SqlAlchemyHelper(SqlCredentials(), logger)
         self.inc_exc = IncludeExclude()
         self.tables_for_ui: List = []
         self.columns: List = []
@@ -24,31 +23,13 @@ class SqlVariables:
         """Method intended to compare metadata of two tables"""
         start_time = datetime.datetime.now()
         self.logger.info(f"Compare schema for table {table}...")
-        if self.is_columns_list_differs(table):
-            return False
-        else:
-            diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
-                                                                    table, self.logger)
+        diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
+                                                                table, self.logger)
         if not diff_df.empty:
             self.logger.error(f"Schema of tables {table} differs!")
         schema_comparing_time = datetime.datetime.now() - start_time
         self.logger.debug(f"Schema of table {table} compared in {schema_comparing_time}")
         return True
-
-    def is_columns_list_differs(self, table) -> bool:
-        """Method intended to check if column lists of some table in two
-        databases equals"""
-        prod_columns = set(self.prod.tables.get(table))
-        test_columns = set(self.test.tables.get(table))
-        unique_prod = prod_columns - test_columns
-        unique_test = test_columns - prod_columns
-        if unique_prod:
-            self.warn_columns_differs(table, unique_prod)
-        if unique_test:
-            self.warn_columns_differs(table, unique_test)
-        if any([unique_prod, unique_test]):
-            return True
-        return False
 
     def warn_columns_differs(self, table, uniques) -> None:
         """Print warning logs about differs columns"""

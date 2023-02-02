@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QMessageBox, QStatusBar
 
 from configuration.main_config import Configuration
 from configuration.default_variables import DefaultValues
-from configuration.sql_variables import SqlVariables
 from configuration.ui_config import UIElements
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from custom_ui_elements.progress_window import ProgressWindow
@@ -23,8 +22,7 @@ class ButtonsLogic:
         self.advanced_settings: AdvancedSettingsItem = advanced_settings
         self.main_ui: UIElements = configuration.ui_elements
         self.status_bar: QStatusBar = status_bar
-        self.logger: logging.Logger = self.configuration.default_values.system_config.logger
-        self.sql_variables: SqlVariables = self.configuration.sql_variables
+        self.logger: logging.Logger = self.configuration.system_config.logger
         self.default_values: DefaultValues = self.configuration.default_values
 
     def clear_all(self) -> None:
@@ -51,12 +49,13 @@ class ButtonsLogic:
     def advanced(self) -> None:
         """Method works after pressing advanced button in main window"""
         self.advanced_settings.exec_()
-        logging_level = self.configuration.default_values.system_config.logging_level
-        self.configuration.default_values.system_config.logger.setLevel(logging_level)
+        logging_level = self.configuration.system_config.logging_level
+        self.configuration.system_config.logger.setLevel(logging_level)
 
     def start_work(self) -> None:
         """Method starts process of comparing databases"""
-        if all([self.configuration.sql_variables.prod.tables, self.sql_variables.test.tables]):
+        if all([self.configuration.sql_variables.prod.tables,
+                self.configuration.sql_variables.test.tables]):
             # comparing_info = Info(self.logger)
             # prod_sql_connection = self.sql_variables.prod
             # test_sql_connection = self.sql_variables.test
@@ -68,13 +67,7 @@ class ButtonsLogic:
             #                                         comparing_info)
             self.logger.info('Comparing started!')
             included_tables = self.configuration.sql_variables.inc_exc.included_tables
-            if included_tables:
-                result_tables = {}
-                for table in included_tables:
-                    value = self.configuration.sql_variables.inc_exc.included_tables
-                    result_tables.update({table: value})
-                self.configuration.sql_variables.inc_exc.included_tables = result_tables
-            else:
+            if not included_tables:
                 for table in self.configuration.sql_variables.inc_exc.excluded_tables:
                     if table in self.configuration.sql_variables.inc_exc.included_tables:
                         self.configuration.sql_variables.inc_exc.included_tables.pop(table)
@@ -85,15 +78,15 @@ class ButtonsLogic:
 
     def check_prod_host(self) -> None:
         """Method checks connection to prod instance"""
-        self.set_sql_credentials(self.sql_variables.prod,
+        self.set_sql_credentials(self.configuration.sql_variables.prod,
                                  self.configuration.ui_elements.line_edits.prod)
-        self.check_host(self.is_prod('prod'), self.sql_variables.prod)
+        self.check_host(self.is_prod('prod'), self.configuration.sql_variables.prod)
 
     def check_test_host(self) -> None:
         """Method checks connection to test instance"""
-        self.set_sql_credentials(self.sql_variables.test,
+        self.set_sql_credentials(self.configuration.sql_variables.test,
                                  self.configuration.ui_elements.line_edits.test)
-        self.check_host(self.is_prod('test'), self.sql_variables.test)
+        self.check_host(self.is_prod('test'), self.configuration.sql_variables.test)
 
     @staticmethod
     def set_sql_credentials(sql_instance: SqlAlchemyHelper,

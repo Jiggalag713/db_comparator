@@ -10,7 +10,7 @@ class TableCalculation:
     """Class intended for calculating different table lists"""
     def __init__(self, configuration: Configuration):
         self.configuration: Configuration = configuration
-        self.logger = configuration.default_values.system_config.logger
+        self.logger = configuration.system_config.logger
 
     def calculate_table_list(self) -> None:
         """Method calculates of tables, which exists in both databases"""
@@ -28,6 +28,18 @@ class TableCalculation:
                 else:
                     self.logger.error(f"There is different columns for table {table}.")
                     self.logger.warning(f"Table {table} excluded from comparing")
+                    included_tables = self.configuration.ui_elements.line_edits.included_tables.text().split(',')
+                    if '' in included_tables:
+                        included_tables.remove('')
+                    if table in included_tables:
+                        included_tables.remove(table)
+                        self.configuration.ui_elements.line_edits.included_tables.setText(','.join(included_tables))
+                    excluded_table = self.configuration.ui_elements.line_edits.excluded_tables.text().split(',')
+                    if '' in excluded_table:
+                        excluded_table.remove('')
+                    if table not in excluded_table:
+                        excluded_table.append(table)
+                        self.configuration.ui_elements.line_edits.excluded_tables.setText(','.join(excluded_table))
                     prod_uniq_columns = set(prod_columns) - set(test_columns)
                     test_uniq_columns = set(test_columns) - set(prod_columns)
                     if prod_uniq_columns:

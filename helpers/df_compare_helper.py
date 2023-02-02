@@ -13,7 +13,7 @@ def get_table_schema_dataframe(instance_type, table, engine):
 def get_metadata_dataframe_diff(prod_instance, test_instance, table, logger):
     """Method implements comparing of two tables schemas using dataframes"""
     prod_schema = get_table_schema_dataframe('prod', table, prod_instance.engine)
-    test_schema = get_table_schema_dataframe('prod', table, test_instance.engine)
+    test_schema = get_table_schema_dataframe('test', table, test_instance.engine)
     result = get_dataframes_diff(prod_schema, test_schema, logger)
     return result
     # df_all = pd.concat([prod_columns.set_index('id'), test_columns.set_index('id')],
@@ -43,11 +43,13 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
     """Method implements comparing data of two tables using dataframes"""
     # df_all = pd.concat([prod_columns.set_index('id'), test_columns.set_index('id')],
     # axis='columns', keys=['First', 'Second'])
-    prod_columns.fillna(value=np.nan, inplace=True)
-    prod_columns = prod_columns.fillna(0)
-    test_columns.fillna(value=np.nan, inplace=True)
-    test_columns = test_columns.fillna(0)
-    result_dataframe = pd.DataFrame([False])
+    # prod_columns.fillna(value=np.nan, inplace=True)
+    # prod_columns = prod_columns.fillna(0)
+    # test_columns.fillna(value=np.nan, inplace=True)
+    # test_columns = test_columns.fillna(0)
+    result_dataframe = prod_columns.compare(test_columns)
+    print('stop')
+    # result_dataframe = pd.DataFrame([False])
     try:
         result_dataframe = (prod_columns == test_columns)
     except ValueError as exception:

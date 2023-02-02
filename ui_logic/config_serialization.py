@@ -18,10 +18,11 @@ class ConfigSerialization:
     def __init__(self, common: ButtonsLogic, configuration: Configuration):
         self.common: ButtonsLogic = common
         self.configuration: Configuration = configuration
+        self.system_config = configuration.system_config
         self.default_values = configuration.default_values
         self.sql_variables = configuration.sql_variables
         self.main_ui = configuration.ui_elements
-        self.logger: logging.Logger = self.configuration.default_values.system_config.logger
+        self.logger: logging.Logger = self.configuration.system_config.logger
 
     def save_configuration(self) -> None:
         """Method implements serialization of current application configuration
@@ -34,6 +35,8 @@ class ConfigSerialization:
         for key in self.sql_variables.inc_exc.__dict__:
             if key in ['included_tables', 'excluded_tables', 'excluded_columns']:
                 value = self.configuration.ui_elements.line_edits.__dict__.get(key).text().split(',')
+                if '' in value:
+                    value.remove('')
                 config.update({key: value})
         config.update(self.variables_to_json())
         config.update(self.serialize_check_customization_state())
@@ -90,7 +93,7 @@ class ConfigSerialization:
 
     def variables_to_json(self) -> Dict:
         """Method intended to serialization of all other variables to config file"""
-        system_config = self.default_values.__dict__.get('system_config')
+        system_config = self.configuration.__dict__.get('system_config')
         property_dict = self.system_variables_to_json(system_config)
         property_dict.update({
             'comparing_step': self.default_values.constants.get('comparing_step'),
@@ -98,7 +101,7 @@ class ConfigSerialization:
             'retry_attempts': self.default_values.constants.get('retry_attempts'),
             'strings_amount': self.default_values.constants.get('strings_amount'),
             'table_timeout': self.default_values.constants.get('table_timeout'),
-            'schema_columns': self.default_values.constants.get('schema_columns')
+            'schema_columns': self.default_values.schema_columns
         })
         return property_dict
 
@@ -147,7 +150,6 @@ class ConfigSerialization:
                             'depth_report_check',
                             'retry_attempts',
                             'path_to_logs',
-                            'logging_level',
                             'table_timeout'
                         ]
                         if key in lineedit_mapping:
@@ -160,15 +162,17 @@ class ConfigSerialization:
                         elif key in checkbox_mapping:
                             checkbox_mapping.get(key).setChecked(value)
                         elif key in values:
-                            self.default_values.__dict__.update({key: value})
+                            self.default_values.constants.update({key: value})
+                        elif key == 'logging_level':
+                            self.system_config.logging_level = value
+                            self.logger.setLevel(value)
                         elif 'schema_columns' in key:
                             self.default_values.schema_columns = value.split(',')
                         elif 'mode' in key:
                             self.load_radio_buttons_state(self.main_ui.radio_buttons, value)
             self.common.check_prod_host()
             self.common.check_test_host()
-            self.configuration.sql_variables.prod.warming_up()
-            self.configuration.sql_variables.test.warming_up()
+            self.logger.debug(f'Configuration from file {file_name} successfully loaded...')
         except FileNotFoundError as err:
             self.logger.warning(f'File not found, or, probably, '
                                 f'you just pressed cancel. Warn: {err.args[1]}')
