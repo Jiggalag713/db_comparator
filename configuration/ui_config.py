@@ -29,9 +29,9 @@ class UIElements:
 
         self.buttons: Buttons = Buttons()
         self.radio_buttons: Dict = {
-            'day_summary_mode': QRadioButton('Day summary'),
-            'section_summary_mode': QRadioButton('Section summary'),
-            'detailed_mode': QRadioButton('Detailed')
+            'day_summary': QRadioButton('Day summary'),
+            'section_summary': QRadioButton('Section summary'),
+            'detailed': QRadioButton('Detailed')
         }
         self.positions: ElementPositions = ElementPositions()
         self.positions.locate_labels_line_edits(self.labels, self.line_edits)
@@ -46,19 +46,19 @@ class UIElements:
 
     def radio_buttons_states(self) -> None:
         """Method intended for setting radio_buttons states"""
-        self.radio_buttons.get('day_summary_mode').setChecked(True)
-        self.radio_buttons.get('section_summary_mode').setChecked(False)
-        self.radio_buttons.get('detailed_mode').setChecked(False)
+        self.radio_buttons.get('day_summary').setChecked(True)
+        self.radio_buttons.get('section_summary').setChecked(False)
+        self.radio_buttons.get('detailed').setChecked(False)
 
     def set_radio_buttons_tooltips(self) -> None:
         """Method intended for setting tooltips to radio_buttons"""
-        day_summary_mode = self.radio_buttons.get('day_summary_mode')
-        day_summary_mode.setToolTip('Compare sums of impressions for each date')
-        section_summary_mode = self.radio_buttons.get('section_summary_mode')
-        section_summary_mode.setToolTip('Compare sums of impressions '
+        day_summary = self.radio_buttons.get('day_summary')
+        day_summary.setToolTip('Compare sums of impressions for each date')
+        section_summary = self.radio_buttons.get('section_summary')
+        section_summary.setToolTip('Compare sums of impressions '
                                         'for each date and each section')
-        detailed_mode = self.radio_buttons.get('detailed_mode')
-        detailed_mode.setToolTip('Compare all records from table for set period')
+        detailed = self.radio_buttons.get('detailed')
+        detailed.setToolTip('Compare all records from table for set period')
 
     def set_checkboxes_tooltips(self) -> None:
         """Method intended for setting tooltips to checkboxes"""

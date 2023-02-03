@@ -91,7 +91,7 @@ class Configuration:
         """Connects radio_buttons with appropriate variables in
         sql_variables/default_variables object"""
         radio_buttons = self.ui_elements.radio_buttons
-        for key in ['day_summary_mode', 'section_summary_mode', 'detailed_mode']:
+        for key in ['day_summary', 'section_summary', 'detailed']:
             radio_buttons.get(key).toggled.connect(lambda: self.set_radio_button_value(self.ui_elements.radio_buttons.get(key),
                                                                                        self.default_values.__dict__,
                                                                                        key))

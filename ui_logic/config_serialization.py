@@ -64,9 +64,9 @@ class ConfigSerialization:
     @staticmethod
     def get_check_type(radio_buttons: Dict) -> str:
         """Method intended for getting type of report check"""
-        if radio_buttons.get('day_summary_mode').isChecked():
+        if radio_buttons.get('day_summary').isChecked():
             return 'day-sum'
-        if radio_buttons.get('detailed_mode').isChecked():
+        if radio_buttons.get('detailed').isChecked():
             return 'section-sum'
         return 'detailed'
 
@@ -186,6 +186,6 @@ class ConfigSerialization:
             'detailed': [False, False, True]
         }
         actual_state = states.get(mode)
-        radio_buttons.get('day_summary_mode').setChecked(actual_state[0])
-        radio_buttons.get('section_summary_mode').setChecked(actual_state[1])
-        radio_buttons.get('detailed_mode').setChecked(actual_state[2])
+        radio_buttons.get('day_summary').setChecked(actual_state[0])
+        radio_buttons.get('section_summary').setChecked(actual_state[1])
+        radio_buttons.get('detailed').setChecked(actual_state[2])

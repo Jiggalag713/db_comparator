@@ -8,29 +8,13 @@
     "test.password": "RelOtUYm713",
     "test.db": "test",
     "included_tables": [
-        "work"
+        ""
     ],
     "excluded_tables": [
-        "databasechangelog",
-        "download",
-        "migrationhistory",
-        "mntapplog",
-        "reportinfo",
-        "synchistory",
-        "syncstage",
-        "synctrace",
-        "synctracelink",
-        "syncpersistentjob",
-        "forecaststatistics",
-        "migrationhistory"
+        ""
     ],
     "excluded_columns": [
-        "archived",
-        "addonFields",
-        "hourOfDayS",
-        "dayOfWeekS",
-        "impCost",
-        "id"
+        ""
     ],
     "logging_level": 10,
     "path_to_logs": "/home/polter/comparator/DbComparator.log",

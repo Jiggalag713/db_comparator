@@ -15,7 +15,6 @@ we should change to structure like {key: [ui.variable, instance.variable]} or us
 * [ ] Write unit tests for config_serialization module right after implementing of schema comparing
 * [ ] If column list of some table differs, we should display this tables in exclude_table line edit, and disable ability to
 set this tables unchecked.
-* [ ] send_mail_to not set anywhere
 * [ ] DefaultValues should be changed to Values
 
 Windows backlog:
