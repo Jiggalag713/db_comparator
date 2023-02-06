@@ -8,6 +8,7 @@ from configuration.sql_variables import SqlVariables
 from configuration.system_config import SystemConfig
 from configuration.ui_config import UIElements
 from configuration.default_variables import DefaultValues
+from ui_logic.common import set_value
 
 
 @dataclass
@@ -57,16 +58,16 @@ class Configuration:
     def connect_other_line_edits(self, send_mail_to, included_tables,
                                  excluded_tables, excluded_columns) -> None:
         """Connects another line_edits with appropriate internal classes attributes"""
-        send_mail_to.textChanged.connect(lambda: self.set_value(send_mail_to,
+        send_mail_to.textChanged.connect(lambda: set_value(send_mail_to,
                                          self.default_values.__dict__,
                                          'send_mail_to'))
-        included_tables.textChanged.connect(lambda: self.set_value(included_tables,
+        included_tables.textChanged.connect(lambda: set_value(included_tables,
                                             self.default_values.__dict__,
                                             'included_tables'))
-        excluded_tables.textChanged.connect(lambda: self.set_value(excluded_tables,
+        excluded_tables.textChanged.connect(lambda: set_value(excluded_tables,
                                             self.default_values.__dict__,
                                             'excluded_tables'))
-        excluded_columns.textChanged.connect(lambda: self.set_value(excluded_columns,
+        excluded_columns.textChanged.connect(lambda: set_value(excluded_columns,
                                              self.default_values.__dict__,
                                              'excluded_columns'))
 
@@ -84,11 +85,6 @@ class Configuration:
             if '' in text:
                 text.remove('')
         return text
-
-    @staticmethod
-    def set_value(widget, store, key) -> None:
-        """Sets value from widget to some variable"""
-        store.update({key: Configuration.transform_text(widget)})
 
     def set_check_boxes_variables(self) -> None:
         """Connects check_boxes with appropriate variables in

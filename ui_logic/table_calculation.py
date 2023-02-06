@@ -3,7 +3,7 @@
 from typing import Dict, List
 
 from configuration.main_config import Configuration
-from ui_logic.common import set_value
+from ui_logic.common import set_ui_value
 
 
 class TableCalculation:
@@ -72,8 +72,8 @@ class TableCalculation:
     def calculate_excluded_columns(self) -> None:
         """Method calculates list of excluded column"""
         line_edits = self.configuration.ui_elements.line_edits
-        set_value(line_edits.excluded_tables, line_edits.excluded_tables.text())
-        set_value(line_edits.excluded_columns, line_edits.excluded_columns.text())
+        set_ui_value(line_edits.excluded_tables, line_edits.excluded_tables.text())
+        set_ui_value(line_edits.excluded_columns, line_edits.excluded_columns.text())
         for table in self.configuration.sql_variables.tables_for_ui:
             if table in self.configuration.sql_variables.inc_exc.excluded_tables:
                 columns = self.configuration.sql_variables.tables_for_ui.get(table)

@@ -10,7 +10,7 @@ from configuration.main_config import Configuration
 from configuration.system_config import SystemConfig
 from helpers.sql_helper import SqlAlchemyHelper
 from ui_logic.buttons import ButtonsLogic
-from ui_logic.common import set_value
+from ui_logic.common import set_ui_value
 
 
 class ConfigSerialization:
@@ -157,9 +157,9 @@ class ConfigSerialization:
                             if '.db' in key:
                                 for item in lineedit_mapping.get(key):
                                     item.show()
-                                set_value(lineedit_mapping.get(key)[1], value)
+                                set_ui_value(lineedit_mapping.get(key)[1], value)
                             else:
-                                set_value(lineedit_mapping.get(key), value)
+                                set_ui_value(lineedit_mapping.get(key), value)
                         elif key in checkbox_mapping:
                             checkbox_mapping.get(key).setChecked(value)
                         elif key in values:
