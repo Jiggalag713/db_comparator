@@ -78,11 +78,13 @@ class MainWindow(QMainWindow):
 
     def get_menu(self) -> QMenu:
         """Method builds main window menu"""
+        configuration = self.main_window.configuration
         open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
         open_action.setShortcut('Ctrl+O')
         open_action.setStatusTip('Open custom file with cmp_properties')
-        open_action.triggered.connect(lambda: config_serialization.load_configuration(self.main_window.configuration,
-                                                                                      self.common_logic))
+        open_action.triggered.connect(lambda:
+                                      config_serialization.load_configuration(configuration,
+                                                                              self.common_logic))
 
         compare_action: QAction = QAction(QIcon('compare.png'), '&Compare', self.main_window)
         compare_action.setShortcut('Ctrl+F')
@@ -92,7 +94,8 @@ class MainWindow(QMainWindow):
         save_action: QAction = QAction(QIcon('save.png'), '&Save', self.main_window)
         save_action.setShortcut('Ctrl+S')
         save_action.setStatusTip('Save current configuration to file')
-        save_action.triggered.connect(lambda: config_serialization.save_configuration(self.main_window.configuration))
+        save_action.triggered.connect(lambda:
+                                      config_serialization.save_configuration(configuration))
 
         exit_action = QAction(QIcon('exit.png'), '&Exit', self.main_window)
         exit_action.setShortcut('Ctrl+Q')

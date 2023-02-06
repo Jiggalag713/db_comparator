@@ -116,7 +116,8 @@ def load_configuration(configuration, common) -> None:
         with open(file_name, 'r', encoding="utf-8") as file:
             data = file.read()
             deserialize_config(configuration, common, json.loads(data))
-            configuration.logger.debug(f'Configuration from file {file_name} successfully loaded...')
+            configuration.logger.debug(f'Configuration from file {file_name} '
+                                       f'successfully loaded...')
     except FileNotFoundError as err:
         configuration.logger.warning(f'File not found, or, probably, '
                                      f'you just pressed cancel. Warn: {err.args[1]}')
