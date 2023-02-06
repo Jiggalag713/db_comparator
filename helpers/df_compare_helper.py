@@ -52,7 +52,8 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
     print('stop')
     # result_dataframe = pd.DataFrame([False])
     try:
-        result_dataframe = (prod_columns == test_columns)
+        if prod_columns == test_columns:
+            result_dataframe = True
     except ValueError as exception:
         logger.warn(exception)
     if all(result_dataframe):
