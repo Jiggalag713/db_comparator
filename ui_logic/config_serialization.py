@@ -15,13 +15,10 @@ from ui_logic.common import set_ui_value
 
 class ConfigSerialization:
     """Class implemented serialization of application configuration"""
-    def __init__(self, common: ButtonsLogic, configuration: Configuration):
+    def __init__(self, common: ButtonsLogic):
         self.common: ButtonsLogic = common
-        self.configuration: Configuration = configuration
-        self.system_config = configuration.system_config
-        self.default_values = configuration.default_values
-        self.sql_variables = configuration.sql_variables
-        self.main_ui = configuration.ui_elements
+        self.configuration: Configuration = common.configuration
+        self.main_ui = common.configuration.ui_elements
         self.logger: logging.Logger = self.configuration.system_config.logger
 
     def save_configuration(self) -> None:
@@ -29,11 +26,12 @@ class ConfigSerialization:
         to file"""
         config = {}
         line_edits = self.configuration.ui_elements.line_edits
-        for key in self.sql_variables.__dict__:
+        sql_variables = self.configuration.sql_variables
+        for key in sql_variables.__dict__:
             if key in ['prod', 'test']:
                 config.update(self.host_properties_to_json(key,
-                                                           self.sql_variables.__dict__.get(key)))
-        for key in self.sql_variables.inc_exc.__dict__:
+                                                           sql_variables.__dict__.get(key)))
+        for key in sql_variables.inc_exc.__dict__:
             if key in ['included_tables', 'excluded_tables', 'excluded_columns']:
                 value = line_edits.__dict__.get(key).text().split(',')
                 if '' in value:
@@ -100,13 +98,14 @@ class ConfigSerialization:
         """Method intended to serialization of all other variables to config file"""
         system_config = self.configuration.__dict__.get('system_config')
         property_dict = self.system_variables_to_json(system_config)
+        default_values = self.configuration.default_values
         property_dict.update({
-            'comparing_step': self.default_values.constants.get('comparing_step'),
-            'depth_report_check': self.default_values.constants.get('depth_report_check'),
-            'retry_attempts': self.default_values.constants.get('retry_attempts'),
-            'strings_amount': self.default_values.constants.get('strings_amount'),
-            'table_timeout': self.default_values.constants.get('table_timeout'),
-            'schema_columns': self.default_values.schema_columns
+            'comparing_step': default_values.constants.get('comparing_step'),
+            'depth_report_check': default_values.constants.get('depth_report_check'),
+            'retry_attempts': default_values.constants.get('retry_attempts'),
+            'strings_amount': default_values.constants.get('strings_amount'),
+            'table_timeout': default_values.constants.get('table_timeout'),
+            'schema_columns': default_values.schema_columns
         })
         return property_dict
 
@@ -132,24 +131,25 @@ class ConfigSerialization:
 
     def deserialize_config(self, config: json) -> None:
         """Loads variables from config to UI variables"""
+        default_values = self.configuration.default_values
+        line_edits = self.configuration.ui_elements.line_edits
+        labels = self.configuration.ui_elements.labels
         for key in config:
             value = self.get_value(config.get(key))
             if value:
                 lineedit_mapping = {
-                    'prod.host': self.main_ui.line_edits.prod.host,
-                    'prod.user': self.main_ui.line_edits.prod.user,
-                    'prod.password': self.main_ui.line_edits.prod.password,
-                    'prod.db': [self.main_ui.labels.prod.base,
-                                self.main_ui.line_edits.prod.base],
-                    'test.host': self.main_ui.line_edits.test.host,
-                    'test.user': self.main_ui.line_edits.test.user,
-                    'test.password': self.main_ui.line_edits.test.password,
-                    'test.db': [self.main_ui.labels.test.base,
-                                self.main_ui.line_edits.test.base],
-                    'included_tables': self.main_ui.line_edits.included_tables,
-                    'excluded_tables': self.main_ui.line_edits.excluded_tables,
-                    'send_mail_to': self.main_ui.line_edits.send_mail_to,
-                    'excluded_columns': self.main_ui.line_edits.excluded_columns
+                    'prod.host': line_edits.prod.host,
+                    'prod.user': line_edits.prod.user,
+                    'prod.password': line_edits.prod.password,
+                    'prod.db': [labels.prod.base, line_edits.prod.base],
+                    'test.host': line_edits.test.host,
+                    'test.user': line_edits.test.user,
+                    'test.password': line_edits.test.password,
+                    'test.db': [labels.test.base, line_edits.test.base],
+                    'included_tables': line_edits.included_tables,
+                    'excluded_tables': line_edits.excluded_tables,
+                    'send_mail_to': line_edits.send_mail_to,
+                    'excluded_columns': line_edits.excluded_columns
                 }
                 checkbox_mapping = {
                     'check_schema': self.main_ui.checkboxes.get('check_schema'),
@@ -174,12 +174,13 @@ class ConfigSerialization:
                 elif key in checkbox_mapping:
                     checkbox_mapping.get(key).setChecked(value)
                 elif key in values:
-                    self.default_values.constants.update({key: value})
+                    default_values.constants.update({key: value})
                 elif key == 'logging_level':
-                    self.system_config.logging_level = value
+                    system_config = self.configuration.system_config
+                    system_config.logging_level = value
                     self.logger.setLevel(value)
                 elif 'schema_columns' in key:
-                    self.default_values.schema_columns = value.split(',')
+                    default_values.schema_columns = value.split(',')
                 elif 'mode' in key:
                     self.load_radio_buttons_state(self.main_ui.radio_buttons, value)
         self.common.check_prod_host()

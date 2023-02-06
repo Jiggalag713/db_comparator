@@ -11,19 +11,18 @@ from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from custom_ui_elements.progress_window import ProgressWindow
 from helpers.sql_helper import SqlAlchemyHelper
 from ui_elements.line_edits import SqlLineEdits
-from ui_logic.table_calculation import TableCalculation
 
 
 class ButtonsLogic:
     """Class with implementation of most common application logic"""
-    def __init__(self, configuration: Configuration,
-                 advanced_settings: AdvancedSettingsItem, status_bar: QStatusBar):
-        self.configuration: Configuration = configuration
-        self.advanced_settings: AdvancedSettingsItem = advanced_settings
-        self.main_ui: UIElements = configuration.ui_elements
-        self.status_bar: QStatusBar = status_bar
+    def __init__(self, main_window, table_calculation):
+        self.configuration: Configuration = main_window.configuration
+        self.advanced_settings: AdvancedSettingsItem = main_window.advanced_settings
+        self.main_ui: UIElements = main_window.configuration.ui_elements
+        self.status_bar: QStatusBar = main_window.status_bar
         self.logger: logging.Logger = self.configuration.system_config.logger
         self.default_values: DefaultValues = self.configuration.default_values
+        self.table_calculation = table_calculation
 
     def clear_all(self) -> None:
         """Method clears all inputs"""
@@ -151,4 +150,4 @@ class ButtonsLogic:
         if all([self.configuration.sql_variables.prod.tables,
                 self.configuration.sql_variables.test.tables]):
             self.configuration.ui_elements.buttons.btn_set_configuration.setEnabled(True)
-            TableCalculation(self.configuration).calculate_table_list()
+            self.table_calculation.calculate_table_list()

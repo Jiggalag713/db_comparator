@@ -6,15 +6,14 @@ from PyQt5.QtWidgets import QLineEdit
 from configuration.main_config import Configuration
 from custom_ui_elements.clickable_items_view import ClickableItemsView
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
-from ui_logic.table_calculation import TableCalculation
 
 
 class LineEditsLogic:
     """Class line_edits logic"""
-    def __init__(self, configuration):
+    def __init__(self, configuration, table_calculation):
         self.configuration: Configuration = configuration
         self.main_ui = configuration.ui_elements
-        self.table_calculation = TableCalculation(self.configuration)
+        self.table_calculation = table_calculation
 
     def set_excluded_tables(self) -> None:
         """Method sets excluded tables"""
