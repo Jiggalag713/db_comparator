@@ -8,7 +8,6 @@ from configuration.sql_variables import SqlVariables
 from configuration.system_config import SystemConfig
 from configuration.ui_config import UIElements
 from configuration.default_variables import DefaultValues
-from ui_logic.common import set_value
 
 
 @dataclass
@@ -148,3 +147,8 @@ class Configuration:
                     self.default_values.mode = 'section_summary'
                 else:
                     self.default_values.mode = 'detailed'
+
+
+def set_value(widget, store, key) -> None:
+    """Sets value from widget to some variable"""
+    store.update({key: Configuration.transform_text(widget)})

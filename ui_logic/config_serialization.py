@@ -41,12 +41,16 @@ class ConfigSerialization:
                 config.update({key: value})
         config.update(self.variables_to_json())
         config.update(self.serialize_check_customization_state())
+        self.write_to_file(config)
+
+    def write_to_file(self, data) -> None:
+        """Writes properties, converted to json, to file"""
         file_name, _ = QFileDialog.getSaveFileName(QFileDialog(),
                                                    "QFileDialog.getSaveFileName()",  "",
                                                    "All Files (*);;Text Files (*.txt)")
         if file_name:
             with open(file_name, 'w', encoding="utf-8") as file:
-                json.dump(config, file, indent=4)
+                json.dump(data, file, indent=4)
             self.logger.info(f'Configuration successfully saved to {file_name}')
 
     def serialize_check_customization_state(self) -> Dict:
@@ -120,63 +124,66 @@ class ConfigSerialization:
         try:
             with open(file_name, 'r', encoding="utf-8") as file:
                 data = file.read()
-                config = json.loads(data)
-                for key in config:
-                    value = self.get_value(config.get(key))
-                    if value:
-                        lineedit_mapping = {
-                            'prod.host': self.main_ui.line_edits.prod.host,
-                            'prod.user': self.main_ui.line_edits.prod.user,
-                            'prod.password': self.main_ui.line_edits.prod.password,
-                            'prod.db': [self.main_ui.labels.prod.base,
-                                        self.main_ui.line_edits.prod.base],
-                            'test.host': self.main_ui.line_edits.test.host,
-                            'test.user': self.main_ui.line_edits.test.user,
-                            'test.password': self.main_ui.line_edits.test.password,
-                            'test.db': [self.main_ui.labels.test.base,
-                                        self.main_ui.line_edits.test.base],
-                            'included_tables': self.main_ui.line_edits.included_tables,
-                            'excluded_tables': self.main_ui.line_edits.excluded_tables,
-                            'send_mail_to': self.main_ui.line_edits.send_mail_to,
-                            'excluded_columns': self.main_ui.line_edits.excluded_columns
-                        }
-                        checkbox_mapping = {
-                            'check_schema': self.main_ui.checkboxes.get('check_schema'),
-                            'fail_fast': self.main_ui.checkboxes.get('fail_fast'),
-                            'check_reports': self.main_ui.checkboxes.get('check_reports'),
-                            'check_entities': self.main_ui.checkboxes.get('check_entities')
-                        }
-                        values = [
-                            'comparing_step',
-                            'depth_report_check',
-                            'retry_attempts',
-                            'path_to_logs',
-                            'table_timeout'
-                        ]
-                        if key in lineedit_mapping:
-                            if '.db' in key:
-                                for item in lineedit_mapping.get(key):
-                                    item.show()
-                                set_ui_value(lineedit_mapping.get(key)[1], value)
-                            else:
-                                set_ui_value(lineedit_mapping.get(key), value)
-                        elif key in checkbox_mapping:
-                            checkbox_mapping.get(key).setChecked(value)
-                        elif key in values:
-                            self.default_values.constants.update({key: value})
-                        elif key == 'logging_level':
-                            self.system_config.logging_level = value
-                            self.logger.setLevel(value)
-                        elif 'schema_columns' in key:
-                            self.default_values.schema_columns = value.split(',')
-                        elif 'mode' in key:
-                            self.load_radio_buttons_state(self.main_ui.radio_buttons, value)
-            self.common.check_prod_host()
-            self.common.check_test_host()
-            self.logger.debug(f'Configuration from file {file_name} successfully loaded...')
+                self.deserialize_config(json.loads(data))
+                self.logger.debug(f'Configuration from file {file_name} successfully loaded...')
         except FileNotFoundError as err:
             self.logger.warning(f'File not found, or, probably, '
                                 f'you just pressed cancel. Warn: {err.args[1]}')
+
+    def deserialize_config(self, config: json) -> None:
+        """Loads variables from config to UI variables"""
+        for key in config:
+            value = self.get_value(config.get(key))
+            if value:
+                lineedit_mapping = {
+                    'prod.host': self.main_ui.line_edits.prod.host,
+                    'prod.user': self.main_ui.line_edits.prod.user,
+                    'prod.password': self.main_ui.line_edits.prod.password,
+                    'prod.db': [self.main_ui.labels.prod.base,
+                                self.main_ui.line_edits.prod.base],
+                    'test.host': self.main_ui.line_edits.test.host,
+                    'test.user': self.main_ui.line_edits.test.user,
+                    'test.password': self.main_ui.line_edits.test.password,
+                    'test.db': [self.main_ui.labels.test.base,
+                                self.main_ui.line_edits.test.base],
+                    'included_tables': self.main_ui.line_edits.included_tables,
+                    'excluded_tables': self.main_ui.line_edits.excluded_tables,
+                    'send_mail_to': self.main_ui.line_edits.send_mail_to,
+                    'excluded_columns': self.main_ui.line_edits.excluded_columns
+                }
+                checkbox_mapping = {
+                    'check_schema': self.main_ui.checkboxes.get('check_schema'),
+                    'fail_fast': self.main_ui.checkboxes.get('fail_fast'),
+                    'check_reports': self.main_ui.checkboxes.get('check_reports'),
+                    'check_entities': self.main_ui.checkboxes.get('check_entities')
+                }
+                values = [
+                    'comparing_step',
+                    'depth_report_check',
+                    'retry_attempts',
+                    'path_to_logs',
+                    'table_timeout'
+                ]
+                if key in lineedit_mapping:
+                    if '.db' in key:
+                        for item in lineedit_mapping.get(key):
+                            item.show()
+                        set_ui_value(lineedit_mapping.get(key)[1], value)
+                    else:
+                        set_ui_value(lineedit_mapping.get(key), value)
+                elif key in checkbox_mapping:
+                    checkbox_mapping.get(key).setChecked(value)
+                elif key in values:
+                    self.default_values.constants.update({key: value})
+                elif key == 'logging_level':
+                    self.system_config.logging_level = value
+                    self.logger.setLevel(value)
+                elif 'schema_columns' in key:
+                    self.default_values.schema_columns = value.split(',')
+                elif 'mode' in key:
+                    self.load_radio_buttons_state(self.main_ui.radio_buttons, value)
+        self.common.check_prod_host()
+        self.common.check_test_host()
 
     @staticmethod
     def load_radio_buttons_state(radio_buttons, mode) -> None:

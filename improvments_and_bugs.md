@@ -20,6 +20,7 @@ set this tables unchecked.
 * [ ] configuration/sql_variables.py:21:5: W0511: TODO: [improve] strongly refactor this (fixme)
 * [ ] df_helper string result = (prod_columns == test_columns) changed to result = True, check correctness of this
 substitution
+* [ ] Add unit tests for config_serialization
 
 Windows backlog:
 

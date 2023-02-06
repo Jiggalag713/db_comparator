@@ -6,9 +6,9 @@ from PyQt5.QtWidgets import QDialog, QComboBox
 
 from configuration.advanced_ui_config import UIElements
 from configuration.default_variables import DefaultValues
+from configuration.main_config import set_value
 from configuration.system_config import SystemConfig
 from ui_logic.advanced_window_logic import AdvancedWindowLogic
-from ui_logic.common import set_value
 
 
 class AdvancedSettingsItem(QDialog):
