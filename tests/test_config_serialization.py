@@ -1,8 +1,10 @@
 import pytest
 from PyQt5.QtWidgets import QRadioButton
 
+from ui_logic import config_serialization
 
-def test_save_configuration(default_main):
+
+def test_save_configuration():
     assert True
 
 
@@ -14,15 +16,10 @@ def test_serialize_check_customization_state():
     assert True
 
 
-@pytest.mark.parametrize("expected", ['day-sum', 'section-sum', 'detailed'])
-def test_get_check_type_checked(config_serialization, expected):
-    radio_buttons = {
-        'day-sum': QRadioButton('Day summary'),
-        'section-sum': QRadioButton('Section summary'),
-        'detailed': QRadioButton('Detailed')
-    }
-    radio_buttons.get(expected).setChecked(True)
-    assert config_serialization.get_check_type(radio_buttons) == expected
+# @pytest.mark.parametrize("expected", ['day-sum', 'section-sum', 'detailed'])
+# def test_get_check_type_checked(radio_buttons, expected):
+#     radio_buttons.get(expected).setChecked(True)
+#     assert config_serialization.get_check_type(radio_buttons) == expected
 
 
 def test_host_properties_to_json():

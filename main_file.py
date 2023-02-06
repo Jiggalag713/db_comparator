@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, Q
 from configuration.main_config import Configuration
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from ui_logic.buttons import ButtonsLogic
-from ui_logic.config_serialization import ConfigSerialization
+from ui_logic import config_serialization
 from ui_logic.line_edits import LineEditsLogic
 from ui_logic.table_calculation import TableCalculation
 
@@ -20,7 +20,7 @@ class MainUI(QWidget):
     def __init__(self, status_bar):
         super().__init__()
         self.status_bar: QStatusBar = status_bar
-        self.configuration = Configuration(self.status_bar)
+        self.configuration = Configuration()
         self.setLayout(self.configuration.ui_elements.positions.grid)
         line_edits = self.configuration.ui_elements.line_edits
         checkboxes = self.configuration.ui_elements.checkboxes
@@ -52,7 +52,6 @@ class MainWindow(QMainWindow):
         table_calculation = TableCalculation(self.main_window.configuration)
         self.common_logic = ButtonsLogic(self.main_window, table_calculation)
         self.line_edits_logic = LineEditsLogic(self.main_window.configuration, table_calculation)
-        self.serialization = ConfigSerialization(self.common_logic)
         self.menu: QMenu = self.get_menu()
         self.add_connects()
 
@@ -82,7 +81,8 @@ class MainWindow(QMainWindow):
         open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
         open_action.setShortcut('Ctrl+O')
         open_action.setStatusTip('Open custom file with cmp_properties')
-        open_action.triggered.connect(self.serialization.load_configuration)
+        open_action.triggered.connect(lambda: config_serialization.load_configuration(self.main_window.configuration,
+                                                                                      self.common_logic))
 
         compare_action: QAction = QAction(QIcon('compare.png'), '&Compare', self.main_window)
         compare_action.setShortcut('Ctrl+F')
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         save_action: QAction = QAction(QIcon('save.png'), '&Save', self.main_window)
         save_action.setShortcut('Ctrl+S')
         save_action.setStatusTip('Save current configuration to file')
-        save_action.triggered.connect(self.serialization.save_configuration)
+        save_action.triggered.connect(lambda: config_serialization.save_configuration(self.main_window.configuration))
 
         exit_action = QAction(QIcon('exit.png'), '&Exit', self.main_window)
         exit_action.setShortcut('Ctrl+Q')

@@ -12,8 +12,7 @@ from ui_logic.checkboxes import toggle
 
 class UIElements:
     """Class make together all UI elements"""
-    def __init__(self, is_toggled, status_bar):
-        self.status_bar = status_bar
+    def __init__(self):
         self.labels: Labels = Labels()
         self.line_edits: LineEdits = LineEdits()
         self.checkboxes: Dict = {
@@ -23,7 +22,7 @@ class UIElements:
             'check_entities': QCheckBox('Entities and others'),
             'use_dataframes': QCheckBox('Enable dataframes')
         }
-        self.checkboxes_states(is_toggled)
+        self.checkboxes_states(True)
 
         toggle(self.checkboxes)
 
