@@ -120,10 +120,10 @@ class Configuration:
         """Connects radio_buttons with appropriate variables in
         sql_variables/default_variables object"""
         radio_buttons = self.ui_elements.radio_buttons
-        radio_buttons.get('day_summary').clicked.connect(self.get_radio_button_value)
-        self.logger.debug('day_summary radio_button successfully connected with mode')
-        radio_buttons.get('section_summary').clicked.connect(self.get_radio_button_value)
-        self.logger.debug('section_summary radio_button successfully connected with mode')
+        radio_buttons.get('day-sum').clicked.connect(self.get_radio_button_value)
+        self.logger.debug('day-sum radio_button successfully connected with mode')
+        radio_buttons.get('section-sum').clicked.connect(self.get_radio_button_value)
+        self.logger.debug('section-sum radio_button successfully connected with mode')
         radio_buttons.get('detailed').clicked.connect(self.get_radio_button_value)
         self.logger.debug('detailed radio_button successfully connected with mode')
 
@@ -131,7 +131,7 @@ class Configuration:
         """Returns mapping for radio buttons"""
         result = []
         radio_buttons = self.ui_elements.radio_buttons
-        for key in ['day_summary', 'section_summary', 'detailed']:
+        for key in ['day-sum', 'section-sum', 'detailed']:
             result.append((radio_buttons.get(key), self.default_values.__dict__, key))
         return result
 
@@ -142,9 +142,9 @@ class Configuration:
             widget = radio_buttons.get(item)
             if widget.isChecked():
                 if widget.text() == "Day summary":
-                    self.default_values.mode = 'day_summary'
+                    self.default_values.mode = 'day-sum'
                 elif widget.text() == "Section summary":
-                    self.default_values.mode = 'section_summary'
+                    self.default_values.mode = 'section-sum'
                 else:
                     self.default_values.mode = 'detailed'
 

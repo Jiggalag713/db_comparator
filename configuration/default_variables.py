@@ -67,6 +67,6 @@ class DefaultValues:
     @staticmethod
     def radio_buttons_default_values(radio_buttons) -> None:
         """Method sets default values for radio_buttons"""
-        radio_buttons.get('day_summary').setChecked(True)
-        radio_buttons.get('section_summary').setChecked(False)
+        radio_buttons.get('day-sum').setChecked(True)
+        radio_buttons.get('section-sum').setChecked(False)
         radio_buttons.get('detailed').setChecked(False)

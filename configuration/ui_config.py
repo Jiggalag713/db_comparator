@@ -29,8 +29,8 @@ class UIElements:
 
         self.buttons: Buttons = Buttons()
         self.radio_buttons: Dict = {
-            'day_summary': QRadioButton('Day summary'),
-            'section_summary': QRadioButton('Section summary'),
+            'day-sum': QRadioButton('Day summary'),
+            'section-sum': QRadioButton('Section summary'),
             'detailed': QRadioButton('Detailed')
         }
         self.positions: ElementPositions = ElementPositions()
@@ -46,8 +46,8 @@ class UIElements:
 
     def radio_buttons_states(self) -> None:
         """Method intended for setting radio_buttons states"""
-        self.radio_buttons.get('day_summary').setChecked(True)
-        self.radio_buttons.get('section_summary').setChecked(False)
+        self.radio_buttons.get('day-sum').setChecked(True)
+        self.radio_buttons.get('section-sum').setChecked(False)
         self.radio_buttons.get('detailed').setChecked(False)
 
     def set_radio_buttons_tooltips(self) -> None:
@@ -55,8 +55,7 @@ class UIElements:
         day_summary = self.radio_buttons.get('day_summary')
         day_summary.setToolTip('Compare sums of impressions for each date')
         section_summary = self.radio_buttons.get('section_summary')
-        section_summary.setToolTip('Compare sums of impressions '
-                                        'for each date and each section')
+        section_summary.setToolTip('Compare sums of impressions for each date and each section')
         detailed = self.radio_buttons.get('detailed')
         detailed.setToolTip('Compare all records from table for set period')
 
