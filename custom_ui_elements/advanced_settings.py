@@ -1,9 +1,8 @@
 """Module intended to store AdvancedSettings class, main class of advanced
 settings window"""
 import logging
-from typing import List
 
-from PyQt5.QtWidgets import QDialog, QComboBox, QLineEdit
+from PyQt5.QtWidgets import QDialog, QComboBox
 
 from configuration.advanced_ui_config import UIElements
 from configuration.default_variables import DefaultValues
@@ -38,24 +37,36 @@ class AdvancedSettingsItem(QDialog):
     def set_line_edit_variables(self) -> None:
         """Connects line_edits with appropriate variables in
         internal object"""
-        for item in self.prepare_mapping():
-            item[0].textChanged.connect(lambda: Configuration.set_value(*item))
-
-    def prepare_mapping(self) -> List:
-        """Returns mapping for iteration through in to connect line_edits with
-        appropriate variables of appropriate object"""
-        result = []
         line_edits = self.main_ui.line_edits
-        result.extend([
-            (line_edits.comparing_step, self.default_values.constants, 'comparing_step'),
-            (line_edits.depth_report_check, self.default_values.constants, 'depth_report_check'),
-            (line_edits.retry_attempts, self.default_values.constants, 'retry_attempts'),
-            (line_edits.table_timeout, self.default_values.constants, 'table_timeout'),
-            (line_edits.strings_amount, self.default_values.constants, 'strings_amount'),
-            (line_edits.path_to_logs, self.system_config.__dict__, 'path_to_logs'),
-            (line_edits.schema_columns, self.default_values.__dict__, 'schema_columns')
-        ])
-        return result
+        constants = self.default_values.constants
+        comparing_step = line_edits.comparing_step
+        comparing_step.textChanged.connect(lambda: Configuration.set_value(comparing_step,
+                                                                           constants,
+                                                                           'comparing_step'))
+        depth_report_check = line_edits.depth_report_check
+        depth_report_check.textChanged.connect(lambda: Configuration.set_value(depth_report_check,
+                                                                               constants,
+                                                                               'depth_report_check'))
+        retry_attempts = line_edits.retry_attempts
+        retry_attempts.textChanged.connect(lambda: Configuration.set_value(retry_attempts,
+                                                                           constants,
+                                                                           'retry_attempts'))
+        table_timeout = line_edits.table_timeout
+        table_timeout.textChanged.connect(lambda: Configuration.set_value(table_timeout,
+                                                                          constants,
+                                                                          'table_timeout'))
+        strings_amount = line_edits.strings_amount
+        strings_amount.textChanged.connect(lambda: Configuration.set_value(strings_amount,
+                                                                           constants,
+                                                                           'strings_amount'))
+        path_to_logs = line_edits.path_to_logs
+        path_to_logs.textChanged.connect(lambda: Configuration.set_value(path_to_logs,
+                                                                         self.system_config.__dict__,
+                                                                         'path_to_logs'))
+        schema_columns = line_edits.schema_columns
+        schema_columns.textChanged.connect(lambda: Configuration.set_value(schema_columns,
+                                                                           self.default_values.__dict__,
+                                                                           'schema_columns'))
 
     def set_combo_boxes_variables(self) -> None:
         """Connects combo_boxes with appropriate variables in

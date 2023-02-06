@@ -17,6 +17,7 @@ we should change to structure like {key: [ui.variable, instance.variable]} or us
 set this tables unchecked.
 * [ ] DefaultValues should be changed to Values
 * [ ] mode parameter is not set
+* [ ] configuration/sql_variables.py:21:5: W0511: TODO: [improve] strongly refactor this (fixme)
 
 Windows backlog:
 

@@ -38,29 +38,37 @@ class Configuration:
         line_edits = self.ui_elements.line_edits
         self.connect_sql_related_line_edits(line_edits.prod, self.sql_variables.prod.credentials)
         self.connect_sql_related_line_edits(line_edits.test, self.sql_variables.test.credentials)
-        self.connect_other_line_edits(line_edits)
+        self.connect_other_line_edits(line_edits.send_mail_to,
+                                      line_edits.included_tables,
+                                      line_edits.excluded_tables,
+                                      line_edits.excluded_columns)
 
     def connect_sql_related_line_edits(self, instance, credentials) -> None:
         """Connects sql-related line_edits with appropriate internal classes attributes"""
-        instance.host.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
-        instance.user.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
-        instance.password.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
-        instance.base.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
+        instance.host.textChanged.connect(lambda: self.set_sql_related_value(instance,
+                                                                             credentials))
+        instance.user.textChanged.connect(lambda: self.set_sql_related_value(instance,
+                                                                             credentials))
+        instance.password.textChanged.connect(lambda: self.set_sql_related_value(instance,
+                                                                                 credentials))
+        instance.base.textChanged.connect(lambda: self.set_sql_related_value(instance,
+                                                                             credentials))
 
-    def connect_other_line_edits(self, line_edits) -> None:
+    def connect_other_line_edits(self, send_mail_to, included_tables,
+                                 excluded_tables, excluded_columns) -> None:
         """Connects another line_edits with appropriate internal classes attributes"""
-        line_edits.send_mail_to.textChanged.connect(lambda: self.set_value(line_edits.send_mail_to,
-                                                    self.default_values.__dict__,
-                                                    'send_mail_to'))
-        line_edits.included_tables.textChanged.connect(lambda: self.set_value(line_edits.included_tables,
-                                                       self.default_values.__dict__,
-                                                       'included_tables'))
-        line_edits.excluded_tables.textChanged.connect(lambda: self.set_value(line_edits.excluded_tables,
-                                                       self.default_values.__dict__,
-                                                       'excluded_tables'))
-        line_edits.excluded_columns.textChanged.connect(lambda: self.set_value(line_edits.excluded_columns,
-                                                        self.default_values.__dict__,
-                                                        'excluded_columns'))
+        send_mail_to.textChanged.connect(lambda: self.set_value(send_mail_to,
+                                         self.default_values.__dict__,
+                                         'send_mail_to'))
+        included_tables.textChanged.connect(lambda: self.set_value(included_tables,
+                                            self.default_values.__dict__,
+                                            'included_tables'))
+        excluded_tables.textChanged.connect(lambda: self.set_value(excluded_tables,
+                                            self.default_values.__dict__,
+                                            'excluded_tables'))
+        excluded_columns.textChanged.connect(lambda: self.set_value(excluded_columns,
+                                             self.default_values.__dict__,
+                                             'excluded_columns'))
 
     def set_sql_related_value(self, instance, credentials) -> None:
         """Sets sql related value"""
@@ -69,6 +77,7 @@ class Configuration:
 
     @staticmethod
     def transform_text(widget):
+        """Transforms text from widget to appropriate form"""
         text = widget.text()
         if ',' in text:
             text = text.split(',')
@@ -76,9 +85,10 @@ class Configuration:
                 text.remove('')
         return text
 
-    def set_value(self, widget, store, key) -> None:
+    @staticmethod
+    def set_value(widget, store, key) -> None:
         """Sets value from widget to some variable"""
-        store.update({key: self.transform_text(widget)})
+        store.update({key: Configuration.transform_text(widget)})
 
     def set_check_boxes_variables(self) -> None:
         """Connects check_boxes with appropriate variables in

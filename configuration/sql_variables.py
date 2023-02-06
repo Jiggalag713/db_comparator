@@ -18,7 +18,6 @@ class SqlVariables:
         self.columns: List = []
         self.logger: logging.Logger = logger
 
-    # TODO: [improve] strongly refactor this
     def compare_table_metadata(self, table) -> bool:
         """Method intended to compare metadata of two tables"""
         start_time = datetime.datetime.now()
