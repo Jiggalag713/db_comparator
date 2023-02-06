@@ -28,13 +28,14 @@ class ConfigSerialization:
         """Method implements serialization of current application configuration
         to file"""
         config = {}
+        line_edits = self.configuration.ui_elements.line_edits
         for key in self.sql_variables.__dict__:
             if key in ['prod', 'test']:
                 config.update(self.host_properties_to_json(key,
                                                            self.sql_variables.__dict__.get(key)))
         for key in self.sql_variables.inc_exc.__dict__:
             if key in ['included_tables', 'excluded_tables', 'excluded_columns']:
-                value = self.configuration.ui_elements.line_edits.__dict__.get(key).text().split(',')
+                value = line_edits.__dict__.get(key).text().split(',')
                 if '' in value:
                     value.remove('')
                 config.update({key: value})

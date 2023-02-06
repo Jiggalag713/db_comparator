@@ -1,6 +1,6 @@
 """Module contains implementation of class, intended to work with sql"""
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, List, Dict
 import sqlalchemy
 from sqlalchemy import create_engine

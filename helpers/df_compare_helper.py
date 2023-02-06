@@ -4,6 +4,7 @@ import pandas as pd
 
 
 def get_table_schema_dataframe(instance_type, table, engine):
+    """Returns dataframe red from sql"""
     query = f"select * from information_schema.columns " \
             f"where table_schema='{instance_type}' and " \
             f"table_name='{table}';"

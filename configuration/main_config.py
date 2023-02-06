@@ -23,6 +23,7 @@ class Configuration:
     def __post_init__(self):
         self.ui_elements = UIElements(self.is_toggled, self.status_bar)
         self.sql_variables = SqlVariables(self.system_config.logger)
+        self.logger = self.system_config.logger
         self.set_connects()
 
     def set_connects(self):
@@ -34,53 +35,76 @@ class Configuration:
     def set_line_edit_variables(self) -> None:
         """Connects line_edits with appropriate variables in
         sql_variables/default_variables object"""
-        for item in self.prepare_mapping():
-            item[0].textChanged.connect(lambda: self.set_value(*item))
-
-    def prepare_mapping(self) -> List:
-        """Returns mapping for iteration through in to connect line_edits with
-        appropriate variables of appropriate object"""
-        result = []
         line_edits = self.ui_elements.line_edits
-        for instance_type in ['prod', 'test']:
-            for param in ['host', 'user', 'password', 'base']:
-                widget = line_edits.__dict__.get(instance_type).__dict__.get(param)
-                value_store = self.sql_variables.__dict__.get(instance_type).credentials.__dataclass_fields__
-                result.append((widget, value_store, param))
-        result.extend([
-            (line_edits.send_mail_to, self.default_values.__dict__, 'send_mail_to'),
-            (line_edits.included_tables, self.sql_variables.inc_exc.__dict__, 'included_tables'),
-            (line_edits.excluded_tables, self.sql_variables.inc_exc.__dict__, 'excluded_tables'),
-            (line_edits.excluded_columns, self.sql_variables.inc_exc.__dict__, 'excluded_columns'),
-        ])
-        return result
+        self.connect_sql_related_line_edits(line_edits.prod, self.sql_variables.prod.credentials)
+        self.connect_sql_related_line_edits(line_edits.test, self.sql_variables.test.credentials)
+        self.connect_other_line_edits(line_edits)
+
+    def connect_sql_related_line_edits(self, instance, credentials) -> None:
+        """Connects sql-related line_edits with appropriate internal classes attributes"""
+        instance.host.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
+        instance.user.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
+        instance.password.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
+        instance.base.textChanged.connect(lambda: self.set_sql_related_value(instance, credentials))
+
+    def connect_other_line_edits(self, line_edits) -> None:
+        """Connects another line_edits with appropriate internal classes attributes"""
+        line_edits.send_mail_to.textChanged.connect(lambda: self.set_value(line_edits.send_mail_to,
+                                                    self.default_values.__dict__,
+                                                    'send_mail_to'))
+        line_edits.included_tables.textChanged.connect(lambda: self.set_value(line_edits.included_tables,
+                                                       self.default_values.__dict__,
+                                                       'included_tables'))
+        line_edits.excluded_tables.textChanged.connect(lambda: self.set_value(line_edits.excluded_tables,
+                                                       self.default_values.__dict__,
+                                                       'excluded_tables'))
+        line_edits.excluded_columns.textChanged.connect(lambda: self.set_value(line_edits.excluded_columns,
+                                                        self.default_values.__dict__,
+                                                        'excluded_columns'))
+
+    def set_sql_related_value(self, instance, credentials) -> None:
+        """Sets sql related value"""
+        for key in instance.__dict__.keys():
+            credentials.__dict__.update({key: self.transform_text(instance.host)})
 
     @staticmethod
-    def set_value(widget, fields, key) -> None:
-        """Sets value from widget to some variable"""
+    def transform_text(widget):
         text = widget.text()
         if ',' in text:
             text = text.split(',')
-        if isinstance(fields.get(key), list):
-            if not isinstance(text, list):
-                text = list(text)
-        fields.update({key: text})
+            if '' in text:
+                text.remove('')
+        return text
+
+    def set_value(self, widget, store, key) -> None:
+        """Sets value from widget to some variable"""
+        store.update({key: self.transform_text(widget)})
 
     def set_check_boxes_variables(self) -> None:
         """Connects check_boxes with appropriate variables in
         sql_variables/default_variables object"""
-        for item in self.prepare_check_boxes_mapping():
-            item[0].stateChanged.connect(lambda: self.set_check_box_value(*item))
-
-    def prepare_check_boxes_mapping(self) -> List:
-        """Returns mapping for iteration through in to connect check_boxes with
-        appropriate variables of appropriate object"""
-        result = []
         check_boxes = self.ui_elements.checkboxes
-        value_store = self.default_values.checks_customization
-        for param in ['check_schema', 'check_reports', 'fail_fast', 'check_entities', 'use_dataframes']:
-            result.append((check_boxes.get(param), value_store, param))
-        return result
+        store = self.default_values.checks_customization
+        check_schema = check_boxes.get('check_schema')
+        check_schema.stateChanged.connect(lambda: self.set_check_box_value(check_schema,
+                                          store,
+                                          'check_schema'))
+        check_reports = check_boxes.get('check_reports')
+        check_reports.stateChanged.connect(lambda: self.set_check_box_value(check_reports,
+                                           store,
+                                           'check_reports'))
+        fail_fast = check_boxes.get('fail_fast')
+        fail_fast.stateChanged.connect(lambda: self.set_check_box_value(fail_fast,
+                                       store,
+                                       'fail_fast'))
+        check_entities = check_boxes.get('check_entities')
+        check_entities.stateChanged.connect(lambda: self.set_check_box_value(check_entities,
+                                            store,
+                                            'check_entities'))
+        use_dataframes = check_boxes.get('use_dataframes')
+        use_dataframes.stateChanged.connect(lambda: self.set_check_box_value(use_dataframes,
+                                            store,
+                                            'use_dataframes'))
 
     @staticmethod
     def set_check_box_value(widget, fields, key) -> None:
@@ -91,13 +115,30 @@ class Configuration:
         """Connects radio_buttons with appropriate variables in
         sql_variables/default_variables object"""
         radio_buttons = self.ui_elements.radio_buttons
-        for key in ['day_summary', 'section_summary', 'detailed']:
-            radio_buttons.get(key).toggled.connect(lambda: self.set_radio_button_value(self.ui_elements.radio_buttons.get(key),
-                                                                                       self.default_values.__dict__,
-                                                                                       key))
+        radio_buttons.get('day_summary').clicked.connect(self.get_radio_button_value)
+        self.logger.debug('day_summary radio_button successfully connected with mode')
+        radio_buttons.get('section_summary').clicked.connect(self.get_radio_button_value)
+        self.logger.debug('section_summary radio_button successfully connected with mode')
+        radio_buttons.get('detailed').clicked.connect(self.get_radio_button_value)
+        self.logger.debug('detailed radio_button successfully connected with mode')
 
-    @staticmethod
-    def set_radio_button_value(widget, fields, key) -> None:
-        """Sets checkbox value from ui to appropriate variable"""
-        if widget.isChecked():
-            fields.update({fields.get('mode'): key})
+    def prepare_radio_buttons_mapping(self) -> List:
+        """Returns mapping for radio buttons"""
+        result = []
+        radio_buttons = self.ui_elements.radio_buttons
+        for key in ['day_summary', 'section_summary', 'detailed']:
+            result.append((radio_buttons.get(key), self.default_values.__dict__, key))
+        return result
+
+    def get_radio_button_value(self) -> None:
+        """Connects radio_buttons with internal variables"""
+        radio_buttons = self.ui_elements.radio_buttons
+        for item in radio_buttons:
+            widget = radio_buttons.get(item)
+            if widget.isChecked():
+                if widget.text() == "Day summary":
+                    self.default_values.mode = 'day_summary'
+                elif widget.text() == "Section summary":
+                    self.default_values.mode = 'section_summary'
+                else:
+                    self.default_values.mode = 'detailed'

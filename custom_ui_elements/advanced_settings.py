@@ -3,7 +3,7 @@ settings window"""
 import logging
 from typing import List
 
-from PyQt5.QtWidgets import QDialog, QComboBox
+from PyQt5.QtWidgets import QDialog, QComboBox, QLineEdit
 
 from configuration.advanced_ui_config import UIElements
 from configuration.default_variables import DefaultValues
@@ -20,7 +20,8 @@ class AdvancedSettingsItem(QDialog):
         self.setLayout(self.main_ui.positions.grid)
         self.default_values: DefaultValues = configuration.default_values
         self.system_config: SystemConfig = configuration.system_config
-        self.advanced_logic: AdvancedWindowLogic = AdvancedWindowLogic(self, self.main_ui, configuration)
+        self.advanced_logic: AdvancedWindowLogic = AdvancedWindowLogic(self, self.main_ui,
+                                                                       configuration)
         self.logger = configuration.system_config.logger
         self.main_ui.buttons.get('btn_ok').clicked.connect(self.advanced_logic.ok_pressed)
         self.main_ui.buttons.get('btn_cancel').clicked.connect(self.advanced_logic.cancel_pressed)
@@ -51,21 +52,21 @@ class AdvancedSettingsItem(QDialog):
             (line_edits.retry_attempts, self.default_values.constants, 'retry_attempts'),
             (line_edits.table_timeout, self.default_values.constants, 'table_timeout'),
             (line_edits.strings_amount, self.default_values.constants, 'strings_amount'),
-            (line_edits.path_to_logs, self.system_config, 'path_to_logs'),
-            (line_edits.schema_columns, self.default_values, 'schema_columns')
+            (line_edits.path_to_logs, self.system_config.__dict__, 'path_to_logs'),
+            (line_edits.schema_columns, self.default_values.__dict__, 'schema_columns')
         ])
         return result
 
     def set_combo_boxes_variables(self) -> None:
         """Connects combo_boxes with appropriate variables in
         internal object"""
-        self.main_ui.combo_boxes.currentTextChanged.connect(lambda: self.set_combo_boxes_value(self.main_ui.combo_boxes,
-                                                                                               self.system_config,
-                                                                                               'logging_level',
-                                                                                               self.logger))
+        argument = (self.main_ui.combo_boxes, self.system_config, 'logging_level', self.logger)
+        self.main_ui.combo_boxes.currentTextChanged.connect(lambda:
+                                                            self.set_combo_boxes_value(*argument))
 
     @staticmethod
-    def set_combo_boxes_value(widget: QComboBox, fields: SystemConfig, key: str, logger: logging.Logger) -> None:
+    def set_combo_boxes_value(widget: QComboBox, fields: SystemConfig,
+                              key: str, logger: logging.Logger) -> None:
         """Sets combo_boxes value from ui to appropriate variable"""
         text = widget.currentText()
         current_level = logger.level

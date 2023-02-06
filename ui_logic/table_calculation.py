@@ -16,6 +16,7 @@ class TableCalculation:
         """Method calculates of tables, which exists in both databases"""
         prod = self.configuration.sql_variables.prod
         test = self.configuration.sql_variables.test
+        line_edits = self.configuration.ui_elements.line_edits
         if all([prod.tables, test.tables]):
             self.configuration.sql_variables.inc_exc.included_tables = []
             tables = list(set(prod.tables.keys()) & set(test.tables.keys()))
@@ -28,18 +29,18 @@ class TableCalculation:
                 else:
                     self.logger.error(f"There is different columns for table {table}.")
                     self.logger.warning(f"Table {table} excluded from comparing")
-                    included_tables = self.configuration.ui_elements.line_edits.included_tables.text().split(',')
+                    included_tables = line_edits.included_tables.text().split(',')
                     if '' in included_tables:
                         included_tables.remove('')
                     if table in included_tables:
                         included_tables.remove(table)
-                        self.configuration.ui_elements.line_edits.included_tables.setText(','.join(included_tables))
-                    excluded_table = self.configuration.ui_elements.line_edits.excluded_tables.text().split(',')
+                        line_edits.included_tables.setText(','.join(included_tables))
+                    excluded_table = line_edits.excluded_tables.text().split(',')
                     if '' in excluded_table:
                         excluded_table.remove('')
                     if table not in excluded_table:
                         excluded_table.append(table)
-                        self.configuration.ui_elements.line_edits.excluded_tables.setText(','.join(excluded_table))
+                        line_edits.excluded_tables.setText(','.join(excluded_table))
                     prod_uniq_columns = set(prod_columns) - set(test_columns)
                     test_uniq_columns = set(test_columns) - set(prod_columns)
                     if prod_uniq_columns:

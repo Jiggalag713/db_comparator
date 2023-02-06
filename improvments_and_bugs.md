@@ -16,6 +16,7 @@ we should change to structure like {key: [ui.variable, instance.variable]} or us
 * [ ] If column list of some table differs, we should display this tables in exclude_table line edit, and disable ability to
 set this tables unchecked.
 * [ ] DefaultValues should be changed to Values
+* [ ] mode parameter is not set
 
 Windows backlog:
 

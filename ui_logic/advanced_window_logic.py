@@ -58,27 +58,24 @@ class AdvancedWindowLogic:
         """Method set default values on advanced settings window"""
         default_values = DefaultValues()
         self.main_ui.combo_boxes.setCurrentIndex(4)
-        le_comparing_step = self.main_ui.line_edits.comparing_step
-        comparing_step = default_values.constants.get('comparing_step')
-        self.set_default_value(le_comparing_step, comparing_step)
-        le_depth_report_check = self.main_ui.line_edits.depth_report_check
-        depth_report_check = default_values.constants.get('depth_report_check')
-        self.set_default_value(le_depth_report_check, depth_report_check)
-        le_schema_columns = self.main_ui.line_edits.schema_columns
-        schema_columns = ','.join(default_values.schema_columns)
-        self.set_default_value(le_schema_columns, schema_columns)
-        le_retry_attempts = self.main_ui.line_edits.retry_attempts
-        retry_attempts = default_values.constants.get('retry_attempts')
-        self.set_default_value(le_retry_attempts, retry_attempts)
-        le_table_timeout = self.main_ui.line_edits.table_timeout
-        table_timeout = default_values.constants.get('table_timeout')
-        self.set_default_value(le_table_timeout, table_timeout)
-        le_strings_amount = self.main_ui.line_edits.strings_amount
-        strings_amount = default_values.constants.get('strings_amount')
-        self.set_default_value(le_strings_amount, strings_amount)
-        le_path_to_logs = self.main_ui.line_edits.path_to_logs
-        path_to_logs = self.system_config.path_to_logs
-        self.set_default_value(le_path_to_logs, path_to_logs)
+        mapping = [
+            (self.main_ui.line_edits.comparing_step,
+             default_values.constants.get('comparing_step')),
+            (self.main_ui.line_edits.depth_report_check,
+             default_values.constants.get('depth_report_check')),
+            (self.main_ui.line_edits.schema_columns,
+             ','.join(default_values.schema_columns)),
+            (self.main_ui.line_edits.retry_attempts,
+             default_values.constants.get('retry_attempts')),
+            (self.main_ui.line_edits.table_timeout,
+             default_values.constants.get('table_timeout')),
+            (self.main_ui.line_edits.strings_amount,
+             default_values.constants.get('strings_amount')),
+            (self.main_ui.line_edits.path_to_logs,
+             self.system_config.path_to_logs)
+        ]
+        for item in mapping:
+            self.set_default_value(*item)
 
     @staticmethod
     def set_default_value(element: QLineEdit, value: Any):
