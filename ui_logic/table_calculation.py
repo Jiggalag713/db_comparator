@@ -44,9 +44,15 @@ class TableCalculation:
                     prod_uniq_columns = set(prod_columns) - set(test_columns)
                     test_uniq_columns = set(test_columns) - set(prod_columns)
                     if prod_uniq_columns:
-                        self.logger.info(f"Uniq columns for prod {table}: {prod_uniq_columns}")
+                        host = prod.credentials.host
+                        base = prod.credentials.base
+                        self.logger.info(f"Uniq columns for table {table} on "
+                                         f"{host}:{base} - {prod_uniq_columns}")
                     if test_uniq_columns:
-                        self.logger.info(f"Uniq columns for test {table}: {test_uniq_columns}")
+                        host = test.credentials.host
+                        base = test.credentials.base
+                        self.logger.info(f"Uniq columns for table {table} on "
+                                         f"{host}:{base} -  {test_uniq_columns}")
             copy = self.configuration.sql_variables.inc_exc.included_tables.copy()
             self.configuration.sql_variables.tables_for_ui = copy
             self.configuration.sql_variables.columns = self.calculate_column_list()
