@@ -2,25 +2,20 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from configuration.sql_variables import SqlVariables
-from configuration.system_config import SystemConfig
 from configuration.ui_config import UIElements
-from configuration.default_variables import DefaultValues
+from configuration.variables import Variables
 
 
 @dataclass
 class Configuration:
     """Class intended to make together some different variables
     in purposes throwing of this to different methods"""
-    is_toggled: bool = True
-    default_values: DefaultValues = DefaultValues()
+    variables: Variables
     ui_elements: UIElements = field(init=False, repr=True)
 
     def __post_init__(self):
-        self.system_config = SystemConfig()
         self.ui_elements = UIElements()
-        self.sql_variables = SqlVariables(self.system_config.logger)
-        self.logger = self.system_config.logger
+        self.logger = self.variables.logger
         self.set_connects()
 
     def set_connects(self):
@@ -33,8 +28,10 @@ class Configuration:
         """Connects line_edits with appropriate variables in
         sql_variables/default_variables object"""
         line_edits = self.ui_elements.line_edits
-        self.connect_sql_related_line_edits(line_edits.prod, self.sql_variables.prod.credentials)
-        self.connect_sql_related_line_edits(line_edits.test, self.sql_variables.test.credentials)
+        self.connect_sql_related_line_edits(line_edits.prod,
+                                            self.variables.sql_variables.prod.credentials)
+        self.connect_sql_related_line_edits(line_edits.test,
+                                            self.variables.sql_variables.test.credentials)
         self.connect_other_line_edits(line_edits.send_mail_to,
                                       line_edits.included_tables,
                                       line_edits.excluded_tables,
@@ -55,16 +52,16 @@ class Configuration:
                                  excluded_tables, excluded_columns) -> None:
         """Connects another line_edits with appropriate internal classes attributes"""
         send_mail_to.textChanged.connect(lambda: set_value(send_mail_to,
-                                         self.default_values.__dict__,
+                                         self.variables.default_values.__dict__,
                                          'send_mail_to'))
         included_tables.textChanged.connect(lambda: set_value(included_tables,
-                                            self.default_values.__dict__,
+                                            self.variables.default_values.__dict__,
                                             'included_tables'))
         excluded_tables.textChanged.connect(lambda: set_value(excluded_tables,
-                                            self.default_values.__dict__,
+                                            self.variables.default_values.__dict__,
                                             'excluded_tables'))
         excluded_columns.textChanged.connect(lambda: set_value(excluded_columns,
-                                             self.default_values.__dict__,
+                                             self.variables.default_values.__dict__,
                                              'excluded_columns'))
 
     def set_sql_related_value(self, instance, credentials) -> None:
@@ -86,7 +83,7 @@ class Configuration:
         """Connects check_boxes with appropriate variables in
         sql_variables/default_variables object"""
         check_boxes = self.ui_elements.checkboxes
-        store = self.default_values.checks_customization
+        store = self.variables.default_values.checks_customization
         check_schema = check_boxes.get('check_schema')
         check_schema.stateChanged.connect(lambda: self.set_check_box_value(check_schema,
                                           store,
@@ -129,7 +126,7 @@ class Configuration:
         result = []
         radio_buttons = self.ui_elements.radio_buttons
         for key in ['day-sum', 'section-sum', 'detailed']:
-            result.append((radio_buttons.get(key), self.default_values.__dict__, key))
+            result.append((radio_buttons.get(key), self.variables.default_values.__dict__, key))
         return result
 
     def get_radio_button_value(self) -> None:
@@ -139,11 +136,11 @@ class Configuration:
             widget = radio_buttons.get(item)
             if widget.isChecked():
                 if widget.text() == "Day summary":
-                    self.default_values.mode = 'day-sum'
+                    self.variables.default_values.mode = 'day-sum'
                 elif widget.text() == "Section summary":
-                    self.default_values.mode = 'section-sum'
+                    self.variables.default_values.mode = 'section-sum'
                 else:
-                    self.default_values.mode = 'detailed'
+                    self.variables.default_values.mode = 'detailed'
 
 
 def set_value(widget, store, key) -> None:

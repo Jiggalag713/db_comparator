@@ -12,16 +12,17 @@ class LineEditsLogic:
     """Class line_edits logic"""
     def __init__(self, configuration, table_calculation):
         self.configuration: Configuration = configuration
+        self.variables = configuration.variables
         self.main_ui = configuration.ui_elements
         self.table_calculation = table_calculation
 
     def set_excluded_tables(self) -> None:
         """Method sets excluded tables"""
-        if all([self.configuration.sql_variables.prod.tables,
-                self.configuration.sql_variables.test.tables]):
+        if all([self.variables.sql_variables.prod.tables,
+                self.variables.sql_variables.test.tables]):
             excluded_tables = self.configuration.ui_elements.line_edits.excluded_tables
             tables_to_skip = excluded_tables.text().split(',')
-            tables_for_ui = self.configuration.sql_variables.tables_for_ui
+            tables_for_ui = self.variables.sql_variables.tables_for_ui
             excluded_tables_view = ClickableItemsView(tables_for_ui, tables_to_skip)
             excluded_tables_view.exec_()
             text = ','.join(excluded_tables_view.selected_items)
@@ -32,8 +33,8 @@ class LineEditsLogic:
 
     def set_excluded_columns(self) -> None:
         """Method sets excluded columns"""
-        exc_columns = self.configuration.sql_variables.inc_exc.excluded_columns
-        excluded_columns = ClickableItemsView(self.configuration.sql_variables.columns,
+        exc_columns = self.variables.sql_variables.inc_exc.excluded_columns
+        excluded_columns = ClickableItemsView(self.variables.sql_variables.columns,
                                               exc_columns)
         excluded_columns.exec_()
         self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
@@ -42,10 +43,10 @@ class LineEditsLogic:
 
     def set_included_tables(self) -> None:
         """Method sets included tables to UI"""
-        if all([self.configuration.sql_variables.prod.tables,
-                self.configuration.sql_variables.test.tables]):
+        if all([self.variables.sql_variables.prod.tables,
+                self.variables.sql_variables.test.tables]):
             tables_to_include = self.main_ui.line_edits.included_tables.text().split(',')
-            included_tables = ClickableItemsView(self.configuration.sql_variables.tables_for_ui,
+            included_tables = ClickableItemsView(self.variables.sql_variables.tables_for_ui,
                                                  tables_to_include)
             included_tables.exec_()
             text = ','.join(included_tables.selected_items)
@@ -57,12 +58,12 @@ class LineEditsLogic:
     def set_prod_db(self) -> None:
         """Method sets prod database"""
         self.set_db(self.main_ui.line_edits.prod.base,
-                    self.configuration.sql_variables.prod.databases)
+                    self.variables.sql_variables.prod.databases)
 
     def set_test_db(self) -> None:
         """Method sets test database"""
         self.set_db(self.main_ui.line_edits.test.base,
-                    self.configuration.sql_variables.test.databases)
+                    self.variables.sql_variables.test.databases)
 
     @staticmethod
     def set_db(line_edit: QLineEdit, db_list: List[str]) -> None:

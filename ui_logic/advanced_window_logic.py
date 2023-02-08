@@ -13,9 +13,9 @@ class AdvancedWindowLogic:
     def __init__(self, advanced_window, main_ui, configuration):
         self.advanced_window = advanced_window
         self.main_ui: UIElements = main_ui
-        self.system_config = configuration.system_config
-        self.default_values: DefaultValues = configuration.default_values
-        self.logger: logging.Logger = configuration.system_config.logger
+        self.system_config = configuration.variables.system_config
+        self.default_values: DefaultValues = configuration.variables.default_values
+        self.logger: logging.Logger = configuration.logger
 
     def ok_pressed(self) -> None:
         """Method saves values on advanced settings window when OK button pressed"""

@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """Main class of application"""
+import json
+import os
 import sys
 from typing import NoReturn
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QMenu, QStatusBar
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QMenu, QStatusBar, QFileDialog
 
 from configuration.main_config import Configuration
+from configuration.variables import Variables
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from ui_logic.buttons import ButtonsLogic
 from ui_logic import config_serialization
@@ -20,14 +23,15 @@ class MainUI(QWidget):
     def __init__(self, status_bar):
         super().__init__()
         self.status_bar: QStatusBar = status_bar
-        self.configuration = Configuration()
+        self.variables = Variables()
+        self.configuration = Configuration(self.variables)
         self.setLayout(self.configuration.ui_elements.positions.grid)
         line_edits = self.configuration.ui_elements.line_edits
         checkboxes = self.configuration.ui_elements.checkboxes
         radio_buttons = self.configuration.ui_elements.radio_buttons
-        self.configuration.default_values.set_default_values(line_edits,
-                                                             checkboxes,
-                                                             radio_buttons)
+        self.configuration.variables.default_values.set_default_values(line_edits,
+                                                                       checkboxes,
+                                                                       radio_buttons)
         self.advanced_settings = AdvancedSettingsItem(self.configuration)
         self.setWindowTitle('db_comparator')
         self.setWindowIcon(QIcon('./resources/slowpoke.png'))
@@ -82,9 +86,7 @@ class MainWindow(QMainWindow):
         open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
         open_action.setShortcut('Ctrl+O')
         open_action.setStatusTip('Open custom file with cmp_properties')
-        open_action.triggered.connect(lambda:
-                                      config_serialization.load_configuration(configuration,
-                                                                              self.common_logic))
+        open_action.triggered.connect(self.load_properties)
 
         compare_action: QAction = QAction(QIcon('compare.png'), '&Compare', self.main_window)
         compare_action.setShortcut('Ctrl+F')
@@ -94,8 +96,7 @@ class MainWindow(QMainWindow):
         save_action: QAction = QAction(QIcon('save.png'), '&Save', self.main_window)
         save_action.setShortcut('Ctrl+S')
         save_action.setStatusTip('Save current configuration to file')
-        save_action.triggered.connect(lambda:
-                                      config_serialization.save_configuration(configuration))
+        save_action.triggered.connect(self.save_properties)
 
         exit_action = QAction(QIcon('exit.png'), '&Exit', self.main_window)
         exit_action.setShortcut('Ctrl+Q')
@@ -108,6 +109,43 @@ class MainWindow(QMainWindow):
         file_menu.addAction(compare_action)
         file_menu.addAction(exit_action)
         return file_menu
+
+    def save_properties(self):
+        variables = self.main_window.configuration.variables
+        config = config_serialization.save_configuration(variables)
+        self.write_to_file(config, variables.logger)
+
+    @staticmethod
+    def write_to_file(data, logger) -> None:
+        """Writes properties, converted to json, to file"""
+        file_name, _ = QFileDialog.getSaveFileName(QFileDialog(),
+                                                   "QFileDialog.getSaveFileName()", "",
+                                                   "All Files (*);;Text Files (*.txt)")
+        if file_name:
+            with open(file_name, 'w', encoding="utf-8") as file:
+                json.dump(data, file, indent=4)
+            logger.info(f'Configuration successfully saved to {file_name}')
+
+    def load_properties(self):
+        common = self.common_logic
+        common.check_prod_host()
+        common.check_test_host()
+        self.open_file()
+        # TODO: load to UI
+
+    def open_file(self):
+        """Method loads application configuration from file"""
+        file_name = QFileDialog.getOpenFileName(QFileDialog(), 'Open file',
+                                                f'{os.getcwd()}/resources/properties/')[0]
+        try:
+            with open(file_name, 'r', encoding="utf-8") as file:
+                data = file.read()
+                config_serialization.deserialize_config(self.main_window.variables, json.loads(data))
+                self.main_window.variables.logger.debug(f'Configuration from file {file_name} '
+                                                        f'successfully loaded...')
+        except FileNotFoundError as err:
+            self.main_window.variables.logger.warning(f'File not found, or, probably, '
+                                                      f'you just pressed cancel. Warn: {err.args[1]}')
 
 
 if __name__ == '__main__':
