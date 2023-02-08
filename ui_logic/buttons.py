@@ -5,7 +5,6 @@ import pymysql
 from PyQt5.QtWidgets import QMessageBox, QStatusBar
 
 from configuration.main_config import Configuration
-from configuration.default_variables import DefaultValues
 from configuration.ui_config import UIElements
 from configuration.variables import Variables
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
@@ -22,7 +21,6 @@ class ButtonsLogic:
         self.main_ui: UIElements = main_window.configuration.ui_elements
         self.status_bar: QStatusBar = main_window.status_bar
         self.logger: logging.Logger = self.configuration.logger
-        self.default_values: DefaultValues = self.configuration.variables.default_values
         self.variables: Variables = self.configuration.variables
         self.table_calculation = table_calculation
 
@@ -38,9 +36,9 @@ class ButtonsLogic:
         self.main_ui.line_edits.test.base.clear()
         self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
-        self.default_values.set_default_values(self.main_ui.line_edits,
-                                               self.main_ui.checkboxes,
-                                               self.main_ui.radio_buttons)
+        self.variables.default_values.set_default_values(self.main_ui.line_edits,
+                                                         self.main_ui.checkboxes,
+                                                         self.main_ui.radio_buttons)
         self.main_ui.labels.prod.base.hide()
         self.main_ui.line_edits.prod.base.hide()
         self.main_ui.labels.test.base.hide()

@@ -11,3 +11,15 @@ sudo pip install -r requirements.txt
 5. Import py_scripts project to PyCharm.
 6. Run script comparatorGUI.
 7. Have fun.
+
+Run pylint
+
+```
+pylint $(git ls-files '*.py')
+```
+
+Run tests
+
+```
+python3 -m pytest
+```

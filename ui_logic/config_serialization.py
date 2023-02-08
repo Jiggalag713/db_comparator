@@ -116,7 +116,8 @@ def deserialize_config(variables, config: json) -> None:
                 if '.' in key:
                     first = key.split('.')[0]
                     second = key.split('.')[1]
-                    lineedit_mapping.get(key).__dict__.get(first).credentials.__dict__.update({second: value})
+                    creds = lineedit_mapping.get(key).__dict__.get(first).credentials
+                    creds.__dict__.update({second: value})
                 else:
                     lineedit_mapping.get(key).__dict__.update({key: value})
             elif key in checkbox_mapping:

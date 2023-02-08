@@ -1,9 +1,13 @@
+"""Module intended for storing useful test functions"""
+
 def get_error_text(actual, expected):
+    """Constructs error message, displayed in case of assertion error"""
     return f'AR is {actual} ' \
            f'ER is {expected}'
 
 
 def result_dict(variables):
+    """Returns result dictionary for tests"""
     default_values = variables.default_values
     system_values = variables.system_config
     sql_variables = variables.sql_variables
@@ -37,6 +41,7 @@ def result_dict(variables):
 
 
 def customization_checks(variables):
+    """Returns dictionary of customization checks"""
     result = {}
     result.update({'check_entities': result_dict(variables).get('check_entities')})
     result.update({'check_reports': result_dict(variables).get('check_reports')})

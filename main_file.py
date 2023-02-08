@@ -7,7 +7,8 @@ import sys
 from typing import NoReturn
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QMenu, QStatusBar, QFileDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp
+from PyQt5.QtWidgets import QMenu, QStatusBar, QFileDialog
 
 from configuration.main_config import Configuration
 from configuration.variables import Variables
@@ -82,7 +83,6 @@ class MainWindow(QMainWindow):
 
     def get_menu(self) -> QMenu:
         """Method builds main window menu"""
-        configuration = self.main_window.configuration
         open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
         open_action.setShortcut('Ctrl+O')
         open_action.setStatusTip('Open custom file with cmp_properties')
@@ -111,6 +111,7 @@ class MainWindow(QMainWindow):
         return file_menu
 
     def save_properties(self):
+        """Runs process for saving property """
         variables = self.main_window.configuration.variables
         config = config_serialization.save_configuration(variables)
         self.write_to_file(config, variables.logger)
@@ -127,6 +128,7 @@ class MainWindow(QMainWindow):
             logger.info(f'Configuration successfully saved to {file_name}')
 
     def load_properties(self):
+        """Runs process for loading properties"""
         self.open_file()
         common = self.common_logic
         common.check_host(True, self.main_window.variables.sql_variables.prod)
@@ -140,12 +142,14 @@ class MainWindow(QMainWindow):
         try:
             with open(file_name, 'r', encoding="utf-8") as file:
                 data = file.read()
-                config_serialization.deserialize_config(self.main_window.variables, json.loads(data))
-                self.main_window.variables.logger.debug(f'Configuration from file {file_name} '
-                                                        f'successfully loaded...')
+                config_serialization.deserialize_config(self.main_window.variables,
+                                                        json.loads(data))
+                self.main_window.variables.logger.debug('Configuration from file %s '
+                                                        'successfully loaded...', file_name)
         except FileNotFoundError as err:
-            self.main_window.variables.logger.warning(f'File not found, or, probably, '
-                                                      f'you just pressed cancel. Warn: {err.args[1]}')
+            self.main_window.variables.logger.warning('File not found, or, probably, '
+                                                      'you just pressed cancel. Warn: '
+                                                      '%s', err.args[1])
 
 
 if __name__ == '__main__':

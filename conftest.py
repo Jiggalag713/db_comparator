@@ -1,3 +1,4 @@
+"""Module for pytest fixtures"""
 import pytest
 
 from configuration.variables import Variables
@@ -5,11 +6,13 @@ from configuration.variables import Variables
 
 @pytest.fixture(scope='session')
 def default_variables():
+    """Returns default Variables class instance"""
     return Variables()
 
 
 @pytest.fixture(scope='session')
 def variables():
+    """Returns filled Variable class instance"""
     inst = Variables()
     inst.default_values.checks_customization.update({'check_entities': False})
     inst.default_values.checks_customization.update({'check_reports': False})

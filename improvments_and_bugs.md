@@ -16,6 +16,7 @@ set this tables unchecked.
 * [ ] df_helper string result = (prod_columns == test_columns) changed to result = True, check correctness of this
 substitution
 * [ ] Check if advanced settings variables correctly loaded to ui after loading from file
+* [ ] [bug] ui_logic/table_calculation.py:87:17: W0511: TODO: fix this (fixme)
 
 Windows backlog:
 
