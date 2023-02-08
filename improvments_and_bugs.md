@@ -17,6 +17,7 @@ set this tables unchecked.
 substitution
 * [ ] Check if advanced settings variables correctly loaded to ui after loading from file
 * [ ] [bug] ui_logic/table_calculation.py:87:17: W0511: TODO: fix this (fixme)
+* [ ] Add test stage to github actions
 
 Windows backlog:
 
