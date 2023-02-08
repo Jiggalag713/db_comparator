@@ -2,16 +2,20 @@
     "prod.host": "127.0.0.1",
     "prod.user": "root",
     "prod.password": "RelOtUYm713",
-    "prod.db": "prod",
+    "prod.base": "prod",
     "test.host": "127.0.0.1",
     "test.user": "root",
     "test.password": "RelOtUYm713",
-    "test.db": "test",
+    "test.base": "test",
     "included_tables": [
-        "Username"
+        ""
     ],
-    "excluded_tables": [],
-    "excluded_columns": [],
+    "excluded_tables": [
+        ""
+    ],
+    "excluded_columns": [
+        ""
+    ],
     "logging_level": 10,
     "path_to_logs": "/home/polter/comparator/DbComparator.log",
     "service_dir": "/home/polter/comparator/",
@@ -21,13 +25,12 @@
     "retry_attempts": 5,
     "strings_amount": 1000,
     "table_timeout": 5,
-    "schema_columns": [
-        ""
-    ],
-    "check_entities": false,
-    "check_reports": false,
-    "check_schema": false,
+    "schema_columns": null,
+    "check_entities": true,
+    "check_reports": true,
+    "check_schema": true,
     "fail_fast": false,
     "use_dataframes": true,
-    "report_check_type": "day-sum"
+    "report_check_type": "day-sum",
+    "mode": "detailed"
 }

@@ -5,27 +5,24 @@ import pymysql
 from PyQt5.QtWidgets import QMessageBox, QStatusBar
 
 from configuration.main_config import Configuration
-from configuration.default_variables import DefaultValues
-from configuration.sql_variables import SqlVariables
 from configuration.ui_config import UIElements
+from configuration.variables import Variables
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from custom_ui_elements.progress_window import ProgressWindow
 from helpers.sql_helper import SqlAlchemyHelper
 from ui_elements.line_edits import SqlLineEdits
-from ui_logic.table_calculation import TableCalculation
 
 
 class ButtonsLogic:
     """Class with implementation of most common application logic"""
-    def __init__(self, configuration: Configuration,
-                 advanced_settings: AdvancedSettingsItem, status_bar: QStatusBar):
-        self.configuration: Configuration = configuration
-        self.advanced_settings: AdvancedSettingsItem = advanced_settings
-        self.main_ui: UIElements = configuration.ui_elements
-        self.status_bar: QStatusBar = status_bar
-        self.logger: logging.Logger = self.configuration.default_values.system_config.logger
-        self.sql_variables: SqlVariables = self.configuration.sql_variables
-        self.default_values: DefaultValues = self.configuration.default_values
+    def __init__(self, main_window, table_calculation):
+        self.configuration: Configuration = main_window.configuration
+        self.advanced_settings: AdvancedSettingsItem = main_window.advanced_settings
+        self.main_ui: UIElements = main_window.configuration.ui_elements
+        self.status_bar: QStatusBar = main_window.status_bar
+        self.logger: logging.Logger = self.configuration.logger
+        self.variables: Variables = self.configuration.variables
+        self.table_calculation = table_calculation
 
     def clear_all(self) -> None:
         """Method clears all inputs"""
@@ -39,9 +36,9 @@ class ButtonsLogic:
         self.main_ui.line_edits.test.base.clear()
         self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
-        self.default_values.set_default_values(self.main_ui.line_edits,
-                                               self.main_ui.checkboxes,
-                                               self.main_ui.radio_buttons)
+        self.variables.default_values.set_default_values(self.main_ui.line_edits,
+                                                         self.main_ui.checkboxes,
+                                                         self.main_ui.radio_buttons)
         self.main_ui.labels.prod.base.hide()
         self.main_ui.line_edits.prod.base.hide()
         self.main_ui.labels.test.base.hide()
@@ -51,12 +48,13 @@ class ButtonsLogic:
     def advanced(self) -> None:
         """Method works after pressing advanced button in main window"""
         self.advanced_settings.exec_()
-        logging_level = self.configuration.default_values.system_config.logging_level
-        self.configuration.default_values.system_config.logger.setLevel(logging_level)
+        logging_level = self.variables.system_config.logging_level
+        self.variables.system_config.logger.setLevel(logging_level)
 
     def start_work(self) -> None:
         """Method starts process of comparing databases"""
-        if all([self.configuration.sql_variables.prod.tables, self.sql_variables.test.tables]):
+        if all([self.variables.sql_variables.prod.tables,
+                self.variables.sql_variables.test.tables]):
             # comparing_info = Info(self.logger)
             # prod_sql_connection = self.sql_variables.prod
             # test_sql_connection = self.sql_variables.test
@@ -67,17 +65,11 @@ class ButtonsLogic:
             #                                         self.configuration.default_values,
             #                                         comparing_info)
             self.logger.info('Comparing started!')
-            included_tables = self.configuration.sql_variables.inc_exc.included_tables
-            if included_tables:
-                result_tables = {}
-                for table in included_tables:
-                    value = self.configuration.sql_variables.inc_exc.included_tables
-                    result_tables.update({table: value})
-                self.configuration.sql_variables.inc_exc.included_tables = result_tables
-            else:
-                for table in self.configuration.default_values.excluded_tables:
-                    if table in self.configuration.sql_variables.inc_exc.included_tables:
-                        self.configuration.sql_variables.inc_exc.included_tables.pop(table)
+            included_tables = self.variables.sql_variables.inc_exc.included_tables
+            if not included_tables:
+                for table in self.variables.sql_variables.inc_exc.excluded_tables:
+                    if table in self.variables.sql_variables.inc_exc.included_tables:
+                        self.variables.sql_variables.inc_exc.included_tables.pop(table)
                         self.logger.debug(f'Deleted table {table} from self.tables list')
             enabled_dfs = self.main_ui.checkboxes.get('use_dataframes').isChecked()
             progress = ProgressWindow(self.configuration, enabled_dfs)
@@ -85,15 +77,15 @@ class ButtonsLogic:
 
     def check_prod_host(self) -> None:
         """Method checks connection to prod instance"""
-        self.set_sql_credentials(self.sql_variables.prod,
-                                 self.configuration.ui_elements.line_edits.prod)
-        self.check_host(self.is_prod('prod'), self.sql_variables.prod)
+        self.set_sql_credentials(self.variables.sql_variables.prod,
+                                 self.main_ui.line_edits.prod)
+        self.check_host(self.is_prod('prod'), self.variables.sql_variables.prod)
 
     def check_test_host(self) -> None:
         """Method checks connection to test instance"""
-        self.set_sql_credentials(self.sql_variables.test,
-                                 self.configuration.ui_elements.line_edits.test)
-        self.check_host(self.is_prod('test'), self.sql_variables.test)
+        self.set_sql_credentials(self.variables.sql_variables.test,
+                                 self.main_ui.line_edits.test)
+        self.check_host(self.is_prod('test'), self.variables.sql_variables.test)
 
     @staticmethod
     def set_sql_credentials(sql_instance: SqlAlchemyHelper,
@@ -123,7 +115,8 @@ class ButtonsLogic:
                 if sql_instance.tables:
                     self.main_ui.labels.test.base.show()
                     self.main_ui.line_edits.test.base.show()
-            self.logger.info(f"Connection to {sql_instance.credentials.host} "
+            self.logger.info(f"Connection to {sql_instance.credentials.host}:"
+                             f"{sql_instance.credentials.host} "
                              f"established successfully!")
             self.change_bar_message(is_prod, True, sql_instance)
         except pymysql.OperationalError as err:
@@ -155,7 +148,7 @@ class ButtonsLogic:
                 self.status_bar.showMessage(f'{current_message[0]}, {host_db} connected')
             else:
                 self.status_bar.showMessage(f'{current_message[0]}, {host_db} disconnected')
-        if all([self.configuration.sql_variables.prod.tables,
-                self.configuration.sql_variables.test.tables]):
+        if all([self.variables.sql_variables.prod.tables,
+                self.variables.sql_variables.test.tables]):
             self.configuration.ui_elements.buttons.btn_set_configuration.setEnabled(True)
-            TableCalculation(self.configuration).calculate_table_list()
+            self.table_calculation.calculate_table_list()

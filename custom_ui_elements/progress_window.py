@@ -1,7 +1,7 @@
 """Module intended to store progress window class"""
 import datetime
 import logging
-from typing import Dict
+from typing import List
 
 from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QApplication
 from configuration.main_config import Configuration
@@ -20,7 +20,7 @@ class ProgressWindow(QDialog):
         self.progress_data: QProgressBar = QProgressBar(self)
         self.schema_label: QLabel = QLabel()
         self.data_label: QLabel = QLabel()
-        self.logger: logging.Logger = configuration.default_values.system_config.logger
+        self.logger: logging.Logger = configuration.variables.system_config.logger
         check_schema = self.configuration.ui_elements.checkboxes.get('check_schema')
         schema_checking: QLabel = QLabel('Schema checking')
         data_checking: QLabel = QLabel('Data checking')
@@ -37,20 +37,23 @@ class ProgressWindow(QDialog):
     def start(self, check_schema, dataframes_enabled) -> None:
         """Method implements changing of progress on progress window"""
         start_time = datetime.datetime.now()
-        tables: Dict = self.configuration.sql_variables.inc_exc.included_tables
+        tables = self.get_table_list()
+        sql_variables = self.configuration.variables.sql_variables
         part = 100 // len(tables)
         if check_schema.isChecked():
             self.setWindowTitle("Comparing metadata...")
             schema_start_time = datetime.datetime.now()
             for table in tables:
-                completed = part * (list(tables.keys()).index(table) + 1)
+                completed = part * (tables.index(table) + 1)
 
                 self.progress_schema.setValue(completed)
                 self.schema_label.setText(f'Processing of {table} table...')
                 if dataframes_enabled:
-                    self.configuration.sql_variables.compare_table_metadata()
+                    result = sql_variables.compare_table_metadata(table)
+                    print(result)
                 else:
-                    self.configuration.sql_variables.compare_table_metadata()
+                    result = sql_variables.compare_table_metadata(table)
+                    print(result)
                 QApplication.processEvents()
             comparing_time = datetime.datetime.now() - schema_start_time
             self.logger.info(f'Comparing of schemas finished in {comparing_time}')
@@ -60,18 +63,31 @@ class ProgressWindow(QDialog):
         self.setWindowTitle("Comparing data...")
         schema_checking_time = datetime.datetime.now() - start_time
         for table in tables:
-            completed = part * (list(tables.keys()).index(table) + 1)
+            completed = part * (tables.index(table) + 1)
             self.progress_data.setValue(completed)
             self.data_label.setText(f'Processing of {table} table...')
             # is_report = tables.get(table).get('is_report')
             if dataframes_enabled:
-                self.configuration.sql_variables.compare_data(table)
+                sql_variables.compare_data(table)
             else:
-                self.configuration.sql_variables.compare_data(table)
+                sql_variables.compare_data(table)
             QApplication.processEvents()
         self.data_label.setText('Data successfully compared...')
         data_comparing_time = datetime.datetime.now() - schema_checking_time
         self.logger.info(f'Data compared in {data_comparing_time}')
+
+    def get_table_list(self) -> List:
+        """Calculates final list of tables, which will be compared"""
+        sql_variables = self.configuration.variables.sql_variables
+        if sql_variables.inc_exc.included_tables:
+            return sql_variables.inc_exc.included_tables
+        if sql_variables.inc_exc.excluded_tables:
+            tables: List = []
+            for table in sql_variables.tables_for_ui:
+                if table not in sql_variables.inc_exc.excluded_tables:
+                    tables.append(table)
+            return tables
+        return sql_variables.tables_for_ui
 
     def visible_schema_progress_bar(self, check_schema, schema_checking) -> None:
         """Make visible schema label and progress bar"""
