@@ -117,7 +117,8 @@ class ButtonsLogic:
                 if sql_instance.tables:
                     self.main_ui.labels.test.base.show()
                     self.main_ui.line_edits.test.base.show()
-            self.logger.info(f"Connection to {sql_instance.credentials.host} "
+            self.logger.info(f"Connection to {sql_instance.credentials.host}:"
+                             f"{sql_instance.credentials.host} "
                              f"established successfully!")
             self.change_bar_message(is_prod, True, sql_instance)
         except pymysql.OperationalError as err:

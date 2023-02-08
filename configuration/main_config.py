@@ -40,13 +40,17 @@ class Configuration:
     def connect_sql_related_line_edits(self, instance, credentials) -> None:
         """Connects sql-related line_edits with appropriate internal classes attributes"""
         instance.host.textChanged.connect(lambda: self.set_sql_related_value(instance,
-                                                                             credentials))
+                                                                             credentials,
+                                                                             'host'))
         instance.user.textChanged.connect(lambda: self.set_sql_related_value(instance,
-                                                                             credentials))
+                                                                             credentials,
+                                                                             'user'))
         instance.password.textChanged.connect(lambda: self.set_sql_related_value(instance,
-                                                                                 credentials))
+                                                                                 credentials,
+                                                                                 'password'))
         instance.base.textChanged.connect(lambda: self.set_sql_related_value(instance,
-                                                                             credentials))
+                                                                             credentials,
+                                                                             'base'))
 
     def connect_other_line_edits(self, send_mail_to, included_tables,
                                  excluded_tables, excluded_columns) -> None:
@@ -64,10 +68,9 @@ class Configuration:
                                              self.variables.default_values.__dict__,
                                              'excluded_columns'))
 
-    def set_sql_related_value(self, instance, credentials) -> None:
+    def set_sql_related_value(self, instance, credentials, item) -> None:
         """Sets sql related value"""
-        for key in instance.__dict__.keys():
-            credentials.__dict__.update({key: self.transform_text(instance.host)})
+        credentials.__dict__.update({item: self.transform_text(instance.__dict__.get(item))})
 
     @staticmethod
     def transform_text(widget):
@@ -141,6 +144,62 @@ class Configuration:
                     self.variables.default_values.mode = 'section-sum'
                 else:
                     self.variables.default_values.mode = 'detailed'
+
+    def load_from_internal(self):
+        """Loads values from internal objects to ui elements"""
+        self.load_line_edits()
+        self.load_check_boxes()
+        self.load_radio_buttons()
+
+    def load_line_edits(self):
+        """Loads values from internal objects to line edits"""
+        self.load_sql_line_edits('prod')
+        self.load_sql_line_edits('test')
+        self.load_another_line_edits()
+
+    def load_sql_line_edits(self, instance_type):
+        """Loads values from internal objects to sql-related ui line edits"""
+        creds = self.variables.sql_variables.__dict__.get(instance_type).credentials
+        instance_line_edits = self.ui_elements.line_edits.__dict__.get(instance_type)
+        instance_labels = self.ui_elements.labels.__dict__.get(instance_type)
+        instance_line_edits.host.setText(creds.host)
+        instance_line_edits.user.setText(creds.user)
+        instance_line_edits.password.setText(creds.password)
+        instance_line_edits.base.setText(creds.base)
+        if creds.base:
+            instance_line_edits.base.show()
+            instance_labels.base.show()
+        else:
+            instance_line_edits.base.hide()
+            instance_labels.base.hide()
+
+    def load_another_line_edits(self):
+        """Loads values from internal objects to ui line edits"""
+        included_tables = self.variables.sql_variables.inc_exc.included_tables
+        self.ui_elements.line_edits.included_tables.setText(','.join(included_tables))
+        send_mail_to = self.variables.default_values.send_mail_to
+        self.ui_elements.line_edits.send_mail_to.setText(send_mail_to)
+        excluded_tables = self.variables.sql_variables.inc_exc.excluded_tables
+        self.ui_elements.line_edits.excluded_tables.setText(','.join(excluded_tables))
+        excluded_columns = self.variables.sql_variables.inc_exc.excluded_columns
+        self.ui_elements.line_edits.excluded_columns.setText(','.join(excluded_columns))
+
+    def load_check_boxes(self):
+        """Loads checkboxes state from internal object"""
+        check_boxes = self.ui_elements.checkboxes
+        store = self.variables.default_values.checks_customization
+        for key in check_boxes.keys():
+            check_boxes.get(key).setChecked(store.get(key))
+
+    def load_radio_buttons(self):
+        """Loads checkboxes state from internal object"""
+        mode = self.variables.default_values.mode
+        radio_buttons = self.ui_elements.radio_buttons
+        for item in radio_buttons:
+            if mode == item:
+                radio_buttons.get(item).setChecked(True)
+            else:
+                radio_buttons.get(item).setChecked(False)
 
 
 def set_value(widget, store, key) -> None:

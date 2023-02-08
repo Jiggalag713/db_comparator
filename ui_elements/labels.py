@@ -37,7 +37,7 @@ class SqlLabels:
         self.host: QLabel = QLabel(f'{instance_type}.host')
         self.user: QLabel = QLabel(f'{instance_type}.user')
         self.password: QLabel = QLabel(f'{instance_type}.password')
-        self.base: QLabel = QLabel(f'{instance_type}.db')
+        self.base: QLabel = QLabel(f'{instance_type}.base')
         self.set_tooltips()
         self.prepare_labels()
 

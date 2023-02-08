@@ -47,7 +47,7 @@ def host_properties_to_json(instance_type: str, instance: SqlAlchemyHelper) -> D
         f'{instance_type}.host': instance.__dict__.get(instance_type).credentials.host,
         f'{instance_type}.user': instance.__dict__.get(instance_type).credentials.user,
         f'{instance_type}.password': instance.__dict__.get(instance_type).credentials.password,
-        f'{instance_type}.db': instance.__dict__.get(instance_type).credentials.base
+        f'{instance_type}.base': instance.__dict__.get(instance_type).credentials.base
     }
 
 
@@ -88,11 +88,11 @@ def deserialize_config(variables, config: json) -> None:
                 'prod.host': sql_variables,
                 'prod.user': sql_variables,
                 'prod.password': sql_variables,
-                'prod.db': sql_variables,
+                'prod.base': sql_variables,
                 'test.host': sql_variables,
                 'test.user': sql_variables,
                 'test.password': sql_variables,
-                'test.db': sql_variables,
+                'test.base': sql_variables,
                 'included_tables': sql_variables.inc_exc,
                 'excluded_tables': sql_variables.inc_exc,
                 'send_mail_to': default_values,
@@ -117,7 +117,8 @@ def deserialize_config(variables, config: json) -> None:
                     first = key.split('.')[0]
                     second = key.split('.')[1]
                     lineedit_mapping.get(key).__dict__.get(first).credentials.__dict__.update({second: value})
-                lineedit_mapping.get(key).__dict__.update({key: value})
+                else:
+                    lineedit_mapping.get(key).__dict__.update({key: value})
             elif key in checkbox_mapping:
                 checkbox_mapping.get(key).update({key: value})
             elif key in values:

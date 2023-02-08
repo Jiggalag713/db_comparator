@@ -27,7 +27,7 @@ def test_prod_host_properties_to_json(variables):
         'prod.host': raw.get('prod.host'),
         'prod.user': raw.get('prod.user'),
         'prod.password': raw.get('prod.password'),
-        'prod.db': raw.get('prod.db'),
+        'prod.base': raw.get('prod.base'),
     }
     assert actual == expected, get_error_text(actual, expected)
 
@@ -39,7 +39,7 @@ def test_test_host_properties_to_json(variables):
         'test.host': raw.get('test.host'),
         'test.user': raw.get('test.user'),
         'test.password': raw.get('test.password'),
-        'test.db': raw.get('test.db'),
+        'test.base': raw.get('test.base'),
     }
     assert actual == expected, get_error_text(actual, expected)
 

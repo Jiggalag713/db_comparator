@@ -1,9 +1,9 @@
 prod.host = eu-db-01.inventale.com
 prod.user = itest
-prod.dbt = irving_speedup
+prod.baset = irving_speedup
 test.host = eu-db-01.inventale.com
 test.user = itest
-test.db = irving_cpopro
+test.base = irving_cpopro
 skip_tables = databasechangelog,download,forecaststatistics,migrationhistory,migrationhistory,mntapplog,reportinfo,synchistory,syncpersistentjob,syncstage,synctrace,synctracelink
 excluded_columns = addonFields,archived,dayOfWeekS,hourOfDayS,id,impCost
 path_to_logs = /home/polter/DbComparator/DbComparator.log

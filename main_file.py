@@ -127,11 +127,11 @@ class MainWindow(QMainWindow):
             logger.info(f'Configuration successfully saved to {file_name}')
 
     def load_properties(self):
-        common = self.common_logic
-        common.check_prod_host()
-        common.check_test_host()
         self.open_file()
-        # TODO: load to UI
+        common = self.common_logic
+        common.check_host(True, self.main_window.variables.sql_variables.prod)
+        common.check_host(False, self.main_window.variables.sql_variables.test)
+        self.main_window.configuration.load_from_internal()
 
     def open_file(self):
         """Method loads application configuration from file"""
