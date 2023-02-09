@@ -151,5 +151,6 @@ class ButtonsLogic:
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.configuration.ui_elements.buttons.btn_set_configuration.setEnabled(True)
-            tables = self.table_calculation.calculate_table_list()
+            self.variables.sql_variables.tables.all = self.table_calculation.calculate_table_list()
+            tables = self.variables.sql_variables.tables.all
             self.table_calculation.calculate_includes_excludes(tables)

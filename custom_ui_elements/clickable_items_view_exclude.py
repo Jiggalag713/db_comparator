@@ -1,3 +1,4 @@
+"""Module contains custom clickable item view class"""
 from typing import List, Dict
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -5,7 +6,9 @@ from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 
 class ClickableItemsViewExclude(QDialog):
-    def __init__(self, item_list: List, selected_items: List[str], hard_excluded: Dict, include: bool):
+    """Implements list view with ability to make some elements disabled"""
+    def __init__(self, item_list: Dict, selected_items: List[str], hard_excluded: Dict,
+                 include: bool):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
@@ -13,7 +16,7 @@ class ClickableItemsViewExclude(QDialog):
         self.selected_items: List[str] = selected_items
         self.hard_excluded: Dict = hard_excluded
         self.include = include
-        self.item_list: List = item_list
+        self.item_list: Dict = item_list
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)
@@ -53,12 +56,14 @@ class ClickableItemsViewExclude(QDialog):
 
     @staticmethod
     def get_excluded_state(include) -> int:
+        """Converts bool to proper int value"""
         if include:
             return 0
         return 2
 
     @staticmethod
     def get_included_state(include) -> int:
+        """Converts bool to proper int value"""
         if include:
             return 2
         return 0

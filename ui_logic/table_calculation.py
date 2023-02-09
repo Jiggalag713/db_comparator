@@ -1,6 +1,6 @@
 """Module contains implementation of TableCalculation class, intended
  for calculating table lists"""
-from typing import Dict, List
+from typing import Dict
 
 from configuration.main_config import Configuration
 from configuration.variables import Variables
@@ -20,14 +20,21 @@ class TableCalculation:
         test = self.variables.sql_variables.test
         tables = self.variables.sql_variables.tables.all
         if all([prod.tables, test.tables]):
-            prod_tables = set(prod.tables.keys())
-            test_tables = set(test.tables.keys())
-            self.get_unique_tables(prod_tables, test_tables, self.variables.sql_variables.prod)
-            self.get_unique_tables(test_tables, prod_tables, self.variables.sql_variables.test)
-            common_tables = list(prod_tables & test_tables)
-            tables.extend(common_tables)
-            tables.sort()
+            tables = self.get_common_tables(prod.tables, test.tables)
         return tables
+
+    def get_common_tables(self, prod, test) -> Dict:
+        """Returns dictionary of common tables with columns"""
+        prod_tables = set(prod.keys())
+        test_tables = set(test.keys())
+        self.get_unique_tables(prod_tables, test_tables, self.variables.sql_variables.prod)
+        self.get_unique_tables(test_tables, prod_tables, self.variables.sql_variables.test)
+        common_tables = {}
+        for table in list(prod_tables & test_tables):
+            common_tables.update({table: prod.get(table)})
+        return common_tables
+
+
 
     def get_unique_tables(self, first, second, instance) -> None:
         """Calculates unique tables for first instance"""
@@ -35,8 +42,8 @@ class TableCalculation:
         if unique:
             host = instance.credentials.host
             base = instance.credentials.base
-            self.logger.warning(f'There is some unique tables for {host}:{base} - {", ".join(unique)}'
-                                f'excluded from any comparing')
+            self.logger.warning(f'There is some unique tables for {host}:{base} - '
+                                f'{", ".join(unique)} excluded from any comparing')
 
     def calculate_includes_excludes(self, tables) -> None:
         """Calculates included and excluded tables"""
@@ -52,8 +59,10 @@ class TableCalculation:
                 if table not in self.variables.sql_variables.tables.included:
                     self.variables.sql_variables.tables.included.update({table: prod_columns})
             else:
-                prod_reason = self.unique_table_columns(table, prod_columns, test_columns, prod.credentials)
-                test_reason = self.unique_table_columns(table, test_columns, prod_columns, test.credentials)
+                prod_reason = self.unique_table_columns(table, prod_columns, test_columns,
+                                                        prod.credentials)
+                test_reason = self.unique_table_columns(table, test_columns, prod_columns,
+                                                        test.credentials)
                 reason = self.get_reason(prod_reason, test_reason)
                 self.logger.error(f"There is different columns for table {table}.")
                 self.variables.sql_variables.tables.hard_excluded.update({table: reason})
@@ -66,7 +75,6 @@ class TableCalculation:
     def unique_table_columns(self, table, first, second, credentials) -> str:
         """Returns reason of excluding some table from comparing"""
         unique_columns = set(first) - set(second)
-        """Returns unique columns of first table"""
         if unique_columns:
             host = credentials.host
             base = credentials.base
@@ -74,6 +82,7 @@ class TableCalculation:
                        f"{host}:{base} - {','.join(unique_columns)}")
             self.logger.info(message)
             return message
+        return ''
 
     @staticmethod
     def get_reason(prod, test) -> str:

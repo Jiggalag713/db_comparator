@@ -60,7 +60,7 @@ class Tables:
     included: Dict = field(default_factory=lambda: {})
     excluded: Dict = field(default_factory=lambda: {})
     hard_excluded: Dict = field(default_factory=lambda: {})
-    all: List = field(default_factory=lambda: [])
+    all: Dict = field(default_factory=lambda: {})
 
 
 @dataclass
