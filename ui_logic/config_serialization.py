@@ -22,7 +22,6 @@ def save_configuration(variables) -> Dict:
             if '' in value:
                 value.remove('')
             config.update({key: value})
-    # TODO: fix
     for key in sql_variables.columns.__dict__:
         if key in ['excluded']:
             value = sql_variables.tables.__dict__.get(key)

@@ -101,7 +101,6 @@ class TableCalculation:
         set_ui_value(line_edits.excluded_columns, line_edits.excluded_columns.text())
         for table in self.variables.sql_variables.tables.all:
             if table in self.variables.sql_variables.tables.excluded:
-                # TODO: fix this
                 columns = self.variables.sql_variables.tables.all
                 for column in columns:
                     excluded_columns = self.variables.sql_variables.columns.excluded
