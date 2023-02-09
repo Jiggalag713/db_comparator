@@ -65,11 +65,11 @@ class ButtonsLogic:
             #                                         self.configuration.default_values,
             #                                         comparing_info)
             self.logger.info('Comparing started!')
-            included_tables = self.variables.sql_variables.inc_exc.included_tables
+            included_tables = self.variables.sql_variables.tables.included
             if not included_tables:
-                for table in self.variables.sql_variables.inc_exc.excluded_tables:
-                    if table in self.variables.sql_variables.inc_exc.included_tables:
-                        self.variables.sql_variables.inc_exc.included_tables.pop(table)
+                for table in self.variables.sql_variables.tables.excluded:
+                    if table in self.variables.sql_variables.tables.included:
+                        self.variables.sql_variables.tables.included.pop(table)
                         self.logger.debug(f'Deleted table {table} from self.tables list')
             enabled_dfs = self.main_ui.checkboxes.get('use_dataframes').isChecked()
             progress = ProgressWindow(self.configuration, enabled_dfs)
@@ -151,4 +151,5 @@ class ButtonsLogic:
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.configuration.ui_elements.buttons.btn_set_configuration.setEnabled(True)
-            self.table_calculation.calculate_table_list()
+            tables = self.table_calculation.calculate_table_list()
+            self.table_calculation.calculate_includes_excludes(tables)

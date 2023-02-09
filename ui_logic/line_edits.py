@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLineEdit
 
 from configuration.main_config import Configuration
 from custom_ui_elements.clickable_items_view import ClickableItemsView
+from custom_ui_elements.clickable_items_view_exclude import ClickableItemsViewExclude
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
 
 
@@ -20,10 +21,10 @@ class LineEditsLogic:
         """Method sets excluded tables"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
-            excluded_tables = self.configuration.ui_elements.line_edits.excluded_tables
-            tables_to_skip = excluded_tables.text().split(',')
-            tables_for_ui = self.variables.sql_variables.tables_for_ui
-            excluded_tables_view = ClickableItemsView(tables_for_ui, tables_to_skip)
+            tables = self.variables.sql_variables.tables.all
+            excluded_tables = self.variables.sql_variables.tables.excluded
+            hard_excluded = self.variables.sql_variables.tables.hard_excluded
+            excluded_tables_view = ClickableItemsViewExclude(tables, excluded_tables, hard_excluded, False)
             excluded_tables_view.exec_()
             text = ','.join(excluded_tables_view.selected_items)
             self.main_ui.line_edits.excluded_tables.setText(text)
@@ -33,7 +34,7 @@ class LineEditsLogic:
 
     def set_excluded_columns(self) -> None:
         """Method sets excluded columns"""
-        exc_columns = self.variables.sql_variables.inc_exc.excluded_columns
+        exc_columns = self.variables.sql_variables.columns.excluded
         excluded_columns = ClickableItemsView(self.variables.sql_variables.columns,
                                               exc_columns)
         excluded_columns.exec_()
@@ -46,8 +47,9 @@ class LineEditsLogic:
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             tables_to_include = self.main_ui.line_edits.included_tables.text().split(',')
-            included_tables = ClickableItemsView(self.variables.sql_variables.tables_for_ui,
-                                                 tables_to_include)
+            hard_excluded = self.variables.sql_variables.tables.hard_excluded
+            included_tables = ClickableItemsViewExclude(self.variables.sql_variables.tables.all,
+                                                        tables_to_include, hard_excluded, True)
             included_tables.exec_()
             text = ','.join(included_tables.selected_items)
             self.main_ui.line_edits.included_tables.setText(text)
