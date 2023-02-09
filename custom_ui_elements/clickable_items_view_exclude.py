@@ -1,19 +1,22 @@
 """Module contains custom clickable item view class"""
-from typing import List
+from typing import List, Dict
 
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QListView, QDialog, QGridLayout, QPushButton
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 
 class ClickableItemsView(QDialog):
-    """Class implements custom clickable item view"""
-    def __init__(self, item_list: List, selected_items: List[str]):
+    """Implements list view with ability to make some elements disabled"""
+    def __init__(self, item_list: Dict, selected_items: List[str], hard_excluded: Dict,
+                 include: bool):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
         self.selected_items: List[str] = selected_items
-        self.item_list: List = item_list
+        self.hard_excluded: Dict = hard_excluded
+        self.include = include
+        self.item_list: Dict = item_list
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)
@@ -39,13 +42,32 @@ class ClickableItemsView(QDialog):
             item = QStandardItem(table)
             item.setCheckState(0)
             if item.text() in self.selected_items:
-                item.setCheckState(2)
+                item.setCheckState(self.get_included_state(self.include))
+            elif item.text() in self.hard_excluded.keys():
+                item.setCheckState(self.get_excluded_state(self.include))
+                item.setEnabled(False)
+                item.setToolTip(self.hard_excluded.get(item.text()))
             item.setCheckable(True)
             self.model.appendRow(item)
 
         view = QListView()
         view.setModel(self.model)
         return view
+
+    @staticmethod
+    def get_excluded_state(include) -> int:
+        """Converts bool to proper int value"""
+        if include:
+            return 0
+        return 2
+
+    @staticmethod
+    def get_included_state(include) -> int:
+        """Converts bool to proper int value"""
+        if include:
+            return 2
+        return 0
+
 
     def ok_pressed(self) -> None:
         """Method saves changes which user made in UI and closes form"""

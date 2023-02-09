@@ -79,15 +79,15 @@ class ProgressWindow(QDialog):
     def get_table_list(self) -> List:
         """Calculates final list of tables, which will be compared"""
         sql_variables = self.configuration.variables.sql_variables
-        if sql_variables.inc_exc.included_tables:
-            return sql_variables.inc_exc.included_tables
-        if sql_variables.inc_exc.excluded_tables:
+        if sql_variables.tables.included:
+            return list(sql_variables.tables.included.keys())
+        if sql_variables.tables.excluded:
             tables: List = []
-            for table in sql_variables.tables_for_ui:
-                if table not in sql_variables.inc_exc.excluded_tables:
+            for table in sql_variables.tables.all:
+                if table not in sql_variables.tables.excluded:
                     tables.append(table)
             return tables
-        return sql_variables.tables_for_ui
+        return list(sql_variables.tables.all.keys())
 
     def visible_schema_progress_bar(self, check_schema, schema_checking) -> None:
         """Make visible schema label and progress bar"""

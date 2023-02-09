@@ -175,13 +175,13 @@ class Configuration:
 
     def load_another_line_edits(self):
         """Loads values from internal objects to ui line edits"""
-        included_tables = self.variables.sql_variables.inc_exc.included_tables
+        included_tables = self.variables.sql_variables.tables.included
         self.ui_elements.line_edits.included_tables.setText(','.join(included_tables))
         send_mail_to = self.variables.default_values.send_mail_to
         self.ui_elements.line_edits.send_mail_to.setText(send_mail_to)
-        excluded_tables = self.variables.sql_variables.inc_exc.excluded_tables
+        excluded_tables = self.variables.sql_variables.tables.excluded
         self.ui_elements.line_edits.excluded_tables.setText(','.join(excluded_tables))
-        excluded_columns = self.variables.sql_variables.inc_exc.excluded_columns
+        excluded_columns = self.variables.sql_variables.columns.excluded
         self.ui_elements.line_edits.excluded_columns.setText(','.join(excluded_columns))
 
     def load_check_boxes(self):

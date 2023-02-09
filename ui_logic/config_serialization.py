@@ -16,9 +16,15 @@ def save_configuration(variables) -> Dict:
     for key in sql_variables.__dict__:
         if key in ['prod', 'test']:
             config.update(host_properties_to_json(key, sql_variables))
-    for key in sql_variables.inc_exc.__dict__:
-        if key in ['included_tables', 'excluded_tables', 'excluded_columns']:
-            value = sql_variables.inc_exc.__dict__.get(key)
+    for key in sql_variables.tables.__dict__:
+        if key in ['included', 'excluded']:
+            value = sql_variables.tables.__dict__.get(key)
+            if '' in value:
+                value.remove('')
+            config.update({key: value})
+    for key in sql_variables.columns.__dict__:
+        if key in ['excluded']:
+            value = sql_variables.tables.__dict__.get(key)
             if '' in value:
                 value.remove('')
             config.update({key: value})
@@ -93,10 +99,10 @@ def deserialize_config(variables, config: json) -> None:
                 'test.user': sql_variables,
                 'test.password': sql_variables,
                 'test.base': sql_variables,
-                'included_tables': sql_variables.inc_exc,
-                'excluded_tables': sql_variables.inc_exc,
+                'included_tables': sql_variables.tables,
+                'excluded_tables': sql_variables.tables,
                 'send_mail_to': default_values,
-                'excluded_columns': sql_variables.inc_exc
+                'excluded_columns': sql_variables.tables
             }
             checkbox_mapping = {
                 'check_schema': default_values.checks_customization,

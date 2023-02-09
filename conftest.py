@@ -19,10 +19,10 @@ def variables():
     inst.default_values.checks_customization.update({'check_schema': False})
     inst.default_values.constants.update({'comparing_step': 713})
     inst.default_values.constants.update({'depth_report_check': 713})
-    inst.sql_variables.inc_exc.excluded_columns = ['excluded', 'columns', '713']
-    inst.sql_variables.inc_exc.excluded_tables = ['excluded', 'tables', '713']
+    inst.sql_variables.columns.excluded = ['excluded', 'columns', '713']
+    inst.sql_variables.tables.excluded = ['excluded', 'tables', '713']
     inst.default_values.checks_customization.update({'fail_fast': False})
-    inst.sql_variables.inc_exc.included_tables = ['included', 'tables', '713']
+    inst.sql_variables.tables.included = ['included', 'tables', '713']
     inst.system_config.logging_level = 50
     inst.system_config.path_to_logs = '/my/perfect/test/path'
     inst.sql_variables.prod.credentials.host = '127.0.0.1'

@@ -2,7 +2,7 @@
 be useful during comparing of databases"""
 import datetime
 import logging
-from typing import List
+from typing import List, Dict
 from dataclasses import dataclass, field
 from helpers import df_compare_helper
 from helpers.sql_helper import SqlAlchemyHelper, SqlCredentials
@@ -13,9 +13,8 @@ class SqlVariables:
     def __init__(self, logger):
         self.prod: SqlAlchemyHelper = SqlAlchemyHelper(SqlCredentials(), logger)
         self.test: SqlAlchemyHelper = SqlAlchemyHelper(SqlCredentials(), logger)
-        self.inc_exc = IncludeExclude()
-        self.tables_for_ui: List = []
-        self.columns: List = []
+        self.tables = Tables()
+        self.columns = Columns()
         self.logger: logging.Logger = logger
 
     def compare_table_metadata(self, table) -> bool:
@@ -56,8 +55,18 @@ class SqlVariables:
 
 
 @dataclass
-class IncludeExclude:
-    """Class intended for included and excluded tables and columns"""
-    included_tables: List = field(default_factory=lambda: [])
-    excluded_tables: List = field(default_factory=lambda: [])
-    excluded_columns: List = field(default_factory=lambda: [])
+class Tables:
+    """Class intended for included and excluded tables"""
+    included: Dict = field(default_factory=lambda: {})
+    excluded: Dict = field(default_factory=lambda: {})
+    hard_excluded: Dict = field(default_factory=lambda: {})
+    all: Dict = field(default_factory=lambda: {})
+
+
+@dataclass
+class Columns:
+    """Class intended for included and excluded columns"""
+    excluded: List = field(default_factory=lambda: [])
+    included: List = field(default_factory=lambda: [])
+    hard_excluded: List = field(default_factory=lambda: [])
+    all: List = field(default_factory=lambda: [])
