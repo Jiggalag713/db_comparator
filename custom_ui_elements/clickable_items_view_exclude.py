@@ -5,7 +5,7 @@ from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 
-class ClickableItemsViewExclude(QDialog):
+class ClickableItemsView(QDialog):
     """Implements list view with ability to make some elements disabled"""
     def __init__(self, item_list: Dict, selected_items: List[str], hard_excluded: Dict,
                  include: bool):

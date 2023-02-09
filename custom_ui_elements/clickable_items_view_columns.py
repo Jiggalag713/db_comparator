@@ -2,10 +2,10 @@
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QListView
 
-from custom_ui_elements.clickable_items_view_exclude import ClickableItemsViewExclude
+from custom_ui_elements.clickable_items_view_exclude import ClickableItemsView
 
 
-class ClickableItemsViewColumn(ClickableItemsViewExclude):
+class ClickableItemsViewColumn(ClickableItemsView):
     """Implements list view with ability to make some elements disabled"""
     def init_items(self) -> QListView:
         """Method init items"""

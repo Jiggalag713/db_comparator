@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QLineEdit
 
 from configuration.main_config import Configuration
 from custom_ui_elements.clickable_items_view_columns import ClickableItemsViewColumn
-from custom_ui_elements.clickable_items_view_exclude import ClickableItemsViewExclude
+from custom_ui_elements.clickable_items_view_exclude import ClickableItemsView
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
 
 
@@ -24,8 +24,8 @@ class LineEditsLogic:
             tables = self.variables.sql_variables.tables.all
             excluded_tables = self.variables.sql_variables.tables.excluded
             hard_excluded = self.variables.sql_variables.tables.hard_excluded
-            excluded_tables_view = ClickableItemsViewExclude(tables, excluded_tables,
-                                                             hard_excluded, False)
+            excluded_tables_view = ClickableItemsView(tables, excluded_tables,
+                                                      hard_excluded, False)
             excluded_tables_view.exec_()
             text = ','.join(excluded_tables_view.selected_items)
             self.main_ui.line_edits.excluded_tables.setText(text)
@@ -51,8 +51,8 @@ class LineEditsLogic:
                 self.variables.sql_variables.test.tables]):
             tables_to_include = self.main_ui.line_edits.included_tables.text().split(',')
             hard_excluded = self.variables.sql_variables.tables.hard_excluded
-            included_tables = ClickableItemsViewExclude(self.variables.sql_variables.tables.all,
-                                                        tables_to_include, hard_excluded, True)
+            included_tables = ClickableItemsView(self.variables.sql_variables.tables.all,
+                                                 tables_to_include, hard_excluded, True)
             included_tables.exec_()
             text = ','.join(included_tables.selected_items)
             self.main_ui.line_edits.included_tables.setText(text)
