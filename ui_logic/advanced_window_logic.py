@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QLineEdit
 
 from configuration.default_variables import DefaultValues
 from configuration.advanced_ui_config import UIElements
-from custom_ui_elements.clickable_items_view import ClickableItemsView
+from custom_ui_elements.clickable_item_view import ClickableItemsView
 from helpers.sql_helper import SqlCredentials, SqlAlchemyHelper
 
 
@@ -95,12 +95,11 @@ class AdvancedWindowLogic:
         else:
             selected_schema_columns = self.default_values.schema_columns
         schema_columns = ClickableItemsView(self.default_values.schema_columns,
-                                            selected_schema_columns,
-                                            self.default_values,
-                                            'selected_schema_columns')
+                                            selected_schema_columns)
         schema_columns.exec_()
         text = ','.join(schema_columns.selected_items)
         self.main_ui.line_edits.schema_columns.setText(text)
+        self.default_values.selected_schema_columns = schema_columns.selected_items
         tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
         self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)
 

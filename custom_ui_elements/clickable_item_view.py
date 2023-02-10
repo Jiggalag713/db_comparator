@@ -1,54 +1,63 @@
-"""Module contains custom clickable item view class"""
+"""Module contains abstract clickable item view class"""
 import collections
-from typing import List, Dict
+from typing import List, Any, Dict
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 
-class ClickableItemsViewExclude(QDialog):
-    """Implements list view with ability to make some elements disabled"""
-    def __init__(self, item_list: Dict, selected_items: List[str], hard_excluded: Dict,
-                 include: bool):
+class ClickableItemsView(QDialog):
+    """Implements abstract class clickable items view"""
+    def __init__(self, item_list: Any, selected_items: List[str], hard_excluded: Dict = None,
+                 include: bool = False):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
         self.selected_items: List[str] = selected_items
         self.hard_excluded: Dict = hard_excluded
-        self.include = include
-        self.item_list = collections.OrderedDict(sorted(item_list.items(),
-                                                        key=lambda i: i[0].lower()))
+        self.item_list = self.get_sorted(item_list)
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)
-        btn_ok.clicked.connect(self.ok_pressed)
+        btn_ok.clicked.connect(lambda: self.ok_pressed(include))
         btn_cancel: QPushButton = QPushButton('Cancel', self)
         btn_cancel.clicked.connect(self.cancel_pressed)
         btn_clear_all: QPushButton = QPushButton('Clear all', self)
-        btn_clear_all.clicked.connect(self.clear_all)
+        btn_clear_all.clicked.connect(lambda: self.clear_all(include))
 
-        self.view: QListView = self.init_items()
+        view: QListView = self.init_items(include)
 
-        grid.addWidget(self.view, 0, 0)
+        grid.addWidget(view, 0, 0)
         grid.addWidget(btn_clear_all, 0, 1)
         grid.addWidget(btn_ok, 1, 1)
         grid.addWidget(btn_cancel, 1, 2)
         self.setModal(True)
         self.show()
 
-    def init_items(self) -> QListView:
+    @staticmethod
+    def get_sorted(item_list) -> Any:
+        """Returns sorted item_list"""
+        if isinstance(item_list, dict):
+            return collections.OrderedDict(sorted(item_list.items(),
+                                                  key=lambda i: i[0].lower()))
+        if isinstance(item_list, list):
+            return sorted(item_list, key=str.lower)
+        return item_list
+
+    def init_items(self, include) -> QListView:
         """Method init items"""
         self.model = QStandardItemModel()
         for table in self.item_list:
             item = QStandardItem(table)
             item.setCheckState(0)
             if item.text() in self.selected_items:
-                item.setCheckState(self.get_included_state(self.include))
-            elif item.text() in self.hard_excluded.keys():
-                item.setCheckState(self.get_excluded_state(self.include))
-                item.setEnabled(False)
-                item.setToolTip(self.hard_excluded.get(item.text()))
+                item.setCheckState(2)
+            elif self.hard_excluded is not None:
+                if item.text() in self.hard_excluded.keys():
+                    item.setCheckState(self.get_included_state(include))
+                    item.setEnabled(False)
+                    item.setToolTip(self.hard_excluded.get(item.text()))
             item.setCheckable(True)
             self.model.appendRow(item)
 
@@ -57,21 +66,13 @@ class ClickableItemsViewExclude(QDialog):
         return view
 
     @staticmethod
-    def get_excluded_state(include) -> int:
+    def get_included_state(include) -> int:
         """Converts bool to proper int value"""
         if include:
             return 0
         return 2
 
-    @staticmethod
-    def get_included_state(include) -> int:
-        """Converts bool to proper int value"""
-        if include:
-            return 2
-        return 0
-
-
-    def ok_pressed(self) -> None:
+    def ok_pressed(self, include) -> None:
         """Method saves changes which user made in UI and closes form"""
         amount = self.model.rowCount()
         checked_tables = []
@@ -80,10 +81,10 @@ class ClickableItemsViewExclude(QDialog):
             if item.checkState() == 2:
                 checked_tables.append(item.text())
         self.selected_items = checked_tables
-        self.init_items()
+        self.init_items(include)
         self.close()
 
-    def clear_all(self) -> None:
+    def clear_all(self, include) -> None:
         """Method clears all"""
         amount = self.model.rowCount()
         for idx in range(amount):
@@ -91,7 +92,7 @@ class ClickableItemsViewExclude(QDialog):
             if item.checkState() == 2:
                 item.setCheckState(0)
         self.selected_items = []
-        self.init_items()
+        self.init_items(include)
 
     def cancel_pressed(self) -> None:
         """Method closes form"""

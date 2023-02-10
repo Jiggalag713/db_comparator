@@ -4,8 +4,7 @@ from typing import List
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.main_config import Configuration
-from custom_ui_elements.clickable_items_view import ClickableItemsView
-from custom_ui_elements.clickable_items_view_exclude import ClickableItemsViewExclude
+from custom_ui_elements.clickable_item_view import ClickableItemsView
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
 
 
@@ -24,11 +23,13 @@ class LineEditsLogic:
             tables = self.variables.sql_variables.tables.all
             excluded_tables = self.variables.sql_variables.tables.excluded
             hard_excluded = self.variables.sql_variables.tables.hard_excluded
-            excluded_tables_view = ClickableItemsViewExclude(tables, excluded_tables,
-                                                             hard_excluded, False)
+            excluded_tables_view = ClickableItemsView(tables, excluded_tables,
+                                                      hard_excluded, False)
             excluded_tables_view.exec_()
             text = ','.join(excluded_tables_view.selected_items)
             self.main_ui.line_edits.excluded_tables.setText(text)
+            excluded = list(set(excluded_tables_view.selected_items) - set(hard_excluded))
+            self.variables.sql_variables.tables.excluded = excluded
             tooltip_text = self.main_ui.line_edits.excluded_tables.text().replace(',', ',\n')
             self.main_ui.line_edits.excluded_tables.setToolTip(tooltip_text)
             self.table_calculation.calculate_excluded_columns()
@@ -37,11 +38,10 @@ class LineEditsLogic:
         """Method sets excluded columns"""
         excluded_columns = self.variables.sql_variables.columns.excluded
         all_columns = self.get_all_columns()
-        excluded_columns = ClickableItemsView(all_columns, excluded_columns,
-                                              self.variables.sql_variables.columns,
-                                              'excluded')
+        excluded_columns = ClickableItemsView(all_columns, excluded_columns)
         excluded_columns.exec_()
         self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
+        self.variables.sql_variables.columns.excluded = excluded_columns.selected_items
         text = self.main_ui.line_edits.excluded_columns.text().replace(',', ',\n')
         self.main_ui.line_edits.excluded_columns.setToolTip(text)
 
@@ -51,8 +51,8 @@ class LineEditsLogic:
                 self.variables.sql_variables.test.tables]):
             tables_to_include = self.main_ui.line_edits.included_tables.text().split(',')
             hard_excluded = self.variables.sql_variables.tables.hard_excluded
-            included_tables = ClickableItemsViewExclude(self.variables.sql_variables.tables.all,
-                                                        tables_to_include, hard_excluded, True)
+            included_tables = ClickableItemsView(self.variables.sql_variables.tables.all,
+                                                 tables_to_include, hard_excluded, True)
             included_tables.exec_()
             text = ','.join(included_tables.selected_items)
             self.main_ui.line_edits.included_tables.setText(text)
