@@ -4,8 +4,7 @@ from typing import List
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.main_config import Configuration
-from custom_ui_elements.clickable_items_view_columns import ClickableItemsViewColumn
-from custom_ui_elements.clickable_items_view_exclude import ClickableItemsView
+from custom_ui_elements.clickable_item_view import ClickableItemsView
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
 
 
@@ -29,19 +28,20 @@ class LineEditsLogic:
             excluded_tables_view.exec_()
             text = ','.join(excluded_tables_view.selected_items)
             self.main_ui.line_edits.excluded_tables.setText(text)
+            excluded = list(set(excluded_tables_view.selected_items) - set(hard_excluded))
+            self.variables.sql_variables.tables.excluded = excluded
             tooltip_text = self.main_ui.line_edits.excluded_tables.text().replace(',', ',\n')
             self.main_ui.line_edits.excluded_tables.setToolTip(tooltip_text)
             self.table_calculation.calculate_excluded_columns()
 
     def set_excluded_columns(self) -> None:
         """Method sets excluded columns"""
-        tables = self.variables.sql_variables.tables.all
-        excluded_tables = self.variables.sql_variables.tables.excluded
-        hard_excluded = self.variables.sql_variables.tables.hard_excluded
-        excluded_columns = ClickableItemsViewColumn(tables, excluded_tables,
-                                                    hard_excluded, False)
+        excluded_columns = self.variables.sql_variables.columns.excluded
+        all_columns = self.get_all_columns()
+        excluded_columns = ClickableItemsView(all_columns, excluded_columns)
         excluded_columns.exec_()
         self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
+        self.variables.sql_variables.columns.excluded = excluded_columns.selected_items
         text = self.main_ui.line_edits.excluded_columns.text().replace(',', ',\n')
         self.main_ui.line_edits.excluded_columns.setToolTip(text)
 
@@ -79,3 +79,19 @@ class LineEditsLogic:
             select_db_view.exec_()
             line_edit.setText(select_db_view.selected_db)
             line_edit.setToolTip(line_edit.text())
+
+    def get_all_columns(self) -> List:
+        """Returns full list of table columns (without columns of hardly excluded tables)"""
+        columns = []
+        if self.variables.sql_variables.tables.included:
+            tables = self.variables.sql_variables.tables.included
+        else:
+            tables = self.variables.sql_variables.tables.all.copy()
+            for table in self.variables.sql_variables.tables.excluded:
+                if table in tables:
+                    tables.pop(table)
+        for table in tables:
+            for column in tables.get(table):
+                columns.append(f'{table}.{column}')
+        columns.sort()
+        return columns

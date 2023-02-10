@@ -68,5 +68,4 @@ class Columns:
     """Class intended for included and excluded columns"""
     excluded: List = field(default_factory=lambda: [])
     included: List = field(default_factory=lambda: [])
-    hard_excluded: List = field(default_factory=lambda: [])
     all: List = field(default_factory=lambda: [])

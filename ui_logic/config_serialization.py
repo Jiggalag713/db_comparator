@@ -78,7 +78,7 @@ def variables_to_json(variables: Variables) -> Dict:
         'retry_attempts': default_values.constants.get('retry_attempts'),
         'strings_amount': default_values.constants.get('strings_amount'),
         'table_timeout': default_values.constants.get('table_timeout'),
-        'schema_columns': default_values.schema_columns
+        'schema_columns': default_values.selected_schema_columns
     })
     return property_dict
 
@@ -135,6 +135,6 @@ def deserialize_config(variables, config: json) -> None:
                 system_config.logging_level = value
                 variables.logger.setLevel(value)
             elif 'schema_columns' in key:
-                default_values.schema_columns = value
+                default_values.selected_schema_columns = value
             elif 'mode' in key:
                 default_values.mode = value

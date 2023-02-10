@@ -25,6 +25,8 @@ class AdvancedSettingsItem(QDialog):
         self.main_ui.buttons.get('btn_ok').clicked.connect(self.advanced_logic.ok_pressed)
         self.main_ui.buttons.get('btn_cancel').clicked.connect(self.advanced_logic.cancel_pressed)
         self.main_ui.buttons.get('btn_reset').clicked.connect(self.advanced_logic.set_default)
+        schema_columns = self.main_ui.line_edits.schema_columns
+        schema_columns.clicked.connect(self.advanced_logic.set_schema_columns)
         self.advanced_logic.set_default()
         self.setWindowTitle('Advanced settings')
         self.set_connects()
@@ -42,33 +44,40 @@ class AdvancedSettingsItem(QDialog):
         comparing_step = line_edits.comparing_step
         comparing_step.textChanged.connect(lambda: set_value(comparing_step,
                                                              constants,
-                                                             'comparing_step'))
+                                                             'comparing_step',
+                                                             int))
         depth_report_check = line_edits.depth_report_check
         depth_report_check.textChanged.connect(lambda: set_value(depth_report_check,
                                                                  constants,
-                                                                 'depth_report_check'))
+                                                                 'depth_report_check',
+                                                                 int))
         retry_attempts = line_edits.retry_attempts
         retry_attempts.textChanged.connect(lambda: set_value(retry_attempts,
                                                              constants,
-                                                             'retry_attempts'))
+                                                             'retry_attempts',
+                                                             int))
         table_timeout = line_edits.table_timeout
         table_timeout.textChanged.connect(lambda: set_value(table_timeout,
                                                             constants,
-                                                            'table_timeout'))
+                                                            'table_timeout',
+                                                            int))
         strings_amount = line_edits.strings_amount
         strings_amount.textChanged.connect(lambda: set_value(strings_amount,
                                                              constants,
-                                                             'strings_amount'))
+                                                             'strings_amount',
+                                                             int))
         path_to_logs = line_edits.path_to_logs
         system_config = self.system_config.__dict__
         path_to_logs.textChanged.connect(lambda: set_value(path_to_logs,
                                                            system_config,
-                                                           'path_to_logs'))
+                                                           'path_to_logs',
+                                                           str))
         schema_columns = line_edits.schema_columns
         default_values = self.default_values.__dict__
         schema_columns.textChanged.connect(lambda: set_value(schema_columns,
                                                              default_values,
-                                                             'schema_columns'))
+                                                             'schema_columns',
+                                                             list))
 
     def set_combo_boxes_variables(self) -> None:
         """Connects combo_boxes with appropriate variables in

@@ -36,13 +36,15 @@ class ButtonsLogic:
         self.main_ui.line_edits.test.base.clear()
         self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
-        self.variables.default_values.set_default_values(self.main_ui.line_edits,
-                                                         self.main_ui.checkboxes,
+        self.main_ui.line_edits.excluded_tables.clear()
+        self.main_ui.line_edits.excluded_columns.clear()
+        self.variables.default_values.set_default_values(self.main_ui.checkboxes,
                                                          self.main_ui.radio_buttons)
         self.main_ui.labels.prod.base.hide()
         self.main_ui.line_edits.prod.base.hide()
         self.main_ui.labels.test.base.hide()
         self.main_ui.line_edits.test.base.hide()
+        self.main_ui.buttons.btn_set_configuration.setEnabled(False)
         self.status_bar.showMessage('Prod disconnected, test disconnected')
 
     def advanced(self) -> None:
@@ -154,3 +156,11 @@ class ButtonsLogic:
             self.variables.sql_variables.tables.all = self.table_calculation.calculate_table_list()
             tables = self.variables.sql_variables.tables.all
             self.table_calculation.calculate_includes_excludes(tables)
+            included_tables = self.variables.sql_variables.tables.included
+            self.main_ui.line_edits.included_tables.setText(','.join(included_tables))
+            self.main_ui.line_edits.included_tables.setToolTip(','.join(included_tables))
+            hard_excluded = self.variables.sql_variables.tables.hard_excluded
+            common_excluded_tables = self.variables.sql_variables.tables.excluded.copy()
+            common_excluded_tables.update(hard_excluded)
+            self.main_ui.line_edits.excluded_tables.setText(','.join(common_excluded_tables.keys()))
+            self.main_ui.line_edits.excluded_tables.setToolTip(','.join(common_excluded_tables))

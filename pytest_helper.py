@@ -28,7 +28,7 @@ def result_dict(variables):
             'prod.user': sql_variables.prod.credentials.user,
             'report_check_type': default_values.mode,
             'retry_attempts': default_values.constants.get('retry_attempts'),
-            'schema_columns': default_values.schema_columns,
+            'schema_columns': default_values.selected_schema_columns,
             'service_dir': system_values.service_dir,
             'strings_amount': default_values.constants.get('strings_amount'),
             'table_timeout': default_values.constants.get('table_timeout'),

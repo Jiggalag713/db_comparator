@@ -27,11 +27,9 @@ class MainUI(QWidget):
         self.variables = Variables()
         self.configuration = Configuration(self.variables)
         self.setLayout(self.configuration.ui_elements.positions.grid)
-        line_edits = self.configuration.ui_elements.line_edits
         checkboxes = self.configuration.ui_elements.checkboxes
         radio_buttons = self.configuration.ui_elements.radio_buttons
-        self.configuration.variables.default_values.set_default_values(line_edits,
-                                                                       checkboxes,
+        self.configuration.variables.default_values.set_default_values(checkboxes,
                                                                        radio_buttons)
         self.advanced_settings = AdvancedSettingsItem(self.configuration)
         self.setWindowTitle('db_comparator')
