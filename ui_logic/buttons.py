@@ -36,12 +36,15 @@ class ButtonsLogic:
         self.main_ui.line_edits.test.base.clear()
         self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
+        self.main_ui.line_edits.excluded_tables.clear()
+        self.main_ui.line_edits.excluded_columns.clear()
         self.variables.default_values.set_default_values(self.main_ui.checkboxes,
                                                          self.main_ui.radio_buttons)
         self.main_ui.labels.prod.base.hide()
         self.main_ui.line_edits.prod.base.hide()
         self.main_ui.labels.test.base.hide()
         self.main_ui.line_edits.test.base.hide()
+        self.main_ui.buttons.btn_set_configuration.setEnabled(False)
         self.status_bar.showMessage('Prod disconnected, test disconnected')
 
     def advanced(self) -> None:
