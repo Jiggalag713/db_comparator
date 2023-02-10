@@ -61,6 +61,7 @@ class Configuration:
         included_tables.textChanged.connect(lambda: set_value(included_tables,
                                             self.variables.default_values.__dict__,
                                             'included_tables', list))
+        included_tables.textChanged.connect(self.disable_exclude)
         excluded_tables.textChanged.connect(lambda: set_value(excluded_tables,
                                             self.variables.sql_variables.tables.__dict__,
                                             'excluded', list))
@@ -203,6 +204,11 @@ class Configuration:
                 radio_buttons.get(item).setChecked(True)
             else:
                 radio_buttons.get(item).setChecked(False)
+
+    def disable_exclude(self) -> None:
+        """Disables excluded_table in case of included_tables is not empty"""
+        if self.ui_elements.line_edits.included_tables.text():
+            self.ui_elements.line_edits.excluded_tables.setEnabled(False)
 
 
 def set_value(widget, store, key, value_type) -> None:

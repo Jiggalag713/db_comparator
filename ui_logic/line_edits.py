@@ -54,10 +54,10 @@ class LineEditsLogic:
             included_tables = ClickableItemsView(self.variables.sql_variables.tables.all,
                                                  tables_to_include, hard_excluded, True)
             included_tables.exec_()
+            self.variables.sql_variables.tables.included = included_tables.selected_items
             text = ','.join(included_tables.selected_items)
             self.main_ui.line_edits.included_tables.setText(text)
-            included_tables_text = self.main_ui.line_edits.included_tables.text()
-            included_tables_text = included_tables_text.replace(',', ',\n')
+            included_tables_text = text.replace(',', ',\n')
             self.main_ui.line_edits.included_tables.setToolTip(included_tables_text)
 
     def set_prod_db(self) -> None:
