@@ -19,28 +19,27 @@ class DefaultValues:
             'strings_amount': 1000
         }
         self.send_mail_to = ''
-        self.selected_schema_columns: List[str] = []
         self.schema_columns: List[str] = []
         self.mode = 'detailed'
-        # self.schema_columns: List[str] = ['TABLE_CATALOG',
-        #                                   'TABLE_NAME',
-        #                                   'COLUMN_NAME',
-        #                                   'ORDINAL_POSITION',
-        #                                   'COLUMN_DEFAULT',
-        #                                   'IS_NULLABLE',
-        #                                   'DATA_TYPE',
-        #                                   'CHARACTER_MAXIMUM_LENGTH',
-        #                                   'CHARACTER_OCTET_LENGTH',
-        #                                   'NUMERIC_PRECISION',
-        #                                   'NUMERIC_SCALE',
-        #                                   'DATETIME_PRECISION',
-        #                                   'CHARACTER_SET_NAME',
-        #                                   'COLLATION_NAME',
-        #                                   'COLUMN_TYPE',
-        #                                   'COLUMN_KEY',
-        #                                   'EXTRA',
-        #                                   'COLUMN_COMMENT',
-        #                                   'GENERATION_EXPRESSION']
+        self.selected_schema_columns: List[str] = ['TABLE_CATALOG',
+                                                   'TABLE_NAME',
+                                                   'COLUMN_NAME',
+                                                   'ORDINAL_POSITION',
+                                                   'COLUMN_DEFAULT',
+                                                   'IS_NULLABLE',
+                                                   'DATA_TYPE',
+                                                   'CHARACTER_MAXIMUM_LENGTH',
+                                                   'CHARACTER_OCTET_LENGTH',
+                                                   'NUMERIC_PRECISION',
+                                                   'NUMERIC_SCALE',
+                                                   'DATETIME_PRECISION',
+                                                   'CHARACTER_SET_NAME',
+                                                   'COLLATION_NAME',
+                                                   'COLUMN_TYPE',
+                                                   'COLUMN_KEY',
+                                                   'EXTRA',
+                                                   'COLUMN_COMMENT',
+                                                   'GENERATION_EXPRESSION']
 
     def set_default_values(self, checkboxes, radio_buttons) -> None:
         """Method sets default values to some UI elements on main window."""
