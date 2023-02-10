@@ -38,7 +38,8 @@ class LineEditsLogic:
         excluded_columns = self.variables.sql_variables.columns.excluded
         all_columns = self.get_all_columns()
         excluded_columns = ClickableItemsView(all_columns, excluded_columns,
-                                              self.variables.sql_variables)
+                                              self.variables.sql_variables.columns,
+                                              'excluded', False)
         excluded_columns.exec_()
         self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
         text = self.main_ui.line_edits.excluded_columns.text().replace(',', ',\n')

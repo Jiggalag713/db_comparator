@@ -7,14 +7,16 @@ from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 class ClickableItemsView(QDialog):
     """Implements list view with ability to make some elements disabled"""
-    def __init__(self, item_list: List, selected_items: List[str], sql_variables):
+    def __init__(self, item_list: List, selected_items: List[str], store, key, default_include: bool):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
         self.selected_items: List[str] = selected_items
         self.item_list: List = item_list
-        self.sql_variables = sql_variables
+        self.store = store
+        self.key = key
+        self.default_include = default_include
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)
@@ -38,7 +40,7 @@ class ClickableItemsView(QDialog):
         self.model = QStandardItemModel()
         for table in self.item_list:
             item = QStandardItem(table)
-            item.setCheckState(0)
+            item.setCheckState(self.get_included_state(self.default_include))
             if item.text() in self.selected_items:
                 item.setCheckState(2)
             item.setCheckable(True)
@@ -57,7 +59,7 @@ class ClickableItemsView(QDialog):
             if item.checkState() == 2:
                 checked_tables.append(item.text())
         self.selected_items = checked_tables
-        self.sql_variables.columns.excluded = self.selected_items
+        self.store.__dict__.update({self.key: list(self.selected_items)})
         self.init_items()
         self.close()
 
@@ -74,3 +76,10 @@ class ClickableItemsView(QDialog):
     def cancel_pressed(self) -> None:
         """Method closes form"""
         self.close()
+
+    @staticmethod
+    def get_included_state(include) -> int:
+        """Converts bool to proper int value"""
+        if include:
+            return 2
+        return 0

@@ -57,16 +57,16 @@ class Configuration:
         """Connects another line_edits with appropriate internal classes attributes"""
         send_mail_to.textChanged.connect(lambda: set_value(send_mail_to,
                                          self.variables.default_values.__dict__,
-                                         'send_mail_to'))
+                                         'send_mail_to', str))
         included_tables.textChanged.connect(lambda: set_value(included_tables,
                                             self.variables.default_values.__dict__,
-                                            'included_tables'))
+                                            'included_tables', list))
         excluded_tables.textChanged.connect(lambda: set_value(excluded_tables,
-                                            self.variables.default_values.__dict__,
-                                            'excluded_tables'))
+                                            self.variables.sql_variables.tables.__dict__,
+                                            'excluded', list))
         excluded_columns.textChanged.connect(lambda: set_value(excluded_columns,
-                                             self.variables.default_values.__dict__,
-                                             'excluded_columns'))
+                                             self.variables.sql_variables.columns.__dict__,
+                                             'excluded', list))
 
     def set_sql_related_value(self, instance, credentials, item) -> None:
         """Sets sql related value"""
@@ -205,6 +205,12 @@ class Configuration:
                 radio_buttons.get(item).setChecked(False)
 
 
-def set_value(widget, store, key) -> None:
+def set_value(widget, store, key, value_type) -> None:
     """Sets value from widget to some variable"""
-    store.update({key: Configuration.transform_text(widget)})
+    value = Configuration.transform_text(widget)
+    if isinstance(value_type, list):
+        store.update({key: list(value)})
+    elif isinstance(value_type, str):
+        store.update({key: str(value)})
+    elif isinstance(value_type, int):
+        store.update({key: int(value)})

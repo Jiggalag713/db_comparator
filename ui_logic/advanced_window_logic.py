@@ -88,21 +88,29 @@ class AdvancedWindowLogic:
 
     def set_schema_columns(self):
         """Sets schema columns"""
+        self.default_values.schema_columns = self.get_schema_columns()
+        selected_schema_columns = self.default_values.selected_schema_columns
+        schema_columns = ClickableItemsView(self.default_values.schema_columns,
+                                            selected_schema_columns,
+                                            self.default_values,
+                                            'schema_columns', True)
+        schema_columns.exec_()
+        text = ','.join(schema_columns.selected_items)
+        self.main_ui.line_edits.schema_columns.setText(text)
+        tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
+        self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)
+
+    def get_schema_columns(self):
+        """Returns full list of columns of information_schema for schema comparing"""
         host = self.variables.sql_variables.prod.credentials.host
         user = self.variables.sql_variables.prod.credentials.user
         password = self.variables.sql_variables.prod.credentials.password
+        columns = []
         base = 'information_schema'
         info_schema_creds = SqlCredentials(host=host, user=user, password=password, base=base)
         engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
         result = engine.execute("describe information_schema.columns;")
         raw = result.fetchall()
         for item in raw:
-            self.default_values.schema_columns.append(item[0])
-        selected_schema_columns = self.default_values.selected_schema_columns
-        schema_columns = ClickableItemsView(self.default_values.schema_columns,
-                                            selected_schema_columns)
-        schema_columns.exec_()
-        text = ','.join(schema_columns.selected_items)
-        self.main_ui.line_edits.schema_columns.setText(text)
-        tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
-        self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)
+            columns.append(item[0])
+        return columns
