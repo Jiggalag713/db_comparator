@@ -1,12 +1,12 @@
 """Module intended to store logic, worked on advanced settings window"""
 import logging
-from typing import Any, List
+from typing import Any
 
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.default_variables import DefaultValues
 from configuration.advanced_ui_config import UIElements
-from custom_ui_elements.clickable_items_view import ClickableItemsViewSchema
+from custom_ui_elements.clickable_items_view import ClickableItemsView
 from helpers.sql_helper import SqlCredentials, SqlAlchemyHelper
 
 
@@ -99,8 +99,8 @@ class AdvancedWindowLogic:
         for item in raw:
             self.default_values.schema_columns.append(item[0])
         selected_schema_columns = self.default_values.selected_schema_columns
-        schema_columns = ClickableItemsViewSchema(self.default_values.schema_columns,
-                                                  selected_schema_columns)
+        schema_columns = ClickableItemsView(self.default_values.schema_columns,
+                                            selected_schema_columns)
         schema_columns.exec_()
         text = ','.join(schema_columns.selected_items)
         self.main_ui.line_edits.schema_columns.setText(text)

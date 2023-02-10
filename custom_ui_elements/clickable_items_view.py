@@ -1,19 +1,20 @@
 """Module contains custom clickable item view class"""
-from typing import List, Dict
+from typing import List
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 
-class ClickableItemsViewSchema(QDialog):
+class ClickableItemsView(QDialog):
     """Implements list view with ability to make some elements disabled"""
-    def __init__(self, item_list: List, selected_items: List[str]):
+    def __init__(self, item_list: List, selected_items: List[str], sql_variables):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
         self.selected_items: List[str] = selected_items
         self.item_list: List = item_list
+        self.sql_variables = sql_variables
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)
@@ -56,6 +57,7 @@ class ClickableItemsViewSchema(QDialog):
             if item.checkState() == 2:
                 checked_tables.append(item.text())
         self.selected_items = checked_tables
+        self.sql_variables.columns.excluded = self.selected_items
         self.init_items()
         self.close()
 

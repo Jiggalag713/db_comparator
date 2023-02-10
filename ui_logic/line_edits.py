@@ -4,7 +4,7 @@ from typing import List
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.main_config import Configuration
-from custom_ui_elements.clickable_items_view import ClickableItemsViewSchema
+from custom_ui_elements.clickable_items_view import ClickableItemsView
 from custom_ui_elements.clickable_items_view_exclude import ClickableItemsViewExclude
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
 
@@ -37,7 +37,8 @@ class LineEditsLogic:
         """Method sets excluded columns"""
         excluded_columns = self.variables.sql_variables.columns.excluded
         all_columns = self.get_all_columns()
-        excluded_columns = ClickableItemsViewSchema(all_columns, excluded_columns)
+        excluded_columns = ClickableItemsView(all_columns, excluded_columns,
+                                              self.variables.sql_variables)
         excluded_columns.exec_()
         self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
         text = self.main_ui.line_edits.excluded_columns.text().replace(',', ',\n')
