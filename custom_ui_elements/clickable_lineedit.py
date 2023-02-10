@@ -9,6 +9,6 @@ class ClickableLineEdit(QLineEdit):
 
     def event(self, event):
         """Implements on click event"""
-        if event.type() == QEvent.Type.MouseButtonPress:
+        if event.type() == QEvent.Type.MouseButtonPress and self.isEnabled():
             self.clicked.emit()
         return super().event(event)

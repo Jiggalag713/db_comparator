@@ -14,8 +14,6 @@ substitution
 * [ ] Add test stage to github actions
 * [ ] ui_logic/table_calculation.py:104:17: W0511: TODO: fix this (fixme)
 * [ ] ui_logic/config_serialization.py:25:5: W0511: TODO: fix (fixme)
-* [ ] clean up excluded_tables if included tables set
-* [ ] disable exclude tables if include tables set
 
 Windows backlog:
 
