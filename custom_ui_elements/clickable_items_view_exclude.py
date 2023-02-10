@@ -1,4 +1,5 @@
 """Module contains custom clickable item view class"""
+import collections
 from typing import List, Dict
 
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -16,7 +17,8 @@ class ClickableItemsViewExclude(QDialog):
         self.selected_items: List[str] = selected_items
         self.hard_excluded: Dict = hard_excluded
         self.include = include
-        self.item_list: Dict = item_list
+        self.item_list = collections.OrderedDict(sorted(item_list.items(),
+                                                        key=lambda i: i[0].lower()))
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)

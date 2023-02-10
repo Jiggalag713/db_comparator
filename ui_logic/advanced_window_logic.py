@@ -89,11 +89,14 @@ class AdvancedWindowLogic:
     def set_schema_columns(self):
         """Sets schema columns"""
         self.default_values.schema_columns = self.get_schema_columns()
-        selected_schema_columns = self.default_values.selected_schema_columns
+        if self.default_values.selected_schema_columns:
+            selected_schema_columns = self.default_values.selected_schema_columns
+        else:
+            selected_schema_columns = self.default_values.schema_columns
         schema_columns = ClickableItemsView(self.default_values.schema_columns,
                                             selected_schema_columns,
                                             self.default_values,
-                                            'schema_columns', True)
+                                            'schema_columns')
         schema_columns.exec_()
         text = ','.join(schema_columns.selected_items)
         self.main_ui.line_edits.schema_columns.setText(text)

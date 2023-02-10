@@ -7,16 +7,15 @@ from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
 class ClickableItemsView(QDialog):
     """Implements list view with ability to make some elements disabled"""
-    def __init__(self, item_list: List, selected_items: List[str], store, key, default_include: bool):
+    def __init__(self, item_list: List, selected_items: List[str], store, key):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
+        self.item_list: List = sorted(item_list, key=str.lower)
         self.selected_items: List[str] = selected_items
-        self.item_list: List = item_list
         self.store = store
         self.key = key
-        self.default_include = default_include
         self.model: QStandardItemModel = QStandardItemModel()
 
         btn_ok: QPushButton = QPushButton('OK', self)
@@ -40,7 +39,7 @@ class ClickableItemsView(QDialog):
         self.model = QStandardItemModel()
         for table in self.item_list:
             item = QStandardItem(table)
-            item.setCheckState(self.get_included_state(self.default_include))
+            item.setCheckState(0)
             if item.text() in self.selected_items:
                 item.setCheckState(2)
             item.setCheckable(True)
@@ -76,10 +75,3 @@ class ClickableItemsView(QDialog):
     def cancel_pressed(self) -> None:
         """Method closes form"""
         self.close()
-
-    @staticmethod
-    def get_included_state(include) -> int:
-        """Converts bool to proper int value"""
-        if include:
-            return 2
-        return 0
