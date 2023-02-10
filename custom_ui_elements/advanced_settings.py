@@ -25,6 +25,8 @@ class AdvancedSettingsItem(QDialog):
         self.main_ui.buttons.get('btn_ok').clicked.connect(self.advanced_logic.ok_pressed)
         self.main_ui.buttons.get('btn_cancel').clicked.connect(self.advanced_logic.cancel_pressed)
         self.main_ui.buttons.get('btn_reset').clicked.connect(self.advanced_logic.set_default)
+        schema_columns = self.main_ui.line_edits.schema_columns
+        schema_columns.clicked.connect(self.advanced_logic.set_schema_columns)
         self.advanced_logic.set_default()
         self.setWindowTitle('Advanced settings')
         self.set_connects()

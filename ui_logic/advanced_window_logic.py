@@ -1,21 +1,24 @@
 """Module intended to store logic, worked on advanced settings window"""
 import logging
-from typing import Any
+from typing import Any, List
 
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.default_variables import DefaultValues
 from configuration.advanced_ui_config import UIElements
+from custom_ui_elements.clickable_items_view import ClickableItemsViewSchema
+from helpers.sql_helper import SqlCredentials, SqlAlchemyHelper
 
 
 class AdvancedWindowLogic:
     """Class intended to store logic, worked on advanced settings window"""
-    def __init__(self, advanced_window, main_ui, configuration):
+    def __init__(self, advanced_window, main_ui, config):
         self.advanced_window = advanced_window
         self.main_ui: UIElements = main_ui
-        self.system_config = configuration.variables.system_config
-        self.default_values: DefaultValues = configuration.variables.default_values
-        self.logger: logging.Logger = configuration.logger
+        self.system_config = config.variables.system_config
+        self.variables = config.variables
+        self.default_values: DefaultValues = config.variables.default_values
+        self.logger: logging.Logger = config.logger
 
     def ok_pressed(self) -> None:
         """Method saves values on advanced settings window when OK button pressed"""
@@ -26,7 +29,7 @@ class AdvancedWindowLogic:
         depth_report_check = self.main_ui.line_edits.depth_report_check.text()
         self.default_values.constants.update({'depth_report_check': depth_report_check})
         schema_columns = self.main_ui.line_edits.schema_columns.text().split(',')
-        self.default_values.schema_columns = schema_columns
+        self.default_values.selected_schema_columns = schema_columns
         retry_attempts = self.main_ui.line_edits.retry_attempts.text()
         self.default_values.constants.update({'retry_attempts': retry_attempts})
         path_to_logs = self.main_ui.line_edits.path_to_logs.text()
@@ -64,7 +67,7 @@ class AdvancedWindowLogic:
             (self.main_ui.line_edits.depth_report_check,
              default_values.constants.get('depth_report_check')),
             (self.main_ui.line_edits.schema_columns,
-             ','.join(default_values.schema_columns)),
+             ','.join(default_values.selected_schema_columns)),
             (self.main_ui.line_edits.retry_attempts,
              default_values.constants.get('retry_attempts')),
             (self.main_ui.line_edits.table_timeout,
@@ -82,3 +85,24 @@ class AdvancedWindowLogic:
         """Method set given value in given lineedit"""
         element.setText(str(value))
         element.setCursorPosition(0)
+
+    def set_schema_columns(self):
+        """Sets schema columns"""
+        host = self.variables.sql_variables.prod.credentials.host
+        user = self.variables.sql_variables.prod.credentials.user
+        password = self.variables.sql_variables.prod.credentials.password
+        base = 'information_schema'
+        info_schema_creds = SqlCredentials(host=host, user=user, password=password, base=base)
+        engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
+        result = engine.execute("describe information_schema.columns;")
+        raw = result.fetchall()
+        for item in raw:
+            self.default_values.schema_columns.append(item[0])
+        selected_schema_columns = self.default_values.selected_schema_columns
+        schema_columns = ClickableItemsViewSchema(self.default_values.schema_columns,
+                                                  selected_schema_columns)
+        schema_columns.exec_()
+        text = ','.join(schema_columns.selected_items)
+        self.main_ui.line_edits.schema_columns.setText(text)
+        tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
+        self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)

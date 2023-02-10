@@ -180,7 +180,10 @@ class Configuration:
         send_mail_to = self.variables.default_values.send_mail_to
         self.ui_elements.line_edits.send_mail_to.setText(send_mail_to)
         excluded_tables = self.variables.sql_variables.tables.excluded
-        self.ui_elements.line_edits.excluded_tables.setText(','.join(excluded_tables))
+        common_excluded_tables = excluded_tables.copy()
+        hard_excluded = self.variables.sql_variables.tables.hard_excluded
+        common_excluded_tables.update(hard_excluded)
+        self.ui_elements.line_edits.excluded_tables.setText(','.join(common_excluded_tables))
         excluded_columns = self.variables.sql_variables.columns.excluded
         self.ui_elements.line_edits.excluded_columns.setText(','.join(excluded_columns))
 

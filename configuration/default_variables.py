@@ -11,8 +11,6 @@ class DefaultValues:
                                      'check_entities': True,
                                      'use_dataframes': True,
                                      'report_check_type': 'detailed'}
-        self.default_excluded_tables: List[str] = []
-        self.default_excluded_columns: List[str] = []
         self.constants = {
             'comparing_step': 10000,
             'depth_report_check': 7,
@@ -21,6 +19,7 @@ class DefaultValues:
             'strings_amount': 1000
         }
         self.send_mail_to = ''
+        self.selected_schema_columns: List[str] = []
         self.schema_columns: List[str] = []
         self.mode = 'detailed'
         # self.schema_columns: List[str] = ['TABLE_CATALOG',
@@ -43,18 +42,10 @@ class DefaultValues:
         #                                   'COLUMN_COMMENT',
         #                                   'GENERATION_EXPRESSION']
 
-    def set_default_values(self, line_edits, checkboxes, radio_buttons) -> None:
+    def set_default_values(self, checkboxes, radio_buttons) -> None:
         """Method sets default values to some UI elements on main window."""
-        self.line_edits_default_values(line_edits)
         self.check_boxes_default_values(checkboxes)
         self.radio_buttons_default_values(radio_buttons)
-
-    def line_edits_default_values(self, line_edits) -> None:
-        """Method sets default values for line_edits"""
-        line_edits.excluded_tables.setText(','.join(self.default_excluded_tables))
-        line_edits.excluded_tables.setCursorPosition(0)
-        line_edits.excluded_columns.setText(','.join(self.default_excluded_columns))
-        line_edits.excluded_columns.setCursorPosition(0)
 
     def check_boxes_default_values(self, checkboxes) -> None:
         """Method sets default values for check_boxes"""

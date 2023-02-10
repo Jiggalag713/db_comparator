@@ -31,7 +31,7 @@ def variables():
     inst.sql_variables.prod.credentials.base = 'test_db'
     inst.default_values.mode = 'section_summary'
     inst.default_values.constants.update({'retry_attempts': 713})
-    inst.default_values.schema_columns = ['my', 'perfect', 'schema', 'columns']
+    inst.default_values.selected_schema_columns = ['my', 'perfect', 'schema', 'columns']
     inst.system_config.service_dir = '/my/perfect/service/dir'
     inst.default_values.constants.update({'strings_amount': 713})
     inst.default_values.constants.update({'table_timeout': 713})

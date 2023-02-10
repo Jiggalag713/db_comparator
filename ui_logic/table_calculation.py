@@ -49,7 +49,6 @@ class TableCalculation:
         """Calculates included and excluded tables"""
         prod = self.variables.sql_variables.prod
         test = self.variables.sql_variables.test
-        # line_edits = self.configuration.ui_elements.line_edits
         if self.variables.sql_variables.tables.included.keys():
             pass
         for table in tables:
