@@ -74,7 +74,9 @@ class ButtonsLogic:
                         self.variables.sql_variables.tables.included.pop(table)
                         self.logger.debug(f'Deleted table {table} from self.tables list')
             enabled_dfs = self.main_ui.checkboxes.get('use_dataframes').isChecked()
-            progress = ProgressWindow(self.configuration, enabled_dfs)
+            check_schema = self.main_ui.checkboxes.get('check_schema').isChecked()
+            progress = ProgressWindow(self.configuration.variables.sql_variables, enabled_dfs,
+                                      check_schema)
             progress.exec()
 
     def check_prod_host(self) -> None:

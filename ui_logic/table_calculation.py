@@ -2,17 +2,14 @@
  for calculating table lists"""
 from typing import Dict
 
-from configuration.main_config import Configuration
 from configuration.variables import Variables
-from ui_logic.common import set_ui_value
 
 
 class TableCalculation:
     """Class intended for calculating different table lists"""
-    def __init__(self, configuration: Configuration):
-        self.configuration: Configuration = configuration
-        self.variables: Variables = configuration.variables
-        self.logger = configuration.logger
+    def __init__(self, variables: Variables):
+        self.variables: Variables = variables
+        self.logger = variables.logger
 
     def calculate_table_list(self) -> None:
         """Method calculates of tables, which exists in both databases"""
@@ -33,8 +30,6 @@ class TableCalculation:
         for table in list(prod_tables & test_tables):
             common_tables.update({table: prod.get(table)})
         return common_tables
-
-
 
     def get_unique_tables(self, first, second, instance) -> None:
         """Calculates unique tables for first instance"""
@@ -95,9 +90,6 @@ class TableCalculation:
 
     def calculate_excluded_columns(self) -> None:
         """Method calculates list of excluded column"""
-        line_edits = self.configuration.ui_elements.line_edits
-        set_ui_value(line_edits.excluded_tables, line_edits.excluded_tables.text())
-        set_ui_value(line_edits.excluded_columns, line_edits.excluded_columns.text())
         for table in self.variables.sql_variables.tables.all:
             if table in self.variables.sql_variables.tables.excluded:
                 columns = self.variables.sql_variables.tables.all

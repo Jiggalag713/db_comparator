@@ -1,22 +1,16 @@
 """Module contains LineEditsLogic with implementation line_edits logic"""
 from typing import List
 
-from PyQt5.QtWidgets import QLineEdit
-
-from configuration.main_config import Configuration
 from custom_ui_elements.clickable_item_view import ClickableItemsView
 from custom_ui_elements.radiobutton_items_view import RadiobuttonItemsView
 
 
 class LineEditsLogic:
     """Class line_edits logic"""
-    def __init__(self, configuration, table_calculation):
-        self.configuration: Configuration = configuration
-        self.variables = configuration.variables
-        self.main_ui = configuration.ui_elements
-        self.table_calculation = table_calculation
+    def __init__(self, variables):
+        self.variables = variables
 
-    def set_excluded_tables(self) -> None:
+    def get_selected_excluded_tables(self) -> List[str]:
         """Method sets excluded tables"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
@@ -26,59 +20,37 @@ class LineEditsLogic:
             excluded_tables_view = ClickableItemsView(tables, excluded_tables,
                                                       hard_excluded, False)
             excluded_tables_view.exec_()
-            text = ','.join(excluded_tables_view.selected_items)
-            self.main_ui.line_edits.excluded_tables.setText(text)
-            excluded = list(set(excluded_tables_view.selected_items) - set(hard_excluded))
-            self.variables.sql_variables.tables.excluded = excluded
-            tooltip_text = self.main_ui.line_edits.excluded_tables.text().replace(',', ',\n')
-            self.main_ui.line_edits.excluded_tables.setToolTip(tooltip_text)
-            self.table_calculation.calculate_excluded_columns()
+            return excluded_tables_view.selected_items
+        return []
 
-    def set_excluded_columns(self) -> None:
+    def get_selected_included_columns(self) -> List[str]:
         """Method sets excluded columns"""
         excluded_columns = self.variables.sql_variables.columns.excluded
         all_columns = self.get_all_columns()
         excluded_columns = ClickableItemsView(all_columns, excluded_columns)
         excluded_columns.exec_()
-        self.main_ui.line_edits.excluded_columns.setText(','.join(excluded_columns.selected_items))
-        self.variables.sql_variables.columns.excluded = excluded_columns.selected_items
-        text = self.main_ui.line_edits.excluded_columns.text().replace(',', ',\n')
-        self.main_ui.line_edits.excluded_columns.setToolTip(text)
+        return excluded_columns.selected_items
 
-    def set_included_tables(self) -> None:
+    def get_selected_included_tables(self) -> List[str]:
         """Method sets included tables to UI"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
-            tables_to_include = self.main_ui.line_edits.included_tables.text().split(',')
+            tables = self.variables.sql_variables.tables.all
+            included_tables = self.variables.sql_variables.tables.included
             hard_excluded = self.variables.sql_variables.tables.hard_excluded
-            included_tables = ClickableItemsView(self.variables.sql_variables.tables.all,
-                                                 tables_to_include, hard_excluded, True)
+            included_tables = ClickableItemsView(tables, included_tables, hard_excluded, True)
             included_tables.exec_()
-            self.variables.sql_variables.tables.included = included_tables.selected_items
-            text = ','.join(included_tables.selected_items)
-            self.main_ui.line_edits.included_tables.setText(text)
-            included_tables_text = text.replace(',', ',\n')
-            self.main_ui.line_edits.included_tables.setToolTip(included_tables_text)
-
-    def set_prod_db(self) -> None:
-        """Method sets prod database"""
-        self.set_db(self.main_ui.line_edits.prod.base,
-                    self.variables.sql_variables.prod.databases)
-
-    def set_test_db(self) -> None:
-        """Method sets test database"""
-        self.set_db(self.main_ui.line_edits.test.base,
-                    self.variables.sql_variables.test.databases)
+            return included_tables.selected_items
+        return []
 
     @staticmethod
-    def set_db(line_edit: QLineEdit, db_list: List[str]) -> None:
+    def set_db(db_list: List[str], database: str) -> str:
         """Method implements common approach of setting database"""
         if db_list:
-            database = line_edit.text()
             select_db_view = RadiobuttonItemsView(db_list, database)
             select_db_view.exec_()
-            line_edit.setText(select_db_view.selected_db)
-            line_edit.setToolTip(line_edit.text())
+            return select_db_view.selected_db
+        return ''
 
     def get_all_columns(self) -> List:
         """Returns full list of table columns (without columns of hardly excluded tables)"""

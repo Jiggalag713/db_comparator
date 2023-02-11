@@ -52,18 +52,18 @@ class MainWindow(QMainWindow):
         self.main_window = MainUI(self.status_bar)
         self.setCentralWidget(self.main_window)
         self.menubar = self.menuBar()
-        table_calculation = TableCalculation(self.main_window.configuration)
+        table_calculation = TableCalculation(self.main_window.configuration.variables)
         self.common_logic = ButtonsLogic(self.main_window, table_calculation)
-        self.line_edits_logic = LineEditsLogic(self.main_window.configuration, table_calculation)
+        self.line_edits_logic = LineEditsLogic(self.main_window.configuration.variables)
         self.menu: QMenu = self.get_menu()
-        self.add_connects()
+        self.add_connects(table_calculation)
 
         self.setGeometry(300, 300, 900, 600)
         self.setWindowTitle('db_comparator')
         self.setWindowIcon(QIcon('./resources/slowpoke.png'))
         self.show()
 
-    def add_connects(self):
+    def add_connects(self, table_calculation):
         """Method intended for set connections between UI elements and methods"""
         buttons = self.main_window.configuration.ui_elements.buttons
         buttons.btn_advanced.clicked.connect(self.common_logic.advanced)
@@ -73,11 +73,12 @@ class MainWindow(QMainWindow):
         buttons.btn_check_test.clicked.connect(self.common_logic.check_test_host)
 
         line_edits = self.main_window.configuration.ui_elements.line_edits
-        line_edits.excluded_tables.clicked.connect(self.line_edits_logic.set_excluded_tables)
-        line_edits.excluded_columns.clicked.connect(self.line_edits_logic.set_excluded_columns)
-        line_edits.included_tables.clicked.connect(self.line_edits_logic.set_included_tables)
-        line_edits.prod.base.clicked.connect(self.line_edits_logic.set_prod_db)
-        line_edits.test.base.clicked.connect(self.line_edits_logic.set_test_db)
+        line_edits.excluded_tables.clicked.connect(lambda:
+                                                   self.set_excluded_tables(table_calculation))
+        line_edits.excluded_columns.clicked.connect(self.set_excluded_columns)
+        line_edits.included_tables.clicked.connect(self.set_included_tables)
+        line_edits.prod.base.clicked.connect(lambda: self.set_db('prod'))
+        line_edits.test.base.clicked.connect(lambda: self.set_db('test'))
 
     def get_menu(self) -> QMenu:
         """Method builds main window menu"""
@@ -148,6 +149,48 @@ class MainWindow(QMainWindow):
             self.main_window.variables.logger.warning('File not found, or, probably, '
                                                       'you just pressed cancel. Warn: '
                                                       '%s', err.args[1])
+
+    def set_excluded_tables(self, table_calculation) -> None:
+        """Method sets excluded tables"""
+        selected_tables = self.line_edits_logic.get_selected_excluded_tables()
+        line_edits = self.main_window.configuration.ui_elements.line_edits
+        excluded_tables_line_edit = line_edits.excluded_tables
+        excluded_tables_line_edit.setText(','.join(selected_tables))
+        tables = self.main_window.configuration.variables.sql_variables.tables
+        hard_excluded = tables.hard_excluded
+        tables.excluded = list(set(selected_tables) - set(hard_excluded))
+        tooltip_text = excluded_tables_line_edit.text().replace(',', ',\n')
+        excluded_tables_line_edit.setToolTip(tooltip_text)
+        table_calculation.calculate_excluded_columns()
+
+    def set_included_tables(self) -> None:
+        """Method sets included tables to UI"""
+        selected_tables = self.line_edits_logic.get_selected_included_tables()
+        line_edits = self.main_window.configuration.ui_elements.line_edits
+        included_tables_line_edit = line_edits.included_tables
+        tables = self.main_window.configuration.variables.sql_variables.tables
+        tables.included = selected_tables
+        included_tables_line_edit.setText(','.join(selected_tables))
+        line_edits.included_tables.setToolTip(','.join(selected_tables))
+
+    def set_excluded_columns(self) -> None:
+        """Method sets excluded columns"""
+        selected_columns = self.line_edits_logic.get_selected_included_columns()
+        line_edits = self.main_window.configuration.ui_elements.line_edits
+        excluded_columns_line_edit = line_edits.excluded_columns
+        columns = self.main_window.configuration.variables.sql_variables.columns
+        columns.excluded = selected_columns
+        excluded_columns_line_edit.setText(','.join(selected_columns))
+        line_edits.excluded_columns.setToolTip(','.join(selected_columns))
+
+    def set_db(self, instance_type) -> None:
+        """Method sets prod database"""
+        line_edits = self.main_window.configuration.ui_elements.line_edits
+        sql_variables = self.main_window.variables.sql_variables.__dict__.get(instance_type)
+        selected_db = self.line_edits_logic.set_db(sql_variables.databases,
+                                                   sql_variables.credentials.base)
+        line_edits.__dict__.get(instance_type).base.setText(selected_db)
+        line_edits.__dict__.get(instance_type).base.setToolTip(selected_db)
 
 
 if __name__ == '__main__':

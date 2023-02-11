@@ -14,6 +14,7 @@ substitution
 * [ ] Add test stage to github actions
 * [ ] ui_logic/table_calculation.py:104:17: W0511: TODO: fix this (fixme)
 * [ ] ui_logic/config_serialization.py:25:5: W0511: TODO: fix (fixme)
+* [ ] split ui and logic: buttons
 
 Windows backlog:
 
