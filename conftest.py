@@ -2,6 +2,7 @@
 import pytest
 
 from configuration.variables import Variables
+from ui_logic.table_calculation import TableCalculation
 
 
 @pytest.fixture(scope='session')
@@ -42,3 +43,15 @@ def variables():
     inst.system_config.test_dir = '/my/perfect/test/dir'
     inst.default_values.checks_customization.update({'use_dataframes': False})
     return inst
+
+
+@pytest.fixture(scope='session')
+def table_calculation(variables):
+    table_calc = TableCalculation(variables)
+    table_calc.variables.sql_variables.prod.tables = {'first': ['one', 'two'],
+                                                      'second': ['one', 'two'],
+                                                      'third': ['one', 'two']}
+    table_calc.variables.sql_variables.test.tables = {'second': ['one', 'two'],
+                                                      'third': ['one', 'two', 'three'],
+                                                      'fourth': ['one', 'two']}
+    return table_calc

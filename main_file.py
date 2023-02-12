@@ -76,7 +76,8 @@ class MainWindow(QMainWindow):
         line_edits.excluded_tables.clicked.connect(lambda:
                                                    self.set_excluded_tables(table_calculation))
         line_edits.excluded_columns.clicked.connect(self.set_excluded_columns)
-        line_edits.included_tables.clicked.connect(self.set_included_tables)
+        line_edits.included_tables.clicked.connect(lambda:
+                                                   self.set_included_tables(table_calculation))
         line_edits.prod.base.clicked.connect(lambda: self.set_db('prod'))
         line_edits.test.base.clicked.connect(lambda: self.set_db('test'))
 
@@ -158,18 +159,19 @@ class MainWindow(QMainWindow):
         excluded_tables_line_edit.setText(','.join(selected_tables))
         tables = self.main_window.configuration.variables.sql_variables.tables
         hard_excluded = tables.hard_excluded
-        tables.excluded = list(set(selected_tables) - set(hard_excluded))
+        excluded_list = list(set(selected_tables) - set(hard_excluded))
+        tables.excluded = table_calculation.get_tables_dict(excluded_list)
         tooltip_text = excluded_tables_line_edit.text().replace(',', ',\n')
         excluded_tables_line_edit.setToolTip(tooltip_text)
         table_calculation.calculate_excluded_columns()
 
-    def set_included_tables(self) -> None:
+    def set_included_tables(self, table_calculation) -> None:
         """Method sets included tables to UI"""
         selected_tables = self.line_edits_logic.get_selected_included_tables()
         line_edits = self.main_window.configuration.ui_elements.line_edits
         included_tables_line_edit = line_edits.included_tables
         tables = self.main_window.configuration.variables.sql_variables.tables
-        tables.included = selected_tables
+        tables.included = table_calculation.get_tables_dict(selected_tables)
         included_tables_line_edit.setText(','.join(selected_tables))
         line_edits.included_tables.setToolTip(','.join(selected_tables))
 
