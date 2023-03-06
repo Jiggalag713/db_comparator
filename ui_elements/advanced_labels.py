@@ -9,12 +9,12 @@ class Labels:
     """Class, which contains labels
     from advanced settings window"""
     def __init__(self):
-        self.text_labels: Dict = {
+        self.text_labels: Dict[str, QLabel] = {
             'logging_level_label': QLabel('Logging level'),
             'schema_columns_label': QLabel('Schema columns'),
             'path_to_logs_label': QLabel('Path to logs')
         }
-        self.number_labels: Dict = {
+        self.number_labels: Dict[str, QLabel] = {
             'comparing_step_label': QLabel('Comparing step'),
             'depth_report_check_label': QLabel('Days in past'),
             'retry_attempts_label': QLabel('Retry attempts'),
@@ -24,9 +24,10 @@ class Labels:
 
     def set_text_labels_tooltips(self) -> None:
         """Method sets tooltips to text labels on advanced setting window"""
-        logging_level_label = self.text_labels.get('logging_level_label')
-        logging_level_label.setToolTip('Messages with this label and higher '
-                                       'will be written to logs')
+        if self.text_labels.get('logging_level_label') is not None:
+            logging_level_label: QLabel = self.text_labels.get('logging_level_label')
+            logging_level_label.setToolTip('Messages with this label and higher '
+                                           'will be written to logs')
         schema_columns_label = self.text_labels.get('schema_columns_label')
         schema_columns_label.setToolTip('List of columns, which should be compared '
                                         'during schema comparing\n' +

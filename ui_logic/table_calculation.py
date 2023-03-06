@@ -11,7 +11,7 @@ class TableCalculation:
         self.variables: Variables = variables
         self.logger = variables.logger
 
-    def calculate_table_list(self) -> None:
+    def calculate_table_list(self) -> Dict:
         """Method calculates of tables, which exists in both databases"""
         prod = self.variables.sql_variables.prod
         test = self.variables.sql_variables.test

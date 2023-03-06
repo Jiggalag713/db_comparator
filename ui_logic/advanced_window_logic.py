@@ -25,19 +25,19 @@ class AdvancedWindowLogic:
         logging_level = self.main_ui.combo_boxes.currentText()
         self.default_values.logging_level = self.set_logging_level(logging_level)
         comparing_step = self.main_ui.line_edits.comparing_step.text()
-        self.default_values.constants.update({'comparing_step': comparing_step})
+        self.default_values.constants.update({'comparing_step': int(comparing_step)})
         depth_report_check = self.main_ui.line_edits.depth_report_check.text()
-        self.default_values.constants.update({'depth_report_check': depth_report_check})
+        self.default_values.constants.update({'depth_report_check': int(depth_report_check)})
         schema_columns = self.main_ui.line_edits.schema_columns.text().split(',')
         self.default_values.selected_schema_columns = schema_columns
         retry_attempts = self.main_ui.line_edits.retry_attempts.text()
-        self.default_values.constants.update({'retry_attempts': retry_attempts})
+        self.default_values.constants.update({'retry_attempts': int(retry_attempts)})
         path_to_logs = self.main_ui.line_edits.path_to_logs.text()
         self.system_config.path_to_logs = path_to_logs
         table_timeout = self.main_ui.line_edits.table_timeout.text()
-        self.default_values.constants.update({'table_timeout': table_timeout})
+        self.default_values.constants.update({'table_timeout': int(table_timeout)})
         string_amount = self.main_ui.line_edits.strings_amount.text()
-        self.default_values.constants.update({'strings_amount': string_amount})
+        self.default_values.constants.update({'strings_amount': int(string_amount)})
         self.advanced_window.close()
 
     @staticmethod

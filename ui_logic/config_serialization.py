@@ -70,7 +70,7 @@ def system_variables_to_json(system_config: SystemConfig) -> Dict:
 def variables_to_json(variables: Variables) -> Dict:
     """Method intended to serialization of all other variables to config file"""
     system_config = variables.__dict__.get('system_config')
-    property_dict = system_variables_to_json(system_config)
+    property_dict: Dict = system_variables_to_json(system_config)
     default_values = variables.default_values
     property_dict.update({
         'comparing_step': default_values.constants.get('comparing_step'),
