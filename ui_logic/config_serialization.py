@@ -83,7 +83,7 @@ def variables_to_json(variables: Variables) -> Dict:
     return property_dict
 
 
-def deserialize_config(variables, config: json) -> None:
+def deserialize_config(variables, config: Dict) -> None:
     """Loads variables from config to UI variables"""
     default_values = variables.default_values
     sql_variables = variables.sql_variables

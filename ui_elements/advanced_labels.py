@@ -25,7 +25,7 @@ class Labels:
     def set_text_labels_tooltips(self) -> None:
         """Method sets tooltips to text labels on advanced setting window"""
         if self.text_labels.get('logging_level_label') is not None:
-            logging_level_label: QLabel = self.text_labels.get('logging_level_label')
+            logging_level_label = self.text_labels.get('logging_level_label')
             logging_level_label.setToolTip('Messages with this label and higher '
                                            'will be written to logs')
         schema_columns_label = self.text_labels.get('schema_columns_label')
