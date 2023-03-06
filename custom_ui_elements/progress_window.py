@@ -4,24 +4,23 @@ import logging
 from typing import List
 
 from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QApplication
-from configuration.main_config import Configuration
+from configuration.sql_variables import SqlVariables
 
 
 class ProgressWindow(QDialog):
     """Class contained implementation of progress window"""
-    def __init__(self, configuration: Configuration, dataframes_enabled: bool):
+    def __init__(self, sql_variables: SqlVariables, dataframes_enabled: bool, check_schema: bool):
         super().__init__()
         self.setGeometry(50, 50, 500, 300)
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(5)
         self.setLayout(grid)
-        self.configuration: Configuration = configuration
+        self.sql_variables: SqlVariables = sql_variables
         self.progress_schema: QProgressBar = QProgressBar(self)
         self.progress_data: QProgressBar = QProgressBar(self)
         self.schema_label: QLabel = QLabel()
         self.data_label: QLabel = QLabel()
-        self.logger: logging.Logger = configuration.variables.system_config.logger
-        check_schema = self.configuration.ui_elements.checkboxes.get('check_schema')
+        self.logger: logging.Logger = sql_variables.logger
         schema_checking: QLabel = QLabel('Schema checking')
         data_checking: QLabel = QLabel('Data checking')
         grid.addWidget(schema_checking, 0, 0, 1, 1)
@@ -38,9 +37,8 @@ class ProgressWindow(QDialog):
         """Method implements changing of progress on progress window"""
         start_time = datetime.datetime.now()
         tables = self.get_table_list()
-        sql_variables = self.configuration.variables.sql_variables
         part = 100 // len(tables)
-        if check_schema.isChecked():
+        if check_schema:
             self.setWindowTitle("Comparing metadata...")
             schema_start_time = datetime.datetime.now()
             for table in tables:
@@ -49,10 +47,10 @@ class ProgressWindow(QDialog):
                 self.progress_schema.setValue(completed)
                 self.schema_label.setText(f'Processing of {table} table...')
                 if dataframes_enabled:
-                    result = sql_variables.compare_table_metadata(table)
+                    result = self.sql_variables.compare_table_metadata(table)
                     print(result)
                 else:
-                    result = sql_variables.compare_table_metadata(table)
+                    result = self.sql_variables.compare_table_metadata(table)
                     print(result)
                 QApplication.processEvents()
             comparing_time = datetime.datetime.now() - schema_start_time
@@ -68,9 +66,9 @@ class ProgressWindow(QDialog):
             self.data_label.setText(f'Processing of {table} table...')
             # is_report = tables.get(table).get('is_report')
             if dataframes_enabled:
-                sql_variables.compare_data(table)
+                self.sql_variables.compare_data(table)
             else:
-                sql_variables.compare_data(table)
+                self.sql_variables.compare_data(table)
             QApplication.processEvents()
         self.data_label.setText('Data successfully compared...')
         data_comparing_time = datetime.datetime.now() - schema_checking_time
@@ -78,20 +76,19 @@ class ProgressWindow(QDialog):
 
     def get_table_list(self) -> List:
         """Calculates final list of tables, which will be compared"""
-        sql_variables = self.configuration.variables.sql_variables
-        if sql_variables.tables.included:
-            return list(sql_variables.tables.included.keys())
-        if sql_variables.tables.excluded:
+        if self.sql_variables.tables.included:
+            return list(self.sql_variables.tables.included.keys())
+        if self.sql_variables.tables.excluded:
             tables: List = []
-            for table in sql_variables.tables.all:
-                if table not in sql_variables.tables.excluded:
+            for table in self.sql_variables.tables.all:
+                if table not in self.sql_variables.tables.excluded:
                     tables.append(table)
             return tables
-        return list(sql_variables.tables.all.keys())
+        return list(self.sql_variables.tables.all.keys())
 
     def visible_schema_progress_bar(self, check_schema, schema_checking) -> None:
         """Make visible schema label and progress bar"""
-        if not check_schema.isChecked():
+        if not check_schema:
             schema_checking.setVisible(False)
             self.progress_schema.setVisible(False)
             self.schema_label.setVisible(False)

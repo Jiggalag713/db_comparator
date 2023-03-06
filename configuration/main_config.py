@@ -209,6 +209,8 @@ class Configuration:
         """Disables excluded_table in case of included_tables is not empty"""
         if self.ui_elements.line_edits.included_tables.text():
             self.ui_elements.line_edits.excluded_tables.setEnabled(False)
+        else:
+            self.ui_elements.line_edits.excluded_tables.setEnabled(True)
 
 
 def set_value(widget, store, key, value_type) -> None:

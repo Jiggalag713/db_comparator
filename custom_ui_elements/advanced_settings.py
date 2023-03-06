@@ -40,32 +40,17 @@ class AdvancedSettingsItem(QDialog):
         """Connects line_edits with appropriate variables in
         internal object"""
         line_edits = self.main_ui.line_edits
-        constants = self.default_values.constants
         comparing_step = line_edits.comparing_step
-        comparing_step.textChanged.connect(lambda: set_value(comparing_step,
-                                                             constants,
-                                                             'comparing_step',
-                                                             int))
+        comparing_step.textChanged.connect(lambda: self.validate_int_and_set('comparing_step'))
         depth_report_check = line_edits.depth_report_check
-        depth_report_check.textChanged.connect(lambda: set_value(depth_report_check,
-                                                                 constants,
-                                                                 'depth_report_check',
-                                                                 int))
+        depth_report_check.textChanged.connect(lambda:
+                                               self.validate_int_and_set('depth_report_check'))
         retry_attempts = line_edits.retry_attempts
-        retry_attempts.textChanged.connect(lambda: set_value(retry_attempts,
-                                                             constants,
-                                                             'retry_attempts',
-                                                             int))
+        retry_attempts.textChanged.connect(lambda: self.validate_int_and_set('retry_attempts'))
         table_timeout = line_edits.table_timeout
-        table_timeout.textChanged.connect(lambda: set_value(table_timeout,
-                                                            constants,
-                                                            'table_timeout',
-                                                            int))
+        table_timeout.textChanged.connect(lambda: self.validate_int_and_set('table_timeout'))
         strings_amount = line_edits.strings_amount
-        strings_amount.textChanged.connect(lambda: set_value(strings_amount,
-                                                             constants,
-                                                             'strings_amount',
-                                                             int))
+        strings_amount.textChanged.connect(lambda: self.validate_int_and_set('strings_amount'))
         path_to_logs = line_edits.path_to_logs
         system_config = self.system_config.__dict__
         path_to_logs.textChanged.connect(lambda: set_value(path_to_logs,
@@ -96,3 +81,16 @@ class AdvancedSettingsItem(QDialog):
             fields.__dict__.update({key: text})
             logger.setLevel(text)
             logger.info(f'Logging level changed to {text}')
+
+    def validate_int_and_set(self, key):
+        """Validates and sets comparing_step"""
+        text = self.main_ui.line_edits.__dict__.get(key).text()
+        try:
+            value = int(text)
+            self.default_values.constants.update({key: value})
+            self.main_ui.line_edits.__dict__.get(key).setStyleSheet("color: black;")
+            self.main_ui.line_edits.set_tooltip()
+        except ValueError as exception:
+            self.logger.warn(f'{exception}')
+            self.main_ui.line_edits.__dict__.get(key).setStyleSheet("color: red;")
+            self.main_ui.line_edits.__dict__.get(key).setToolTip('Please, input integer number')

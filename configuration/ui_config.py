@@ -1,13 +1,13 @@
 """Module intended for storing UIElements class"""
 from typing import Dict
 
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QCheckBox
 from PyQt5.QtWidgets import QRadioButton
 from ui_elements.buttons import Buttons
 from ui_elements.elements_position import ElementPositions
 from ui_elements.labels import Labels
 from ui_elements.line_edits import LineEdits
-from ui_logic.checkboxes import toggle
 
 
 class UIElements:
@@ -67,3 +67,16 @@ class UIElements:
         self.checkboxes.get('check_entities').setToolTip('Check entity tables')
         self.checkboxes.get('check_reports').setToolTip('Check report tables')
         self.checkboxes.get('use_dataframes').setToolTip('Use dataframes during comparing')
+
+
+@pyqtSlot()
+def toggle(checkboxes):
+    """Method consistently changes checkboxes states"""
+    if all([checkboxes.get('check_entities').isChecked(),
+            checkboxes.get('check_reports').isChecked()]):
+        checkboxes.get('check_entities').setEnabled(True)
+        checkboxes.get('check_reports').setEnabled(True)
+    elif checkboxes.get('check_entities').isChecked():
+        checkboxes.get('check_entities').setEnabled(False)
+    elif checkboxes.get('check_reports').isChecked():
+        checkboxes.get('check_reports').setEnabled(False)

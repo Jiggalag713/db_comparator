@@ -57,24 +57,11 @@ class ButtonsLogic:
         """Method starts process of comparing databases"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
-            # comparing_info = Info(self.logger)
-            # prod_sql_connection = self.sql_variables.prod
-            # test_sql_connection = self.sql_variables.test
-            # comparing_info.update_table_list("prod", prod_sql_connection.get_tables())
-            # comparing_info.update_table_list("test", test_sql_connection.get_tables())
-            # mapping = query_constructor.prepare_column_mapping(prod_sql_connection, self.logger)
-            # comparing_object = sql_comparing.Object(prod_sql_connection, test_sql_connection,
-            #                                         self.configuration.default_values,
-            #                                         comparing_info)
             self.logger.info('Comparing started!')
-            included_tables = self.variables.sql_variables.tables.included
-            if not included_tables:
-                for table in self.variables.sql_variables.tables.excluded:
-                    if table in self.variables.sql_variables.tables.included:
-                        self.variables.sql_variables.tables.included.pop(table)
-                        self.logger.debug(f'Deleted table {table} from self.tables list')
             enabled_dfs = self.main_ui.checkboxes.get('use_dataframes').isChecked()
-            progress = ProgressWindow(self.configuration, enabled_dfs)
+            check_schema = self.main_ui.checkboxes.get('check_schema').isChecked()
+            progress = ProgressWindow(self.configuration.variables.sql_variables, enabled_dfs,
+                                      check_schema)
             progress.exec()
 
     def check_prod_host(self) -> None:
@@ -154,8 +141,7 @@ class ButtonsLogic:
                 self.variables.sql_variables.test.tables]):
             self.configuration.ui_elements.buttons.btn_set_configuration.setEnabled(True)
             self.variables.sql_variables.tables.all = self.table_calculation.calculate_table_list()
-            tables = self.variables.sql_variables.tables.all
-            self.table_calculation.calculate_includes_excludes(tables)
+            self.table_calculation.calculate_includes_excludes()
             included_tables = self.variables.sql_variables.tables.included
             self.main_ui.line_edits.included_tables.setText(','.join(included_tables))
             self.main_ui.line_edits.included_tables.setToolTip(','.join(included_tables))

@@ -1,5 +1,4 @@
 """Module contains class implemented serialization of application configuration"""
-import json
 from typing import Dict
 
 from configuration.default_variables import DefaultValues
@@ -70,7 +69,7 @@ def system_variables_to_json(system_config: SystemConfig) -> Dict:
 def variables_to_json(variables: Variables) -> Dict:
     """Method intended to serialization of all other variables to config file"""
     system_config = variables.__dict__.get('system_config')
-    property_dict = system_variables_to_json(system_config)
+    property_dict: Dict = system_variables_to_json(system_config)
     default_values = variables.default_values
     property_dict.update({
         'comparing_step': default_values.constants.get('comparing_step'),
@@ -83,7 +82,7 @@ def variables_to_json(variables: Variables) -> Dict:
     return property_dict
 
 
-def deserialize_config(variables, config: json) -> None:
+def deserialize_config(variables, config: Dict) -> None:
     """Loads variables from config to UI variables"""
     default_values = variables.default_values
     sql_variables = variables.sql_variables
