@@ -1,5 +1,4 @@
 """Module contains class implemented serialization of application configuration"""
-import json
 from typing import Dict
 
 from configuration.default_variables import DefaultValues
