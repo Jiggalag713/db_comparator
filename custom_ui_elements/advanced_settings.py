@@ -2,7 +2,7 @@
 settings window"""
 import logging
 
-from PyQt5.QtWidgets import QDialog, QComboBox
+from PyQt5.QtWidgets import QDialog, QComboBox, QPushButton, QLineEdit
 
 from configuration.advanced_ui_config import UIElements
 from configuration.default_variables import DefaultValues
@@ -22,9 +22,15 @@ class AdvancedSettingsItem(QDialog):
         self.advanced_logic: AdvancedWindowLogic = AdvancedWindowLogic(self, self.main_ui,
                                                                        configuration)
         self.logger = configuration.variables.system_config.logger
-        self.main_ui.buttons.get('btn_ok').clicked.connect(self.advanced_logic.ok_pressed)
-        self.main_ui.buttons.get('btn_cancel').clicked.connect(self.advanced_logic.cancel_pressed)
-        self.main_ui.buttons.get('btn_reset').clicked.connect(self.advanced_logic.set_default)
+        btn_ok = self.main_ui.buttons.get('btn_ok')
+        if isinstance(btn_ok, QPushButton):
+            btn_ok.clicked.connect(self.advanced_logic.ok_pressed)
+        btn_cancel = self.main_ui.buttons.get('btn_cancel')
+        if isinstance(btn_cancel, QPushButton):
+            btn_cancel.clicked.connect(self.advanced_logic.cancel_pressed)
+        btn_reset = self.main_ui.buttons.get('btn_reset')
+        if isinstance(btn_reset, QPushButton):
+            btn_reset.clicked.connect(self.advanced_logic.set_default)
         schema_columns = self.main_ui.line_edits.schema_columns
         schema_columns.clicked.connect(self.advanced_logic.set_schema_columns)
         self.advanced_logic.set_default()
@@ -84,13 +90,15 @@ class AdvancedSettingsItem(QDialog):
 
     def validate_int_and_set(self, key):
         """Validates and sets comparing_step"""
-        text = self.main_ui.line_edits.__dict__.get(key).text()
-        try:
-            value = int(text)
-            self.default_values.constants.update({key: value})
-            self.main_ui.line_edits.__dict__.get(key).setStyleSheet("color: black;")
-            self.main_ui.line_edits.set_tooltip()
-        except ValueError as exception:
-            self.logger.warn(f'{exception}')
-            self.main_ui.line_edits.__dict__.get(key).setStyleSheet("color: red;")
-            self.main_ui.line_edits.__dict__.get(key).setToolTip('Please, input integer number')
+        line_edit = self.main_ui.line_edits.__dict__.get(key)
+        if isinstance(line_edit, QLineEdit):
+            text = line_edit.text()
+            try:
+                value = int(text)
+                self.default_values.constants.update({key: value})
+                line_edit.setStyleSheet("color: black;")
+                self.main_ui.line_edits.set_tooltip()
+            except ValueError as exception:
+                self.logger.warn(f'{exception}')
+                line_edit.setStyleSheet("color: red;")
+                line_edit.setToolTip('Please, input integer number')
