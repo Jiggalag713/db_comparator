@@ -62,7 +62,7 @@ class SqlAlchemyHelper:
                 columns: List[str] = []
                 table = tables.get(table_name)
                 if isinstance(table, sqlalchemy.Table):
-                    for column in tables.get(table_name).columns:
+                    for column in table.columns:
                         columns.append(column.name)
                     result_tables.update({table_name: columns})
             return result_tables

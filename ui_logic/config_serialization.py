@@ -128,15 +128,7 @@ def deserialize_config(variables, config: Dict) -> None:
                 'table_timeout': default_values.constants
             }
             if key in lineedit_mapping:
-                if '.' in key:
-                    first = key.split('.')[0]
-                    second = key.split('.')[1]
-                    instance_type = lineedit_mapping.get(key).__dict__.get(first)
-                    if isinstance(instance_type, SqlAlchemyHelper):
-                        creds = instance_type.credentials
-                        creds.__dict__.update({second: value})
-                else:
-                    lineedit_mapping.get(key).__dict__.update({key: value})
+                proc_lineedit_mapping(lineedit_mapping, key, value)
             elif key in checkbox_mapping:
                 check_box_pack = checkbox_mapping.get(key)
                 if isinstance(check_box_pack, dict):
@@ -153,3 +145,16 @@ def deserialize_config(variables, config: Dict) -> None:
                 default_values.selected_schema_columns = value
             elif 'mode' in key:
                 default_values.mode = value
+
+
+def proc_lineedit_mapping(lineedit_mapping, key, value):
+    """Process key if it in lineedit_mapping keys"""
+    if '.' in key:
+        first = key.split('.')[0]
+        second = key.split('.')[1]
+        instance_type = lineedit_mapping.get(key).__dict__.get(first)
+        if isinstance(instance_type, SqlAlchemyHelper):
+            creds = instance_type.credentials
+            creds.__dict__.update({second: value})
+    else:
+        lineedit_mapping.get(key).__dict__.update({key: value})

@@ -1,6 +1,6 @@
 """Module contains not worked implementation of comparing using dataframes"""
 import numpy as np
-import pandas as pd
+import pandas as pd  # type: ignore
 
 
 def get_table_schema_dataframe(instance_type, table, engine):

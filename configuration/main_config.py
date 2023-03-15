@@ -185,17 +185,16 @@ class Configuration:
                 line_edit_value = creds.__dict__.get(key)
                 if isinstance(line_edit, QLineEdit):
                     line_edit.setText(line_edit_value)
-                    if 'base' in key:
-                        label = instance_labels.__dict__.get(key)
-                        if isinstance(label, QLabel):
-                            if line_edit_value:
-                                line_edit.show()
-                                label.show()
-                            else:
-                                line_edit.hide()
-                                label.hide()
+                    label = instance_labels.__dict__.get(key)
+                    if 'base' in key and isinstance(label, QLabel):
+                        if line_edit_value:
+                            line_edit.show()
+                            label.show()
+                        else:
+                            line_edit.hide()
+                            label.hide()
         else:
-            self.logger.error(f"Instance type error. ER: SqlAlchemyHelper, AR: {type(instance)}")
+            self.logger.error("Instance type error. ER: SqlAlchemyHelper, AR: %s", type(instance))
 
     def load_another_line_edits(self):
         """Loads values from internal objects to ui line edits"""
@@ -222,8 +221,9 @@ class Configuration:
                 if isinstance(cb_value, bool):
                     check_box.setChecked(cb_value)
                 else:
-                    self.logger.debug(f"Incorrect type of checkbox value for cb {check_box.text()}"
-                                      f". ER: bool, AR: {type(cb_value)}")
+                    self.logger.debug("Incorrect type of checkbox value for cb %s",
+                                      check_box.text())
+                    self.logger.debug("ER: bool, AR: %s", type(cb_value))
 
     def load_radio_buttons(self):
         """Loads checkboxes state from internal object"""

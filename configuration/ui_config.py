@@ -24,7 +24,7 @@ class UIElements:
         }
         self.checkboxes_states(True)
 
-        toggle(self.checkboxes)
+        toggle(self.checkboxes)  # type: ignore
 
         self.buttons: Buttons = Buttons()
         self.radio_buttons: Dict = {
