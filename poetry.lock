@@ -859,6 +859,8 @@ files = [
 
 [package.dependencies]
 greenlet = {version = "!=0.4.17", markers = "python_version >= \"3\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")"}
+mypy = {version = ">=0.910", optional = true, markers = "python_version >= \"3\" and extra == \"mypy\""}
+sqlalchemy2-stubs = {version = "*", optional = true, markers = "extra == \"mypy\""}
 
 [package.extras]
 aiomysql = ["aiomysql", "greenlet (!=0.4.17)"]
@@ -882,6 +884,21 @@ pymysql = ["pymysql", "pymysql (<1)"]
 sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
+name = "sqlalchemy2-stubs"
+version = "0.0.2a32"
+description = "Typing Stubs for SQLAlchemy 1.4"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "sqlalchemy2-stubs-0.0.2a32.tar.gz", hash = "sha256:2a2cfab71d35ac63bf21ad841d8610cd93a3bd4c6562848c538fa975585c2739"},
+    {file = "sqlalchemy2_stubs-0.0.2a32-py3-none-any.whl", hash = "sha256:7f5fb30b0cf7c6b74c50c1d94df77ff32007afee8d80499752eb3fedffdbdfb8"},
+]
+
+[package.dependencies]
+typing-extensions = ">=3.7.4"
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -903,6 +920,18 @@ python-versions = ">=3.6"
 files = [
     {file = "tomlkit-0.11.6-py3-none-any.whl", hash = "sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b"},
     {file = "tomlkit-0.11.6.tar.gz", hash = "sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73"},
+]
+
+[[package]]
+name = "types-pymysql"
+version = "1.0.19.5"
+description = "Typing stubs for PyMySQL"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-PyMySQL-1.0.19.5.tar.gz", hash = "sha256:e6362b5a4825db528db5c05dda4c30154614ed72abf69ef442666586bda59ace"},
+    {file = "types_PyMySQL-1.0.19.5-py3-none-any.whl", hash = "sha256:66a2e0ad3af390d09f2818b9c907c4fd5bbc6d9f5c0fecd35a28a71f47bc2b15"},
 ]
 
 [[package]]
@@ -1015,4 +1044,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b65c8add42f83ea947ed33fdb935cef096c1baa120a7dd31b413f521468897bb"
+content-hash = "e64dccae7cc90026d87df03559d946f9829fb2e885d59673162b8355448c07b8"

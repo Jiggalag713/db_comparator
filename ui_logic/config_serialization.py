@@ -56,13 +56,12 @@ def host_properties_to_json(instance_type: str, instance: SqlAlchemyHelper) -> D
             f'{instance_type}.password': example.credentials.password,
             f'{instance_type}.base': example.credentials.base
         }
-    else:
-        return {
-            f'{instance_type}.host': '',
-            f'{instance_type}.user': '',
-            f'{instance_type}.password': '',
-            f'{instance_type}.base': ''
-        }
+    return {
+        f'{instance_type}.host': '',
+        f'{instance_type}.user': '',
+        f'{instance_type}.password': '',
+        f'{instance_type}.base': ''
+    }
 
 
 def system_variables_to_json(system_config: SystemConfig) -> Dict:
@@ -90,8 +89,7 @@ def variables_to_json(variables: Variables) -> Dict:
             'schema_columns': default_values.selected_schema_columns
         })
         return property_dict
-    else:
-        return dict()
+    return {}
 
 
 def deserialize_config(variables, config: Dict) -> None:
@@ -145,7 +143,7 @@ def deserialize_config(variables, config: Dict) -> None:
                     check_box_pack.update({key: value})
             elif key in values:
                 constants = values.get(key)
-                if isinstance(values, dict):
+                if isinstance(constants, dict):
                     constants.update({key: value})
             elif key == 'logging_level':
                 system_config = variables.system_config

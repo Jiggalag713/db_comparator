@@ -2,6 +2,7 @@
 import collections
 from typing import List, Any, Dict
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 
@@ -50,14 +51,18 @@ class ClickableItemsView(QDialog):
         self.model = QStandardItemModel()
         for table in self.item_list:
             item = QStandardItem(table)
-            item.setCheckState(0)
+            item.setCheckState(Qt.CheckState(0))
             if item.text() in self.selected_items:
-                item.setCheckState(2)
+                item.setCheckState(Qt.CheckState(2))
             elif self.hard_excluded is not None:
-                if item.text() in self.hard_excluded.keys():
-                    item.setCheckState(self.get_included_state(include))
-                    item.setEnabled(False)
-                    item.setToolTip(self.hard_excluded.get(item.text()))
+                item_text = item.text()
+                if isinstance(item_text, str):
+                    if item_text in self.hard_excluded.keys():
+                        item.setCheckState(Qt.CheckState(self.get_included_state(include)))
+                        item.setEnabled(False)
+                        tooltip = self.hard_excluded.get(item_text)
+                        if isinstance(tooltip, str):
+                            item.setToolTip(tooltip)
             item.setCheckable(True)
             self.model.appendRow(item)
 
@@ -90,7 +95,7 @@ class ClickableItemsView(QDialog):
         for idx in range(amount):
             item = self.model.item(idx, 0)
             if item.checkState() == 2:
-                item.setCheckState(0)
+                item.setCheckState(Qt.CheckState(0))
         self.selected_items = []
         self.init_items(include)
 
