@@ -48,12 +48,21 @@ def serialize_check_customization_state(default_values: DefaultValues) -> Dict:
 def host_properties_to_json(instance_type: str, instance: SqlAlchemyHelper) -> Dict:
     """Method intended for serializing part of SqlAlchemyHelper instance
     to config file"""
-    return {
-        f'{instance_type}.host': instance.__dict__.get(instance_type).credentials.host,
-        f'{instance_type}.user': instance.__dict__.get(instance_type).credentials.user,
-        f'{instance_type}.password': instance.__dict__.get(instance_type).credentials.password,
-        f'{instance_type}.base': instance.__dict__.get(instance_type).credentials.base
-    }
+    example = instance.__dict__.get(instance_type)
+    if isinstance(example, SqlAlchemyHelper):
+        return {
+            f'{instance_type}.host': example.credentials.host,
+            f'{instance_type}.user': example.credentials.user,
+            f'{instance_type}.password': example.credentials.password,
+            f'{instance_type}.base': example.credentials.base
+        }
+    else:
+        return {
+            f'{instance_type}.host': '',
+            f'{instance_type}.user': '',
+            f'{instance_type}.password': '',
+            f'{instance_type}.base': ''
+        }
 
 
 def system_variables_to_json(system_config: SystemConfig) -> Dict:
@@ -69,17 +78,20 @@ def system_variables_to_json(system_config: SystemConfig) -> Dict:
 def variables_to_json(variables: Variables) -> Dict:
     """Method intended to serialization of all other variables to config file"""
     system_config = variables.__dict__.get('system_config')
-    property_dict: Dict = system_variables_to_json(system_config)
-    default_values = variables.default_values
-    property_dict.update({
-        'comparing_step': default_values.constants.get('comparing_step'),
-        'depth_report_check': default_values.constants.get('depth_report_check'),
-        'retry_attempts': default_values.constants.get('retry_attempts'),
-        'strings_amount': default_values.constants.get('strings_amount'),
-        'table_timeout': default_values.constants.get('table_timeout'),
-        'schema_columns': default_values.selected_schema_columns
-    })
-    return property_dict
+    if isinstance(system_config, SystemConfig):
+        property_dict: Dict = system_variables_to_json(system_config)
+        default_values = variables.default_values
+        property_dict.update({
+            'comparing_step': default_values.constants.get('comparing_step'),
+            'depth_report_check': default_values.constants.get('depth_report_check'),
+            'retry_attempts': default_values.constants.get('retry_attempts'),
+            'strings_amount': default_values.constants.get('strings_amount'),
+            'table_timeout': default_values.constants.get('table_timeout'),
+            'schema_columns': default_values.selected_schema_columns
+        })
+        return property_dict
+    else:
+        return dict()
 
 
 def deserialize_config(variables, config: Dict) -> None:
@@ -121,14 +133,20 @@ def deserialize_config(variables, config: Dict) -> None:
                 if '.' in key:
                     first = key.split('.')[0]
                     second = key.split('.')[1]
-                    creds = lineedit_mapping.get(key).__dict__.get(first).credentials
-                    creds.__dict__.update({second: value})
+                    instance_type = lineedit_mapping.get(key).__dict__.get(first)
+                    if isinstance(instance_type, SqlAlchemyHelper):
+                        creds = instance_type.credentials
+                        creds.__dict__.update({second: value})
                 else:
                     lineedit_mapping.get(key).__dict__.update({key: value})
             elif key in checkbox_mapping:
-                checkbox_mapping.get(key).update({key: value})
+                check_box_pack = checkbox_mapping.get(key)
+                if isinstance(check_box_pack, dict):
+                    check_box_pack.update({key: value})
             elif key in values:
-                values.get(key).update({key: value})
+                constants = values.get(key)
+                if isinstance(values, dict):
+                    constants.update({key: value})
             elif key == 'logging_level':
                 system_config = variables.system_config
                 system_config.logging_level = value

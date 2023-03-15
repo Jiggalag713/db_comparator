@@ -38,35 +38,52 @@ class UIElements:
 
     def checkboxes_states(self, is_toggled) -> None:
         """Method intended for setting checkboxes states"""
-        self.checkboxes.get('check_schema').setChecked(is_toggled)
-        self.checkboxes.get('check_reports').setChecked(is_toggled)
-        self.checkboxes.get('check_entities').setChecked(is_toggled)
-        self.checkboxes.get('use_dataframes').setChecked(is_toggled)
+        for key in ['check_schema', 'check_reports', 'check_entities', 'use_dataframes']:
+            check_box = self.checkboxes.get(key)
+            if isinstance(check_box, QCheckBox):
+                check_box.setChecked(is_toggled)
 
     def radio_buttons_states(self) -> None:
         """Method intended for setting radio_buttons states"""
-        self.radio_buttons.get('day-sum').setChecked(True)
-        self.radio_buttons.get('section-sum').setChecked(False)
-        self.radio_buttons.get('detailed').setChecked(False)
+        for key in ['day-sum', 'section-sum', 'detailed']:
+            radio_button = self.radio_buttons.get(key)
+            if isinstance(radio_button, QRadioButton):
+                if 'day-sum' in key:
+                    radio_button.setChecked(True)
+                else:
+                    radio_button.setChecked(False)
 
     def set_radio_buttons_tooltips(self) -> None:
         """Method intended for setting tooltips to radio_buttons"""
         day_summary = self.radio_buttons.get('day_summary')
-        day_summary.setToolTip('Compare sums of impressions for each date')
+        if isinstance(day_summary, QRadioButton):
+            day_summary.setToolTip('Compare sums of impressions for each date')
         section_summary = self.radio_buttons.get('section_summary')
-        section_summary.setToolTip('Compare sums of impressions for each date and each section')
+        if isinstance(section_summary, QRadioButton):
+            section_summary.setToolTip('Compare sums of impressions for each date and each section')
         detailed = self.radio_buttons.get('detailed')
-        detailed.setToolTip('Compare all records from table for set period')
+        if isinstance(detailed, QRadioButton):
+            detailed.setToolTip('Compare all records from table for set period')
 
     def set_checkboxes_tooltips(self) -> None:
         """Method intended for setting tooltips to checkboxes"""
-        self.checkboxes.get('check_schema').setToolTip('If you set this option, program '
-                                                       'will compare also schemas of dbs')
-        self.checkboxes.get('fail_fast').setToolTip('If you set this option, comparing '
-                                                    'will be finished after first error')
-        self.checkboxes.get('check_entities').setToolTip('Check entity tables')
-        self.checkboxes.get('check_reports').setToolTip('Check report tables')
-        self.checkboxes.get('use_dataframes').setToolTip('Use dataframes during comparing')
+        check_schema = self.checkboxes.get('check_schema')
+        if isinstance(check_schema, QCheckBox):
+            check_schema.setToolTip('If you set this option, program '
+                                    'will compare also schemas of dbs')
+        fail_fast = self.checkboxes.get('fail_fast')
+        if isinstance(fail_fast, QCheckBox):
+            fail_fast.setToolTip('If you set this option, comparing '
+                                 'will be finished after first error')
+        check_entities = self.checkboxes.get('check_entities')
+        if isinstance(check_entities, QCheckBox):
+            check_entities.setToolTip('Check entity tables')
+        check_reports = self.checkboxes.get('check_reports')
+        if isinstance(check_reports, QCheckBox):
+            check_reports.setToolTip('Check report tables')
+        use_dataframes = self.checkboxes.get('use_dataframes')
+        if isinstance(use_dataframes, QCheckBox):
+            use_dataframes.setToolTip('Use dataframes during comparing')
 
 
 @pyqtSlot()

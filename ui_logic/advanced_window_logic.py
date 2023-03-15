@@ -23,7 +23,7 @@ class AdvancedWindowLogic:
     def ok_pressed(self) -> None:
         """Method saves values on advanced settings window when OK button pressed"""
         logging_level = self.main_ui.combo_boxes.currentText()
-        self.default_values.logging_level = self.set_logging_level(logging_level)
+        self.system_config.logging_level = self.set_logging_level(logging_level)
         comparing_step = self.main_ui.line_edits.comparing_step.text()
         self.default_values.constants.update({'comparing_step': int(comparing_step)})
         depth_report_check = self.main_ui.line_edits.depth_report_check.text()
@@ -51,7 +51,7 @@ class AdvancedWindowLogic:
             'ERROR': logging.ERROR,
             'CRITICAL': logging.CRITICAL
         }
-        return logging_levels.get(current_level)
+        return logging_levels.get(current_level, 10)
 
     def cancel_pressed(self) -> None:
         """Method worked when cancel button pressed"""
