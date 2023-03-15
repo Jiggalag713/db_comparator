@@ -13,6 +13,8 @@ from PyQt5.QtWidgets import QMenu, QStatusBar, QFileDialog
 from configuration.main_config import Configuration
 from configuration.variables import Variables
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
+from helpers.sql_helper import SqlAlchemyHelper
+from ui_elements.line_edits import SqlLineEdits
 from ui_logic.buttons import ButtonsLogic
 from ui_logic import config_serialization
 from ui_logic.line_edits import LineEditsLogic
@@ -189,10 +191,13 @@ class MainWindow(QMainWindow):
         """Method sets prod database"""
         line_edits = self.main_window.configuration.ui_elements.line_edits
         sql_variables = self.main_window.variables.sql_variables.__dict__.get(instance_type)
-        selected_db = self.line_edits_logic.set_db(sql_variables.databases,
-                                                   sql_variables.credentials.base)
-        line_edits.__dict__.get(instance_type).base.setText(selected_db)
-        line_edits.__dict__.get(instance_type).base.setToolTip(selected_db)
+        if isinstance(sql_variables, SqlAlchemyHelper):
+            selected_db = self.line_edits_logic.set_db(sql_variables.databases,
+                                                       sql_variables.credentials.base)
+            sql_line_edit = line_edits.__dict__.get(instance_type)
+            if isinstance(sql_line_edit, SqlLineEdits):
+                sql_line_edit.base.setText(selected_db)
+                sql_line_edit.base.setToolTip(selected_db)
 
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@ class SqlAlchemyHelper:
         self.credentials = credentials
         self.logger: logging.Logger = logger
         self.engine: sqlalchemy.engine.Engine = self.get_engine()
-        self.databases: Optional[List[str]] = self.get_databases()
+        self.databases: List[str] = self.get_databases()
         self.tables = self.get_tables()
 
     def get_engine(self) -> Optional[sqlalchemy.engine.Engine]:
@@ -35,7 +35,7 @@ class SqlAlchemyHelper:
                           f'password is ********, db is {self.credentials.base}')
         return None
 
-    def get_databases(self) -> Optional[List[str]]:
+    def get_databases(self) -> List[str]:
         """Method gets database list"""
         if self.engine:
             self.engine.connect()
@@ -49,8 +49,8 @@ class SqlAlchemyHelper:
                 return db_list
             except sqlalchemy.exc.OperationalError as exception:
                 self.logger.error(exception)
-                return None
-        return None
+                return list()
+        return list()
 
     def get_tables(self) -> Optional[Dict[str, List[str]]]:
         """Method gets table list for proper database"""
