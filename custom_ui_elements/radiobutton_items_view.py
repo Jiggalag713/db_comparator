@@ -1,6 +1,7 @@
 """Module contains class with custom implementation of radio button view used
 in modal window when user selects databases"""
 from typing import List
+
 from PyQt5.QtWidgets import QDialog, QPushButton, QButtonGroup, QRadioButton
 from PyQt5.QtWidgets import QVBoxLayout, QScrollArea, QWidget, QGridLayout
 
@@ -10,7 +11,7 @@ class RadiobuttonItemsView(QDialog):
     in modal window when user selects databases"""
     def __init__(self, dbs: List, selected_db: str):
         super().__init__()
-        self.layout: QGridLayout = QGridLayout()
+        self.layout: QGridLayout = QGridLayout()  # type: ignore
         self.selected_db: str = selected_db
         self.databases: List[str] = dbs
 
@@ -34,7 +35,7 @@ class RadiobuttonItemsView(QDialog):
             rb_vbox.addWidget(self.button_name)
             self.button_group.addButton(self.button_name)
             if database == self.selected_db:
-                self.button_name.setChecked(1)
+                self.button_name.setChecked(True)
 
         self.layout.addWidget(scroll, 0, 0)
         self.layout.addWidget(btn_ok, 0, 1)

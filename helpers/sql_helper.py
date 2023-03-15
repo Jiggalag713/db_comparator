@@ -12,8 +12,8 @@ class SqlAlchemyHelper:
         self.meta = sqlalchemy.schema.MetaData()
         self.credentials = credentials
         self.logger: logging.Logger = logger
-        self.engine: sqlalchemy.engine.Engine = self.get_engine()
-        self.databases: Optional[List[str]] = self.get_databases()
+        self.engine: Optional[sqlalchemy.engine.Engine] = self.get_engine()
+        self.databases: List[str] = self.get_databases()
         self.tables = self.get_tables()
 
     def get_engine(self) -> Optional[sqlalchemy.engine.Engine]:
@@ -35,7 +35,7 @@ class SqlAlchemyHelper:
                           f'password is ********, db is {self.credentials.base}')
         return None
 
-    def get_databases(self) -> Optional[List[str]]:
+    def get_databases(self) -> List[str]:
         """Method gets database list"""
         if self.engine:
             self.engine.connect()
@@ -49,22 +49,24 @@ class SqlAlchemyHelper:
                 return db_list
             except sqlalchemy.exc.OperationalError as exception:
                 self.logger.error(exception)
-                return None
-        return None
+                return []
+        return []
 
-    def get_tables(self) -> Optional[Dict[str, List[str]]]:
+    def get_tables(self) -> Dict[str, List[str]]:
         """Method gets table list for proper database"""
         if all([self.engine, self.databases]):
             self.meta.reflect(bind=self.engine)
-            result_tables = {}
+            result_tables: Dict[str, List[str]] = {}
             tables = self.meta.tables
-            for table in tables:
-                columns = []
-                for column in tables.get(table).columns:
-                    columns.append(column.name)
-                result_tables.update({table: columns})
+            for table_name in tables:
+                columns: List[str] = []
+                table = tables.get(table_name)
+                if isinstance(table, sqlalchemy.Table):
+                    for column in table.columns:
+                        columns.append(column.name)
+                    result_tables.update({table_name: columns})
             return result_tables
-        return None
+        return {}
 
     def warming_up(self) -> None:
         """Method gets engine, connection, database list and table list for checked database"""

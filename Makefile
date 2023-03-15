@@ -1,4 +1,4 @@
-checks: lint test
+checks: lint mypy test
 
 lint:
 	pylint $$(git ls-files '*.py')

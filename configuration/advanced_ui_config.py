@@ -25,7 +25,7 @@ class UIElements:
         """Method intended to get logging_level combobox on advanced settings window"""
         cb_logging_level: QComboBox = QComboBox()
         cb_logging_level.addItems(['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'])
-        index = cb_logging_level.findText('NOTSET', Qt.MatchFixedString)
+        index = cb_logging_level.findText('NOTSET', Qt.MatchFixedString)  # type: ignore
         if index >= 0:
             cb_logging_level.setCurrentIndex(index)
         cb_logging_level.setToolTip('Messages with this label and higher '
