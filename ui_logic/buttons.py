@@ -2,7 +2,7 @@
 import logging
 import pymysql
 
-from PyQt5.QtWidgets import QMessageBox, QStatusBar
+from PyQt5.QtWidgets import QMessageBox, QStatusBar, QCheckBox
 
 from configuration.main_config import Configuration
 from configuration.ui_config import UIElements
@@ -58,10 +58,16 @@ class ButtonsLogic:
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.logger.info('Comparing started!')
-            enabled_dfs = self.main_ui.checkboxes.get('use_dataframes').isChecked()
-            check_schema = self.main_ui.checkboxes.get('check_schema').isChecked()
+            use_dataframes = self.main_ui.checkboxes.get('use_dataframes')
+            enabled_dfs = True
+            if isinstance(use_dataframes, QCheckBox):
+                enabled_dfs = use_dataframes.isChecked()
+            check_schema = self.main_ui.checkboxes.get('check_schema')
+            schema_checking = True
+            if isinstance(check_schema, QCheckBox):
+                schema_checking = check_schema.isChecked()
             progress = ProgressWindow(self.configuration.variables.sql_variables, enabled_dfs,
-                                      check_schema)
+                                      schema_checking)
             progress.exec()
 
     def check_prod_host(self) -> None:

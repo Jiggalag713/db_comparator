@@ -2,8 +2,11 @@
 from dataclasses import dataclass, field
 from typing import List
 
+from PyQt5.QtWidgets import QCheckBox, QRadioButton, QLineEdit, QLabel
+
 from configuration.ui_config import UIElements
 from configuration.variables import Variables
+from helpers.sql_helper import SqlAlchemyHelper
 
 
 @dataclass
@@ -89,25 +92,30 @@ class Configuration:
         check_boxes = self.ui_elements.checkboxes
         store = self.variables.default_values.checks_customization
         check_schema = check_boxes.get('check_schema')
-        check_schema.stateChanged.connect(lambda: self.set_check_box_value(check_schema,
-                                          store,
-                                          'check_schema'))
+        if isinstance(check_schema, QCheckBox):
+            check_schema.stateChanged.connect(lambda: self.set_check_box_value(check_schema,
+                                              store,
+                                              'check_schema'))
         check_reports = check_boxes.get('check_reports')
-        check_reports.stateChanged.connect(lambda: self.set_check_box_value(check_reports,
-                                           store,
-                                           'check_reports'))
+        if isinstance(check_reports, QCheckBox):
+            check_reports.stateChanged.connect(lambda: self.set_check_box_value(check_reports,
+                                               store,
+                                               'check_reports'))
         fail_fast = check_boxes.get('fail_fast')
-        fail_fast.stateChanged.connect(lambda: self.set_check_box_value(fail_fast,
-                                       store,
-                                       'fail_fast'))
+        if isinstance(fail_fast, QCheckBox):
+            fail_fast.stateChanged.connect(lambda: self.set_check_box_value(fail_fast,
+                                           store,
+                                           'fail_fast'))
         check_entities = check_boxes.get('check_entities')
-        check_entities.stateChanged.connect(lambda: self.set_check_box_value(check_entities,
-                                            store,
-                                            'check_entities'))
+        if isinstance(check_entities, QCheckBox):
+            check_entities.stateChanged.connect(lambda: self.set_check_box_value(check_entities,
+                                                store,
+                                                'check_entities'))
         use_dataframes = check_boxes.get('use_dataframes')
-        use_dataframes.stateChanged.connect(lambda: self.set_check_box_value(use_dataframes,
-                                            store,
-                                            'use_dataframes'))
+        if isinstance(use_dataframes, QCheckBox):
+            use_dataframes.stateChanged.connect(lambda: self.set_check_box_value(use_dataframes,
+                                                store,
+                                                'use_dataframes'))
 
     @staticmethod
     def set_check_box_value(widget, fields, key) -> None:
@@ -118,12 +126,18 @@ class Configuration:
         """Connects radio_buttons with appropriate variables in
         sql_variables/default_variables object"""
         radio_buttons = self.ui_elements.radio_buttons
-        radio_buttons.get('day-sum').clicked.connect(self.get_radio_button_value)
-        self.logger.debug('day-sum radio_button successfully connected with mode')
-        radio_buttons.get('section-sum').clicked.connect(self.get_radio_button_value)
-        self.logger.debug('section-sum radio_button successfully connected with mode')
-        radio_buttons.get('detailed').clicked.connect(self.get_radio_button_value)
-        self.logger.debug('detailed radio_button successfully connected with mode')
+        day_sum = radio_buttons.get('day-sum')
+        if isinstance(day_sum, QRadioButton):
+            day_sum.clicked.connect(self.get_radio_button_value)
+            self.logger.debug('day-sum radio_button successfully connected with mode')
+        section_sum = radio_buttons.get('section-sum')
+        if isinstance(section_sum, QRadioButton):
+            section_sum.clicked.connect(self.get_radio_button_value)
+            self.logger.debug('section-sum radio_button successfully connected with mode')
+        detailed = radio_buttons.get('detailed')
+        if isinstance(detailed, QRadioButton):
+            detailed.clicked.connect(self.get_radio_button_value)
+            self.logger.debug('detailed radio_button successfully connected with mode')
 
     def prepare_radio_buttons_mapping(self) -> List:
         """Returns mapping for radio buttons"""
@@ -138,13 +152,14 @@ class Configuration:
         radio_buttons = self.ui_elements.radio_buttons
         for item in radio_buttons:
             widget = radio_buttons.get(item)
-            if widget.isChecked():
-                if widget.text() == "Day summary":
-                    self.variables.default_values.mode = 'day-sum'
-                elif widget.text() == "Section summary":
-                    self.variables.default_values.mode = 'section-sum'
-                else:
-                    self.variables.default_values.mode = 'detailed'
+            if isinstance(widget, QRadioButton):
+                if widget.isChecked():
+                    if widget.text() == "Day summary":
+                        self.variables.default_values.mode = 'day-sum'
+                    elif widget.text() == "Section summary":
+                        self.variables.default_values.mode = 'section-sum'
+                    else:
+                        self.variables.default_values.mode = 'detailed'
 
     def load_from_internal(self):
         """Loads values from internal objects to ui elements"""
@@ -160,19 +175,27 @@ class Configuration:
 
     def load_sql_line_edits(self, instance_type):
         """Loads values from internal objects to sql-related ui line edits"""
-        creds = self.variables.sql_variables.__dict__.get(instance_type).credentials
-        instance_line_edits = self.ui_elements.line_edits.__dict__.get(instance_type)
-        instance_labels = self.ui_elements.labels.__dict__.get(instance_type)
-        instance_line_edits.host.setText(creds.host)
-        instance_line_edits.user.setText(creds.user)
-        instance_line_edits.password.setText(creds.password)
-        instance_line_edits.base.setText(creds.base)
-        if creds.base:
-            instance_line_edits.base.show()
-            instance_labels.base.show()
+        instance = self.variables.sql_variables.__dict__.get(instance_type)
+        if isinstance(instance, SqlAlchemyHelper):
+            creds = instance.credentials
+            instance_line_edits = self.ui_elements.line_edits.__dict__.get(instance_type)
+            instance_labels = self.ui_elements.labels.__dict__.get(instance_type)
+            for key in instance_line_edits.__dict__.keys():
+                line_edit = instance_line_edits.__dict__.get(key)
+                line_edit_value = creds.__dict__.get(key)
+                if isinstance(line_edit, QLineEdit):
+                    line_edit.setText(line_edit_value)
+                    if 'base' in key:
+                        label = instance_labels.__dict__.get(key)
+                        if isinstance(label, QLabel):
+                            if line_edit_value:
+                                line_edit.show()
+                                label.show()
+                            else:
+                                line_edit.hide()
+                                label.hide()
         else:
-            instance_line_edits.base.hide()
-            instance_labels.base.hide()
+            self.logger.error(f"Instance type error. ER: SqlAlchemyHelper, AR: {type(instance)}")
 
     def load_another_line_edits(self):
         """Loads values from internal objects to ui line edits"""
@@ -193,17 +216,26 @@ class Configuration:
         check_boxes = self.ui_elements.checkboxes
         store = self.variables.default_values.checks_customization
         for key in check_boxes.keys():
-            check_boxes.get(key).setChecked(store.get(key))
+            check_box = check_boxes.get(key)
+            if isinstance(check_box, QCheckBox):
+                cb_value = store.get(key)
+                if isinstance(cb_value, bool):
+                    check_box.setChecked(cb_value)
+                else:
+                    self.logger.debug(f"Incorrect type of checkbox value for cb {check_box.text()}"
+                                      f". ER: bool, AR: {type(cb_value)}")
 
     def load_radio_buttons(self):
         """Loads checkboxes state from internal object"""
         mode = self.variables.default_values.mode
         radio_buttons = self.ui_elements.radio_buttons
         for item in radio_buttons:
-            if mode == item:
-                radio_buttons.get(item).setChecked(True)
-            else:
-                radio_buttons.get(item).setChecked(False)
+            radio_button = radio_buttons.get(item)
+            if isinstance(radio_button, QRadioButton):
+                if mode == item:
+                    radio_button.setChecked(True)
+                else:
+                    radio_button.setChecked(False)
 
     def disable_exclude(self) -> None:
         """Disables excluded_table in case of included_tables is not empty"""
