@@ -6,7 +6,6 @@ we should change to structure like {key: [ui.variable, instance.variable]} or us
 * [ ] df_helper string result = (prod_columns == test_columns) changed to result = True, check correctness of this
 substitution
 * [ ] try to add black
-* [ ] Run tests and mypy checks in github actions
 
 Windows backlog:
 
