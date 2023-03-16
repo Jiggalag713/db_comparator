@@ -19,6 +19,9 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
+    - name: Install pylint
+      run: |
+        pip install pylint
     - name: Analysing the code with pylint
       run: |
         echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
