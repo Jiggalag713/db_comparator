@@ -1,4 +1,4 @@
-name: Pylint
+name: mypy
 
 on: [push]
 
@@ -19,6 +19,6 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
-    - name: Analysing the code with pylint
+    - name: Analysing the code with mypy
       run: |
-        mypy *.py --check-untyped-defs
+        poetry run mypy *.py --check-untyped-defs
