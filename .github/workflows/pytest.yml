@@ -19,9 +19,6 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
-    - name: Install pytest
-      run: |
-        pip install pytest
     - name: Run tests with pytest
       run: |
-        python3 -m pytest -vv
+        poetry run python3 -m pytest -vv
