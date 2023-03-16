@@ -1,8 +1,9 @@
 """Module intended to store class with most common application logic"""
 import logging
-import pymysql
 
 from PyQt5.QtWidgets import QMessageBox, QStatusBar, QCheckBox
+from sqlalchemy import exc
+from sqlalchemy.engine import Engine
 
 from configuration.main_config import Configuration
 from configuration.ui_config import UIElements
@@ -100,40 +101,40 @@ class ButtonsLogic:
 
     def check_host(self, is_prod: bool, sql_instance: SqlAlchemyHelper) -> None:
         """Method implements common checking of connection"""
+        sql_instance.warming_up()
+        if is_prod:
+            if sql_instance.tables:
+                self.main_ui.labels.prod.base.show()
+                self.main_ui.line_edits.prod.base.show()
+        else:
+            if sql_instance.tables:
+                self.main_ui.labels.test.base.show()
+                self.main_ui.line_edits.test.base.show()
         try:
-            sql_instance.warming_up()
-            if is_prod:
-                if sql_instance.tables:
-                    self.main_ui.labels.prod.base.show()
-                    self.main_ui.line_edits.prod.base.show()
+            engine = sql_instance.engine
+            if isinstance(engine, Engine):
+                engine.connect()
+                self.logger.info(f"Connection to {sql_instance.credentials.host}:"
+                                 f"{sql_instance.credentials.host} "
+                                 f"established successfully!")
+                self.change_bar_message(is_prod, True, sql_instance)
             else:
-                if sql_instance.tables:
-                    self.main_ui.labels.test.base.show()
-                    self.main_ui.line_edits.test.base.show()
-            self.logger.info(f"Connection to {sql_instance.credentials.host}:"
-                             f"{sql_instance.credentials.host} "
-                             f"established successfully!")
-            self.change_bar_message(is_prod, True, sql_instance)
-        except pymysql.OperationalError as err:
+                self.logger.error("Engine type is %s. Expected type is Engine", type(engine))
+        except exc.SQLAlchemyError as err:
             self.logger.warning(f"Connection to {sql_instance.credentials.host} "
-                                f"failed\n\n{err.args[1]}")
+                                f"failed: {err.args[0]}")
+            self.change_bar_message(is_prod, False, sql_instance)
             QMessageBox.warning(QMessageBox(), 'Warning',
                                 f"Connection to {sql_instance.credentials.host} "
-                                f"failed\n\n{err.args[1]}",
+                                f"failed\n\n{err.args[0]}",
                                 QMessageBox.Ok, QMessageBox.Ok)
-        except pymysql.InternalError as err:
-            self.logger.warning(f"Connection to {sql_instance.credentials.host} "
-                                f"failed\n\n{err.args[1]}")
-            QMessageBox.warning(QMessageBox(), 'Warning',
-                                f"Connection to {sql_instance.credentials.host} "
-                                f"failed\n\n{err.args[1]}", QMessageBox.Ok, QMessageBox.Ok)
 
     def change_bar_message(self, stage_type: bool, value: bool,
                            sql_instance: SqlAlchemyHelper) -> None:
         """Method implements changing of message, displayed in status bar"""
         current_message = self.status_bar.currentMessage().split(', ')
         host_db = f'{sql_instance.credentials.host}:{sql_instance.credentials.base}'
-        if not stage_type:
+        if stage_type:
             if value:
                 self.status_bar.showMessage(f'{host_db} connected, {current_message[1]}')
             else:

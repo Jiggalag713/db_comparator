@@ -12,8 +12,6 @@ substitution
 * [ ] split ui and logic: buttons
 * [ ] try to add black
 * [ ] test "most cruel linter" from habr
-* [ ] [bug] seems like default settings not resets schema columns correctly
-* [ ] [bug] change_bar_message method used in only one place, seems it is incorrect
 
 Windows backlog:
 
