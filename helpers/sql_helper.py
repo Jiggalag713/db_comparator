@@ -38,8 +38,8 @@ class SqlAlchemyHelper:
     def get_databases(self) -> List[str]:
         """Method gets database list"""
         if self.engine:
-            self.engine.connect()
             try:
+                self.engine.connect()
                 inspection = sqlalchemy.inspect(self.engine)
                 db_list = inspection.get_schema_names()
                 if self.credentials.base is not None and db_list:
