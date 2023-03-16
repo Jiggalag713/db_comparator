@@ -1,4 +1,4 @@
-name: pylint
+name: mypy
 
 on: [push]
 
@@ -19,7 +19,6 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
-    - name: Analysing the code with pylint
+    - name: Analysing the code with mypy
       run: |
-        echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
-        poetry run pylint $(git ls-files '*.py')
+        poetry run mypy *.py --check-untyped-defs
