@@ -3,19 +3,20 @@ import numpy as np
 import pandas as pd  # type: ignore
 
 
-def get_table_schema_dataframe(instance_type, table, engine):
+def get_table_schema_dataframe(instance_type, table, engine, columns):
     """Returns dataframe red from sql"""
-    query = f"select * from information_schema.columns " \
+    query = f"select {','.join(columns)} from information_schema.columns " \
             f"where table_schema='{instance_type}' and " \
             f"table_name='{table}';"
     return pd.read_sql(query, engine)
 
 
-def get_metadata_dataframe_diff(prod_instance, test_instance, table, logger):
+def get_metadata_dataframe_diff(prod_instance, test_instance, table, columns, logger):
     """Method implements comparing of two tables schemas using dataframes"""
-    prod_schema = get_table_schema_dataframe('prod', table, prod_instance.engine)
-    test_schema = get_table_schema_dataframe('test', table, test_instance.engine)
+    prod_schema = get_table_schema_dataframe('prod', table, prod_instance.engine, columns)
+    test_schema = get_table_schema_dataframe('test', table, test_instance.engine, columns)
     result = get_dataframes_diff(prod_schema, test_schema, logger)
+    pd.concat([prod_schema, test_schema]).drop_duplicates(keep=False)
     return result
     # df_all = pd.concat([prod_columns.set_index('id'), test_columns.set_index('id')],
     # axis='columns', keys=['First', 'Second'])
@@ -49,19 +50,17 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
     # test_columns.fillna(value=np.nan, inplace=True)
     # test_columns = test_columns.fillna(0)
     result_dataframe = prod_columns.compare(test_columns)
-    print('stop')
-    # result_dataframe = pd.DataFrame([False])
     try:
         if prod_columns == test_columns:
             result_dataframe = True
     except ValueError as exception:
         logger.warn(exception)
-    if all(result_dataframe):
-        return pd.DataFrame()
+    if result_dataframe.empty:
+        return result_dataframe
     df_all = pd.concat([prod_columns, test_columns], axis='columns', keys=['First', 'Second'])
-    df_final = df_all.swaplevel(axis='COLUMN_NAME')[prod_columns.columns[1:]]
-    df_final[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
-    return df_final
+    # df_final = df_all.swaplevel(axis='COLUMN_NAME')[prod_columns.columns[1:]]
+    df_all[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
+    return df_all
 
 
 def highlight_diff(data, color='yellow'):
