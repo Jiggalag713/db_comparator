@@ -39,7 +39,8 @@ class LineEditsLogic:
             tables = self.sql_variables.tables.all
             included_tables = list(self.sql_variables.tables.included.keys())
             hard_excluded = self.sql_variables.tables.hard_excluded
-            included_tables_view: ClickableItemsView = ClickableItemsView(tables, included_tables, hard_excluded, True)
+            included_tables_view: ClickableItemsView = ClickableItemsView(tables, included_tables,
+                                                                          hard_excluded, True)
             included_tables_view.exec_()
             return included_tables_view.selected_items
         return []

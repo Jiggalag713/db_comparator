@@ -19,9 +19,9 @@ def save_configuration(variables: Variables) -> Dict:
     for key in sql_variables.tables.__dict__:
         if key in ['included', 'excluded']:
             value = sql_variables.tables.__dict__.get(key)
-            if isinstance(value, list):
+            if isinstance(value, dict):
                 if '' in value:
-                    value.remove('')
+                    value.pop('')
                 config.update({key: value})
     for key in sql_variables.columns.__dict__:
         if key in ['excluded']:
