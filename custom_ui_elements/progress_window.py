@@ -9,7 +9,8 @@ from configuration.sql_variables import SqlVariables
 
 class ProgressWindow(QDialog):
     """Class contained implementation of progress window"""
-    def __init__(self, sql_variables: SqlVariables, dataframes_enabled: bool, check_schema: bool):
+    def __init__(self, sql_variables: SqlVariables, dataframes_enabled: bool, check_schema: bool,
+                 schema_columns: List[str]):
         super().__init__()
         self.setGeometry(50, 50, 500, 300)
         grid: QGridLayout = QGridLayout()
@@ -31,9 +32,9 @@ class ProgressWindow(QDialog):
         grid.addWidget(self.data_label, 3, 0, 1, 2)
         self.visible_schema_progress_bar(check_schema, schema_checking)
         self.show()
-        self.start(check_schema, dataframes_enabled)
+        self.start(check_schema, dataframes_enabled, schema_columns)
 
-    def start(self, check_schema, dataframes_enabled) -> None:
+    def start(self, check_schema, dataframes_enabled, schema_columns) -> None:
         """Method implements changing of progress on progress window"""
         start_time = datetime.datetime.now()
         tables = self.get_table_list()
@@ -47,10 +48,10 @@ class ProgressWindow(QDialog):
                 self.progress_schema.setValue(completed)
                 self.schema_label.setText(f'Processing of {table} table...')
                 if dataframes_enabled:
-                    result = self.sql_variables.compare_table_metadata(table)
+                    result = self.sql_variables.compare_table_metadata(table, schema_columns)
                     print(result)
                 else:
-                    result = self.sql_variables.compare_table_metadata(table)
+                    result = self.sql_variables.compare_table_metadata(table, schema_columns)
                     print(result)
                 QApplication.processEvents()
             comparing_time = datetime.datetime.now() - schema_start_time

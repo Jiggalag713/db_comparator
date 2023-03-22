@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QMessageBox, QStatusBar, QCheckBox
 from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 
-from configuration.main_config import Configuration
 from configuration.ui_config import UIElements
 from configuration.variables import Variables
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
@@ -17,12 +16,11 @@ from ui_elements.line_edits import SqlLineEdits
 class ButtonsLogic:
     """Class with implementation of most common application logic"""
     def __init__(self, main_window, table_calculation):
-        self.configuration: Configuration = main_window.configuration
         self.advanced_settings: AdvancedSettingsItem = main_window.advanced_settings
         self.main_ui: UIElements = main_window.configuration.ui_elements
         self.status_bar: QStatusBar = main_window.status_bar
-        self.logger: logging.Logger = self.configuration.logger
-        self.variables: Variables = self.configuration.variables
+        self.logger: logging.Logger = main_window.configuration.logger
+        self.variables: Variables = main_window.configuration.variables
         self.table_calculation = table_calculation
 
     def clear_all(self) -> None:
@@ -67,8 +65,9 @@ class ButtonsLogic:
             schema_checking = True
             if isinstance(check_schema, QCheckBox):
                 schema_checking = check_schema.isChecked()
-            progress = ProgressWindow(self.configuration.variables.sql_variables, enabled_dfs,
-                                      schema_checking)
+            progress = ProgressWindow(self.variables.sql_variables, enabled_dfs,
+                                      schema_checking,
+                                      self.variables.default_values.selected_schema_columns)
             progress.exec()
 
     def check_prod_host(self) -> None:
@@ -146,7 +145,7 @@ class ButtonsLogic:
                 self.status_bar.showMessage(f'{current_message[0]}, {host_db} disconnected')
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
-            self.configuration.ui_elements.buttons.btn_set_configuration.setEnabled(True)
+            self.main_ui.buttons.btn_set_configuration.setEnabled(True)
             self.variables.sql_variables.tables.all = self.table_calculation.calculate_table_list()
             self.table_calculation.calculate_includes_excludes()
             included_tables = self.variables.sql_variables.tables.included

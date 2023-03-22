@@ -2,31 +2,34 @@
 from typing import Dict
 
 from configuration.default_variables import DefaultValues
+from configuration.sql_variables import SqlVariables
 from configuration.system_config import SystemConfig
 from configuration.variables import Variables
 from helpers.sql_helper import SqlAlchemyHelper
 
 
-def save_configuration(variables) -> Dict:
+def save_configuration(variables: Variables) -> Dict:
     """Method implements serialization of current application configuration
     to file"""
     config = {}
-    sql_variables = variables.sql_variables
+    sql_variables: SqlVariables = variables.sql_variables
     for key in sql_variables.__dict__:
         if key in ['prod', 'test']:
             config.update(host_properties_to_json(key, sql_variables))
     for key in sql_variables.tables.__dict__:
         if key in ['included', 'excluded']:
             value = sql_variables.tables.__dict__.get(key)
-            if '' in value:
-                value.remove('')
-            config.update({key: value})
+            if isinstance(value, dict):
+                if '' in value:
+                    value.pop('')
+                config.update({key: value})
     for key in sql_variables.columns.__dict__:
         if key in ['excluded']:
             value = sql_variables.tables.__dict__.get(key)
-            if '' in value:
-                value.remove('')
-            config.update({key: value})
+            if isinstance(value, list):
+                if '' in value:
+                    value.remove('')
+                config.update({key: value})
     config.update(variables_to_json(variables))
     config.update(serialize_check_customization_state(variables.default_values))
     return config
@@ -45,7 +48,7 @@ def serialize_check_customization_state(default_values: DefaultValues) -> Dict:
     }
 
 
-def host_properties_to_json(instance_type: str, instance: SqlAlchemyHelper) -> Dict:
+def host_properties_to_json(instance_type: str, instance: SqlVariables) -> Dict:
     """Method intended for serializing part of SqlAlchemyHelper instance
     to config file"""
     example = instance.__dict__.get(instance_type)
