@@ -19,15 +19,17 @@ def save_configuration(variables: Variables) -> Dict:
     for key in sql_variables.tables.__dict__:
         if key in ['included', 'excluded']:
             value = sql_variables.tables.__dict__.get(key)
-            if '' in value:
-                value.remove('')
-            config.update({key: value})
+            if isinstance(value, list):
+                if '' in value:
+                    value.remove('')
+                config.update({key: value})
     for key in sql_variables.columns.__dict__:
         if key in ['excluded']:
             value = sql_variables.tables.__dict__.get(key)
-            if '' in value:
-                value.remove('')
-            config.update({key: value})
+            if isinstance(value, list):
+                if '' in value:
+                    value.remove('')
+                config.update({key: value})
     config.update(variables_to_json(variables))
     config.update(serialize_check_customization_state(variables.default_values))
     return config
