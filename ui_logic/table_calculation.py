@@ -2,20 +2,21 @@
  for calculating table lists"""
 from typing import Dict
 
+from configuration.sql_variables import SqlVariables
 from configuration.variables import Variables
 
 
 class TableCalculation:
     """Class intended for calculating different table lists"""
     def __init__(self, variables: Variables):
-        self.variables: Variables = variables
+        self.sql_variables: SqlVariables = variables.sql_variables
         self.logger = variables.logger
 
     def calculate_table_list(self) -> Dict:
         """Method calculates of tables, which exists in both databases"""
-        prod = self.variables.sql_variables.prod
-        test = self.variables.sql_variables.test
-        tables = self.variables.sql_variables.tables.all
+        prod = self.sql_variables.prod
+        test = self.sql_variables.test
+        tables = self.sql_variables.tables.all
         if all([prod.tables, test.tables]):
             tables = self.get_common_tables(prod.tables, test.tables)
         return tables
@@ -24,8 +25,8 @@ class TableCalculation:
         """Returns dictionary of common tables with columns"""
         prod_tables = set(prod.keys())
         test_tables = set(test.keys())
-        self.find_unique_tables(prod_tables, test_tables, self.variables.sql_variables.prod)
-        self.find_unique_tables(test_tables, prod_tables, self.variables.sql_variables.test)
+        self.find_unique_tables(prod_tables, test_tables, self.sql_variables.prod)
+        self.find_unique_tables(test_tables, prod_tables, self.sql_variables.test)
         common_tables = {}
         for table in list(prod_tables & test_tables):
             common_tables.update({table: prod.get(table)})
@@ -42,29 +43,29 @@ class TableCalculation:
 
     def calculate_includes_excludes(self) -> None:
         """Calculates included and excluded tables"""
-        if not self.variables.sql_variables.tables.included:
+        if not self.sql_variables.tables.included:
             self.fulfill_include_tables()
             self.calculate_excluded_columns()
 
     def fulfill_include_tables(self) -> None:
         """Fulfills included_tables variable"""
-        prod = self.variables.sql_variables.prod
-        test = self.variables.sql_variables.test
-        tables = self.variables.sql_variables.tables.all
+        prod = self.sql_variables.prod
+        test = self.sql_variables.test
+        tables = self.sql_variables.tables.all
         for table in tables:
             prod_columns = prod.tables.get(table)
             test_columns = test.tables.get(table)
             if prod_columns == test_columns:
-                if table not in self.variables.sql_variables.tables.included:
-                    self.variables.sql_variables.tables.included.update({table: prod_columns})
+                if table not in self.sql_variables.tables.included:
+                    self.sql_variables.tables.included.update({table: prod_columns})
             else:
                 reason = self.get_hard_excluded_reason(table, prod, test)
-                self.variables.sql_variables.tables.hard_excluded.update({table: reason})
+                self.sql_variables.tables.hard_excluded.update({table: reason})
                 self.logger.warning(f'Table {table} was added to hard_excluded '
                                     f'with reason: {reason}'
                                     f'tables and excluded from comparing')
-                if table in self.variables.sql_variables.tables.included.keys():
-                    self.variables.sql_variables.tables.included.pop(table)
+                if table in self.sql_variables.tables.included.keys():
+                    self.sql_variables.tables.included.pop(table)
 
     def get_hard_excluded_reason(self, table, prod, test) -> str:
         """Returns reason for hard excluding of some table with different columns for same
@@ -94,7 +95,7 @@ class TableCalculation:
     def get_tables_dict(self, table_list) -> Dict:
         """Returns included tables dict"""
         result = {}
-        prod_tables = self.variables.sql_variables.prod.tables
+        prod_tables = self.sql_variables.prod.tables
         for table in table_list:
             result.update({table: prod_tables.get(table)})
         return result
@@ -111,11 +112,11 @@ class TableCalculation:
 
     def calculate_excluded_columns(self) -> None:
         """Method calculates list of excluded column"""
-        for table in self.variables.sql_variables.tables.all:
-            if table in self.variables.sql_variables.tables.excluded:
-                columns = self.variables.sql_variables.tables.all
+        for table in self.sql_variables.tables.all:
+            if table in self.sql_variables.tables.excluded:
+                columns = self.sql_variables.tables.all
                 for column in columns:
-                    excluded_columns = self.variables.sql_variables.columns.excluded
+                    excluded_columns = self.sql_variables.columns.excluded
                     if column not in excluded_columns:
                         excluded_columns.append(f'{table}.{column}')
-        self.variables.sql_variables.columns.excluded.sort()
+        self.sql_variables.columns.excluded.sort()

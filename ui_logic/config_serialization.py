@@ -2,16 +2,17 @@
 from typing import Dict
 
 from configuration.default_variables import DefaultValues
+from configuration.sql_variables import SqlVariables
 from configuration.system_config import SystemConfig
 from configuration.variables import Variables
 from helpers.sql_helper import SqlAlchemyHelper
 
 
-def save_configuration(variables) -> Dict:
+def save_configuration(variables: Variables) -> Dict:
     """Method implements serialization of current application configuration
     to file"""
     config = {}
-    sql_variables = variables.sql_variables
+    sql_variables: SqlVariables = variables.sql_variables
     for key in sql_variables.__dict__:
         if key in ['prod', 'test']:
             config.update(host_properties_to_json(key, sql_variables))
@@ -45,7 +46,7 @@ def serialize_check_customization_state(default_values: DefaultValues) -> Dict:
     }
 
 
-def host_properties_to_json(instance_type: str, instance: SqlAlchemyHelper) -> Dict:
+def host_properties_to_json(instance_type: str, instance: SqlVariables) -> Dict:
     """Method intended for serializing part of SqlAlchemyHelper instance
     to config file"""
     example = instance.__dict__.get(instance_type)
