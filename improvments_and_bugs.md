@@ -6,6 +6,8 @@ we should change to structure like {key: [ui.variable, instance.variable]} or us
 * [ ] df_helper string result = (prod_columns == test_columns) changed to result = True, check correctness of this
 substitution
 * [ ] try to add black
+* [ ] Add integration tests. Prepare docker-container with mysql-server, databases with test data and code.
+* [ ] Add version without GUI
 
 Windows backlog:
 
