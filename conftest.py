@@ -51,12 +51,12 @@ def variables():
 
 @pytest.fixture(scope='session')
 def table_calculation():
-    """Returns table_calcultaion instance"""
+    """Returns table_calculation instance"""
     table_calc = TableCalculation(Variables())
-    table_calc.variables.sql_variables.prod.tables = {'first': ['one', 'two'],
-                                                      'second': ['one', 'two'],
-                                                      'third': ['one', 'two']}
-    table_calc.variables.sql_variables.test.tables = {'second': ['one', 'two'],
-                                                      'third': ['one', 'two', 'three'],
-                                                      'fourth': ['one', 'two']}
+    table_calc.sql_variables.prod.tables = {'first': ['one', 'two'],
+                                            'second': ['one', 'two'],
+                                            'third': ['one', 'two']}
+    table_calc.sql_variables.test.tables = {'second': ['one', 'two'],
+                                            'third': ['one', 'two', 'three'],
+                                            'fourth': ['one', 'two']}
     return table_calc
