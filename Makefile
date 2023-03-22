@@ -1,10 +1,10 @@
 checks: lint mypy test
 
 lint:
-	pylint $$(git ls-files '*.py')
+	poetry run pylint $(git ls-files '*.py')
 
 test:
-	python3 -m pytest -vv
+	poetry run python3 -m pytest -vv
 
 mypy:
-	mypy *.py --check-untyped-defs
+	poetry run mypy *.py --check-untyped-defs

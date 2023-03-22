@@ -16,7 +16,7 @@ class LineEditsLogic:
         if all([self.sql_variables.prod.tables,
                 self.sql_variables.test.tables]):
             tables = self.sql_variables.tables.all
-            excluded_tables = self.sql_variables.tables.excluded
+            excluded_tables = list(self.sql_variables.tables.excluded.keys())
             hard_excluded = self.sql_variables.tables.hard_excluded
             excluded_tables_view = ClickableItemsView(tables, excluded_tables,
                                                       hard_excluded, False)
@@ -26,10 +26,10 @@ class LineEditsLogic:
 
     def get_selected_included_columns(self) -> List[str]:
         """Method sets excluded columns"""
-        excluded_columns = self.sql_variables.columns.excluded
         all_columns = self.get_all_columns()
-        excluded_columns = ClickableItemsView(all_columns, excluded_columns)
-        excluded_columns.exec_()
+        excluded_columns = ClickableItemsView(all_columns, self.sql_variables.columns.excluded)
+        if isinstance(excluded_columns, ClickableItemsView):
+            excluded_columns.exec_()
         return excluded_columns.selected_items
 
     def get_selected_included_tables(self) -> List[str]:
@@ -37,11 +37,11 @@ class LineEditsLogic:
         if all([self.sql_variables.prod.tables,
                 self.sql_variables.test.tables]):
             tables = self.sql_variables.tables.all
-            included_tables = self.sql_variables.tables.included
+            included_tables = list(self.sql_variables.tables.included.keys())
             hard_excluded = self.sql_variables.tables.hard_excluded
-            included_tables = ClickableItemsView(tables, included_tables, hard_excluded, True)
-            included_tables.exec_()
-            return included_tables.selected_items
+            included_tables_view: ClickableItemsView = ClickableItemsView(tables, included_tables, hard_excluded, True)
+            included_tables_view.exec_()
+            return included_tables_view.selected_items
         return []
 
     @staticmethod
@@ -64,7 +64,9 @@ class LineEditsLogic:
                 if table in tables:
                     tables.pop(table)
         for table in tables:
-            for column in tables.get(table):
-                columns.append(f'{table}.{column}')
+            table_columns = tables.get(table)
+            if table_columns is not None:
+                for column in table_columns:
+                    columns.append(f'{table}.{column}')
         columns.sort()
         return columns
