@@ -1,7 +1,7 @@
 """Module intended to store class with most common application logic"""
 import logging
 
-from PyQt5.QtWidgets import QMessageBox, QStatusBar, QCheckBox
+from PyQt5.QtWidgets import QMessageBox, QStatusBar
 from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 
@@ -52,24 +52,20 @@ class ButtonsLogic:
         logging_level = self.variables.system_config.logging_level
         self.variables.system_config.logger.setLevel(logging_level)
 
-    def start_work(self) -> None:
+    def start_work(self, use_dataframes: bool, schema_checking: bool) -> None:
         """Method starts process of comparing databases"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.logger.info('Comparing started!')
-            use_dataframes = self.main_ui.checkboxes.get('use_dataframes')
-            enabled_dfs = True
-            if isinstance(use_dataframes, QCheckBox):
-                enabled_dfs = use_dataframes.isChecked()
-            check_schema = self.main_ui.checkboxes.get('check_schema')
-            schema_checking = True
-            if isinstance(check_schema, QCheckBox):
-                schema_checking = check_schema.isChecked()
-            progress = ProgressWindow(self.variables.sql_variables, enabled_dfs,
+            progress = ProgressWindow(self.variables.sql_variables, use_dataframes,
                                       schema_checking,
                                       self.variables.default_values.selected_schema_columns)
             progress.exec()
-
+        else:
+            if not self.variables.sql_variables.prod.tables:
+                self.logger.error("Prod tables variable is empty!")
+            if not self.variables.sql_variables.test.tables:
+                self.logger.error("Test tables variable is empty!")
     def check_prod_host(self) -> None:
         """Method checks connection to prod instance"""
         self.set_sql_credentials(self.variables.sql_variables.prod,
