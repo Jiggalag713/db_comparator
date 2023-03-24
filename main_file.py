@@ -4,10 +4,10 @@
 import json
 import os
 import sys
-from typing import NoReturn
+from typing import NoReturn, Optional, Any
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QCheckBox
 from PyQt5.QtWidgets import QMenu, QStatusBar, QFileDialog
 
 from configuration.main_config import Configuration
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.main_window)
         self.menubar = self.menuBar()
         table_calculation = TableCalculation(self.main_window.configuration.variables)
-        self.common_logic = ButtonsLogic(self.main_window, table_calculation)
+        self.logic = ButtonsLogic(self.main_window, table_calculation)
         self.line_edits_logic = LineEditsLogic(self.main_window.configuration.variables)
         self.menu: QMenu = self.get_menu()
         self.add_connects(table_calculation)
@@ -68,11 +68,15 @@ class MainWindow(QMainWindow):
     def add_connects(self, table_calculation):
         """Method intended for set connections between UI elements and methods"""
         buttons = self.main_window.configuration.ui_elements.buttons
-        buttons.btn_advanced.clicked.connect(self.common_logic.advanced)
-        buttons.btn_clear_all.clicked.connect(self.common_logic.clear_all)
-        buttons.btn_set_configuration.clicked.connect(self.common_logic.start_work)
-        buttons.btn_check_prod.clicked.connect(self.common_logic.check_prod_host)
-        buttons.btn_check_test.clicked.connect(self.common_logic.check_test_host)
+        buttons.btn_advanced.clicked.connect(self.logic.advanced)
+        buttons.btn_clear_all.clicked.connect(self.logic.clear_all)
+        checkboxes = self.main_window.configuration.ui_elements.checkboxes
+        use_dataframes = self.get_state(checkboxes.get('use_dataframes'))
+        check_schema = self.get_state(checkboxes.get('check_schema'))
+        buttons.btn_set_configuration.clicked.connect(lambda: self.logic.start_work(use_dataframes,
+                                                                                    check_schema))
+        buttons.btn_check_prod.clicked.connect(self.logic.check_prod_host)
+        buttons.btn_check_test.clicked.connect(self.logic.check_test_host)
 
         line_edits = self.main_window.configuration.ui_elements.line_edits
         line_edits.excluded_tables.clicked.connect(lambda:
@@ -93,7 +97,11 @@ class MainWindow(QMainWindow):
         compare_action: QAction = QAction(QIcon('compare.png'), '&Compare', self.main_window)
         compare_action.setShortcut('Ctrl+F')
         compare_action.setStatusTip('Run comparing')
-        compare_action.triggered.connect(self.common_logic.start_work)
+        checkboxes = self.main_window.configuration.ui_elements.checkboxes
+        use_dataframes = self.get_state(checkboxes.get('use_dataframes'))
+        check_schema = self.get_state(checkboxes.get('check_schema'))
+        compare_action.triggered.connect(lambda: self.logic.start_work(use_dataframes,
+                                                                       check_schema))
 
         save_action: QAction = QAction(QIcon('save.png'), '&Save', self.main_window)
         save_action.setShortcut('Ctrl+S')
@@ -111,6 +119,13 @@ class MainWindow(QMainWindow):
         file_menu.addAction(compare_action)
         file_menu.addAction(exit_action)
         return file_menu
+
+    @staticmethod
+    def get_state(checkbox: Optional[Any]) -> bool:
+        """Returns current state of checkbox"""
+        if isinstance(checkbox, QCheckBox):
+            return checkbox.isChecked()
+        return True
 
     def save_properties(self):
         """Runs process for saving property """
@@ -132,7 +147,7 @@ class MainWindow(QMainWindow):
     def load_properties(self):
         """Runs process for loading properties"""
         self.open_file()
-        common = self.common_logic
+        common = self.logic
         common.check_host(True, self.main_window.variables.sql_variables.prod)
         common.check_host(False, self.main_window.variables.sql_variables.test)
         self.main_window.configuration.load_from_internal()

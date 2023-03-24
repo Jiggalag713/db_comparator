@@ -19,6 +19,11 @@ poetry install
 5. Run script main_file.py.
 6. Have fun.
 
+To run comparator from command line
+```
+python3 headles..py --config /home/polter/PycharmProjects/db_comparator/resources/properties/1
+```
+
 Run pylint
 
 ```
