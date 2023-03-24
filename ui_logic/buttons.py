@@ -66,6 +66,7 @@ class ButtonsLogic:
                 self.logger.error("Prod tables variable is empty!")
             if not self.variables.sql_variables.test.tables:
                 self.logger.error("Test tables variable is empty!")
+
     def check_prod_host(self) -> None:
         """Method checks connection to prod instance"""
         self.set_sql_credentials(self.variables.sql_variables.prod,
@@ -143,6 +144,7 @@ class ButtonsLogic:
                 self.variables.sql_variables.test.tables]):
             self.main_ui.buttons.btn_set_configuration.setEnabled(True)
             self.variables.sql_variables.tables.all = self.table_calculation.calculate_table_list()
+            self.variables.sql_variables.tables.get_compare()
             self.table_calculation.calculate_includes_excludes()
             included_tables = self.variables.sql_variables.tables.included
             self.main_ui.line_edits.included_tables.setText(','.join(included_tables))

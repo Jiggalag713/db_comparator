@@ -49,18 +49,21 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
     # prod_columns = prod_columns.fillna(0)
     # test_columns.fillna(value=np.nan, inplace=True)
     # test_columns = test_columns.fillna(0)
-    result_dataframe = prod_columns.compare(test_columns)
+    # result_dataframe = prod_columns.compare(test_columns)
     try:
+        result_dataframe = pd.DataFrame()
         if prod_columns == test_columns:
-            result_dataframe = True
+            df_all = pd.concat([prod_columns, test_columns], axis='columns',
+                               keys=['First', 'Second'])
+            # df_final = df_all.swaplevel(axis='COLUMN_NAME')[prod_columns.columns[1:]]
+            df_all[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
+            return df_all
+        if result_dataframe:
+            logger.error('Dataframes differs!')
+        return result_dataframe
     except ValueError as exception:
         logger.warn(exception)
-    if result_dataframe.empty:
-        return result_dataframe
-    df_all = pd.concat([prod_columns, test_columns], axis='columns', keys=['First', 'Second'])
-    # df_final = df_all.swaplevel(axis='COLUMN_NAME')[prod_columns.columns[1:]]
-    df_all[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
-    return df_all
+        return pd.DataFrame()
 
 
 def highlight_diff(data, color='yellow'):
