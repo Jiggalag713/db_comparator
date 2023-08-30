@@ -8,7 +8,7 @@ lint:
 	poetry run pylint $$(git ls-files '*.py')
 
 mypy:
-	poetry run mypy *.py --check-untyped-defs
+	poetry run mypy $$(git ls-files '*.py') --check-untyped-defs --explicit-package-bases
 
 test:
 	poetry run python3 -m pytest -vv
