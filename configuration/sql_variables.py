@@ -64,7 +64,7 @@ class Tables:
     all: Dict = field(default_factory=lambda: {})
     to_compare: List = field(default_factory=lambda: [])
 
-    def get_compare(self):
+    def get_compare(self) -> List[str]:
         """Calculates list of tables to compare"""
         if self.included:
             self.to_compare = list(self.included.keys())
@@ -76,6 +76,7 @@ class Tables:
             self.to_compare = tables
         else:
             self.to_compare = list(self.all.keys())
+        return self.to_compare
 
 
 @dataclass

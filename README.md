@@ -47,3 +47,18 @@ Sequence run pylint, mypy, pytest:
 ```
 make checks
 ```
+
+Run integration tests(in docker-compose):
+
+```
+make run-it-tests
+```
+
+view it-tests report:
+# TODO
+
+shut down it-test compose:
+
+```
+make tear-down
+```

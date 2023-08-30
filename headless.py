@@ -34,7 +34,7 @@ def open_file(file_name, sql_variables, logger):
 def start(sql_variables, schema, dataframes_enabled, columns, logger) -> None:
     """Starts headless comparing"""
     start_time = datetime.datetime.now()
-    tables = sql_variables.tables.get_compare
+    tables = sql_variables.tables.get_compare()
     part = 100 // len(tables)
     if schema:
         schema_start_time = datetime.datetime.now()
