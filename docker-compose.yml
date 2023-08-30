@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  comparator:
+    build: .
+    depends_on:
+      - mysql
+    links:
+      - mysql
+
+  mysql:
+    image: "mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: test1
+    ports:
+      - '33006:3306'
+    expose:
+      - '3306'
+    # volumes:
+    #   - './.mysql-data/db:/var/lib/mysql'

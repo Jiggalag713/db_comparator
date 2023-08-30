@@ -1,0 +1,57 @@
+{
+    "prod.host": "mysql",
+    "prod.user": "root",
+    "prod.password": "test1",
+    "prod.base": "prod",
+    "test.host": "mysql",
+    "test.user": "root",
+    "test.password": "test1",
+    "test.base": "test",
+    "included": {
+        "differ_schema": [
+            "id",
+            "name"
+        ],
+        "Username": [
+            "id",
+            "name"
+        ]
+    },
+    "excluded": {},
+    "logging_level": 10,
+    "path_to_logs": "/db_comparator/DbComparator.log",
+    "service_dir": "/db_comparator/",
+    "test_dir": "/db_comparator/test_results/",
+    "comparing_step": "1",
+    "depth_report_check": "7",
+    "retry_attempts": "3",
+    "strings_amount": "5",
+    "table_timeout": "10000",
+    "schema_columns": [
+        "TABLE_CATALOG",
+        "TABLE_NAME",
+        "COLUMN_NAME",
+        "ORDINAL_POSITION",
+        "COLUMN_DEFAULT",
+        "IS_NULLABLE",
+        "DATA_TYPE",
+        "CHARACTER_MAXIMUM_LENGTH",
+        "CHARACTER_OCTET_LENGTH",
+        "NUMERIC_PRECISION",
+        "NUMERIC_SCALE",
+        "DATETIME_PRECISION",
+        "CHARACTER_SET_NAME",
+        "COLLATION_NAME",
+        "COLUMN_TYPE",
+        "COLUMN_KEY",
+        "EXTRA",
+        "COLUMN_COMMENT",
+        "GENERATION_EXPRESSION"
+    ],
+    "check_entities": true,
+    "check_reports": true,
+    "check_schema": true,
+    "fail_fast": false,
+    "use_dataframes": true,
+    "report_check_type": "detailed"
+}

@@ -32,7 +32,7 @@ class ProgressWindow(QDialog):
         grid.addWidget(self.data_label, 3, 0, 1, 2)
         self.visible_schema_progress_bar(check_schema, schema_checking)
         self.show()
-        self.start(self.sql_variables.tables.get_compare, check_schema, dataframes_enabled,
+        self.start(self.sql_variables.tables.to_compare, check_schema, dataframes_enabled,
                    schema_columns)
 
     def start(self, tables, check_schema, dataframes_enabled, schema_columns) -> None:
