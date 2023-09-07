@@ -1,7 +1,7 @@
 """Module intended to store class with most common application logic"""
 import logging
 
-from PyQt5.QtWidgets import QMessageBox, QStatusBar
+from PyQt5.QtWidgets import QMessageBox, QStatusBar, QLineEdit
 from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 
@@ -29,8 +29,12 @@ class ButtonsLogic:
         prod = self.main_ui.line_edits.prod
         test = self.main_ui.line_edits.test
         for key in prod.__dict__.keys():
-            prod.__dict__.get(key).clear()
-            test.__dict__.get(key).clear()
+            prod_le = prod.__dict__.get(key)
+            test_le = test.__dict__.get(key)
+            if isinstance(prod_le, QLineEdit):
+                prod_le.clear()
+            if isinstance(test_le, QLineEdit):
+                test_le.clear()
         self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
         self.main_ui.line_edits.excluded_tables.clear()
@@ -145,10 +149,13 @@ class ButtonsLogic:
                 sql_line_edit.base.setText(selected_db)
                 sql_line_edit.base.setToolTip(selected_db)
             sql_instance = self.variables.sql_variables.__dict__.get(instance_type)
-            self.logger.info(f"Connection to {sql_instance.credentials.host}:"
-                             f"{sql_instance.credentials.port}/{sql_instance.credentials.base} "
-                             f"established successfully!")
-            self.change_bar_message(is_prod, True, sql_instance)
+            if isinstance(sql_instance, SqlAlchemyHelper):
+                self.logger.info(f"Connection to {sql_instance.credentials.host}:"
+                                 f"{sql_instance.credentials.port}/{sql_instance.credentials.base} "
+                                 f"established successfully!")
+                self.change_bar_message(is_prod, True, sql_instance)
+            else:
+                self.logger.critical(f'Incompatible types of sql_instance: {type(sql_instance)}')
 
     def change_bar_message(self, stage_type: bool, value: bool,
                            sql_instance: SqlAlchemyHelper) -> None:

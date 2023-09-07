@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional, List, Dict
 import sqlalchemy
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 
 
 class SqlAlchemyHelper:
@@ -60,7 +61,7 @@ class SqlAlchemyHelper:
 
     def get_tables(self) -> Dict[str, List[str]]:
         """Method gets table list for proper database"""
-        if all([self.engine, self.databases]):
+        if isinstance(self.engine, Engine):
             if self.engine.url.database:
                 self.meta.reflect(bind=self.engine)
                 result_tables: Dict[str, List[str]] = {}
