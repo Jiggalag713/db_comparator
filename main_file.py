@@ -13,8 +13,6 @@ from PyQt5.QtWidgets import QMenu, QStatusBar, QFileDialog
 from configuration.main_config import Configuration
 from configuration.variables import Variables
 from custom_ui_elements.advanced_settings import AdvancedSettingsItem
-from helpers.sql_helper import SqlAlchemyHelper
-from ui_elements.line_edits import SqlLineEdits
 from ui_logic.buttons import ButtonsLogic
 from ui_logic import config_serialization
 from ui_logic.line_edits import LineEditsLogic
@@ -71,10 +69,8 @@ class MainWindow(QMainWindow):
         buttons.btn_advanced.clicked.connect(self.logic.advanced)
         buttons.btn_clear_all.clicked.connect(self.logic.clear_all)
         checkboxes = self.main_window.configuration.ui_elements.checkboxes
-        use_dataframes = self.get_state(checkboxes.get('use_dataframes'))
         check_schema = self.get_state(checkboxes.get('check_schema'))
-        buttons.btn_set_configuration.clicked.connect(lambda: self.logic.start_work(use_dataframes,
-                                                                                    check_schema))
+        buttons.btn_set_configuration.clicked.connect(lambda: self.logic.start_work(check_schema))
         buttons.btn_check_prod.clicked.connect(self.logic.check_prod_host)
         buttons.btn_check_test.clicked.connect(self.logic.check_test_host)
 
@@ -98,10 +94,8 @@ class MainWindow(QMainWindow):
         compare_action.setShortcut('Ctrl+F')
         compare_action.setStatusTip('Run comparing')
         checkboxes = self.main_window.configuration.ui_elements.checkboxes
-        use_dataframes = self.get_state(checkboxes.get('use_dataframes'))
         check_schema = self.get_state(checkboxes.get('check_schema'))
-        compare_action.triggered.connect(lambda: self.logic.start_work(use_dataframes,
-                                                                       check_schema))
+        compare_action.triggered.connect(lambda: self.logic.start_work(check_schema))
 
         save_action: QAction = QAction(QIcon('save.png'), '&Save', self.main_window)
         save_action.setShortcut('Ctrl+S')

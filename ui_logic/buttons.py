@@ -50,14 +50,15 @@ class ButtonsLogic:
         logging_level = self.variables.system_config.logging_level
         self.variables.system_config.logger.setLevel(logging_level)
 
-    def start_work(self, use_dataframes: bool, schema_checking: bool) -> None:
+    def start_work(self, schema_checking: bool) -> None:
         """Method starts process of comparing databases"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.logger.info('Comparing started!')
-            progress = ProgressWindow(self.variables.sql_variables, use_dataframes,
+            progress = ProgressWindow(self.variables.sql_variables,
                                       schema_checking,
-                                      self.variables.default_values.selected_schema_columns)
+                                      self.variables.default_values.selected_schema_columns,
+                                      self.variables.system_config.result_file)
             progress.exec()
         else:
             if not self.variables.sql_variables.prod.tables:

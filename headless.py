@@ -14,7 +14,6 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('--config', type=str, help='Path to config (/home/user/Desktop/1.txt)',
                         required=True)
     parser.add_argument('--check_schema', type=bool, help='Check schema if true', default=True)
-    parser.add_argument('--use_dataframes', type=bool, help='Use dataframes if true', default=True)
     return parser.parse_args()
 
 
@@ -31,7 +30,7 @@ def open_file(file_name, sql_variables, logger):
                        'Warn: %s', err.args[1])
 
 
-def start(sql_variables, schema, dataframes_enabled, columns, logger) -> None:
+def start(sql_variables, schema, columns, logger, result_file) -> None:
     """Starts headless comparing"""
     start_time = datetime.datetime.now()
     tables = sql_variables.tables.get_compare()
@@ -39,10 +38,7 @@ def start(sql_variables, schema, dataframes_enabled, columns, logger) -> None:
     if schema:
         schema_start_time = datetime.datetime.now()
         for table in tables:
-            if dataframes_enabled:
-                sql_variables.compare_table_metadata(table, columns)
-            else:
-                sql_variables.compare_table_metadata(table, columns)
+            sql_variables.compare_table_metadata(table, columns, result_file)
             completed = part * (tables.index(table) + 1)
             if tables.index(table) + 1 == len(tables):
                 completed = 100
@@ -53,10 +49,7 @@ def start(sql_variables, schema, dataframes_enabled, columns, logger) -> None:
         logger.info("Schema checking disabled...")
     schema_checking_time = datetime.datetime.now() - start_time
     for table in tables:
-        if dataframes_enabled:
-            sql_variables.compare_data(table)
-        else:
-            sql_variables.compare_data(table)
+        sql_variables.compare_data(table)
         completed = part * (tables.index(table) + 1)
         if tables.index(table) + 1 == len(tables):
             completed = 100
@@ -81,7 +74,6 @@ def update_variables(variables) -> None:
 args = get_args()
 config_name = args.config
 check_schema = args.check_schema
-use_dataframes = args.use_dataframes
 common_variables = Variables()
 console_logger = common_variables.system_config.logger
 open_file(config_name, common_variables, console_logger)
@@ -89,4 +81,5 @@ schema_columns = common_variables.default_values.selected_schema_columns
 common_variables.sql_variables.prod.warming_up()
 common_variables.sql_variables.test.warming_up()
 update_variables(common_variables)
-start(common_variables.sql_variables, check_schema, use_dataframes, schema_columns, console_logger)
+start(common_variables.sql_variables, check_schema, schema_columns, console_logger,
+      common_variables.system_config.result_file)

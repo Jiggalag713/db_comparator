@@ -112,7 +112,8 @@ class AdvancedWindowLogic:
         password = self.variables.sql_variables.prod.credentials.password
         columns = []
         base = 'information_schema'
-        info_schema_creds = SqlCredentials(host=host, port=port, user=user, password=password, base=base)
+        info_schema_creds = SqlCredentials(host=host, port=port, user=user, password=password,
+                                           base=base)
         engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
         if isinstance(engine, sqlalchemy.engine.Engine):
             result = engine.execute("describe information_schema.columns;")

@@ -48,7 +48,6 @@ class ElementPositions:
         self.grid.addWidget(checkboxes.get('fail_fast'), 12, 0)
         self.grid.addWidget(checkboxes.get('check_reports'), 11, 1)
         self.grid.addWidget(checkboxes.get('check_entities'), 12, 1)
-        self.grid.addWidget(checkboxes.get('use_dataframes'), 11, 2)
         self.grid.addWidget(radio_buttons.get('day-sum'), 8, 3)
         self.grid.addWidget(radio_buttons.get('section-sum'), 9, 3)
         self.grid.addWidget(radio_buttons.get('detailed'), 10, 3)

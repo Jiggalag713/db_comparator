@@ -26,15 +26,16 @@ class SqlVariables:
         self.logger.info(f"Compare schema for table {table}...")
         diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
                                                                 table, columns, self.logger)
-        comparation_result = df_compare_helper.highlight_diff(diff_df).to_html()
-        with open(result_file) as file:
-            file.write(comparation_result)
-        if isinstance(diff_df, pd.DataFrame):
-            if not diff_df.empty:
-                self.logger.error(f"Schema of tables {table} differs!")
-        else:
-            self.logger.error(f'Incorrect type of diff_df. ER: pandas.DataFrame, '
-                              f'AR: {type(diff_df)}')
+        if not diff_df.empty:
+            comparation_result = df_compare_helper.highlight_diff(diff_df).to_html()
+            with open(result_file, encoding="utf-8") as file:
+                file.write(comparation_result)
+            if isinstance(diff_df, pd.DataFrame):
+                if not diff_df.empty:
+                    self.logger.error(f"Schema of tables {table} differs!")
+            else:
+                self.logger.error(f'Incorrect type of diff_df. ER: pandas.DataFrame, '
+                                  f'AR: {type(diff_df)}')
         schema_comparing_time = datetime.datetime.now() - start_time
         self.logger.debug(f"Schema of table {table} compared in {schema_comparing_time}")
         return True
