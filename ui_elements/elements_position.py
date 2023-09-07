@@ -7,7 +7,6 @@ class ElementPositions:
     def __init__(self):
         self.grid: QGridLayout = QGridLayout()
         self.grid.setSpacing(10)
-        self.grid.setColumnStretch(0, 0)
 
     def locate_labels_line_edits(self, labels, line_edits) -> None:
         """Method locates elements of main window on a grid"""

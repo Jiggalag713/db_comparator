@@ -84,8 +84,8 @@ class MainWindow(QMainWindow):
         line_edits.excluded_columns.clicked.connect(self.set_excluded_columns)
         line_edits.included_tables.clicked.connect(lambda:
                                                    self.set_included_tables(table_calculation))
-        line_edits.prod.base.clicked.connect(lambda: self.set_db('prod'))
-        line_edits.test.base.clicked.connect(lambda: self.set_db('test'))
+        line_edits.prod.base.clicked.connect(lambda: self.logic.set_db('prod'))
+        line_edits.test.base.clicked.connect(lambda: self.logic.set_db('test'))
 
     def get_menu(self) -> QMenu:
         """Method builds main window menu"""
@@ -148,9 +148,9 @@ class MainWindow(QMainWindow):
         """Runs process for loading properties"""
         self.open_file()
         common = self.logic
+        self.main_window.configuration.load_from_internal()
         common.check_host(True, self.main_window.variables.sql_variables.prod)
         common.check_host(False, self.main_window.variables.sql_variables.test)
-        self.main_window.configuration.load_from_internal()
 
     def open_file(self):
         """Method loads application configuration from file"""
@@ -201,18 +201,6 @@ class MainWindow(QMainWindow):
         columns.excluded = selected_columns
         excluded_columns_line_edit.setText(','.join(selected_columns))
         line_edits.excluded_columns.setToolTip(','.join(selected_columns))
-
-    def set_db(self, instance_type) -> None:
-        """Method sets prod database"""
-        line_edits = self.main_window.configuration.ui_elements.line_edits
-        sql_variables = self.main_window.variables.sql_variables.__dict__.get(instance_type)
-        if isinstance(sql_variables, SqlAlchemyHelper):
-            selected_db = self.line_edits_logic.set_db(sql_variables.databases,
-                                                       sql_variables.credentials.base)
-            sql_line_edit = line_edits.__dict__.get(instance_type)
-            if isinstance(sql_line_edit, SqlLineEdits):
-                sql_line_edit.base.setText(selected_db)
-                sql_line_edit.base.setToolTip(selected_db)
 
 
 if __name__ == '__main__':

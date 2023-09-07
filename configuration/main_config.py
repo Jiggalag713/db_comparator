@@ -187,7 +187,7 @@ class Configuration:
                 line_edit = instance_line_edits.__dict__.get(key)
                 line_edit_value = creds.__dict__.get(key)
                 if isinstance(line_edit, QLineEdit):
-                    line_edit.setText(line_edit_value)  # TODO: after this string creds.port value dissapears
+                    line_edit.setText(line_edit_value)
                     label = instance_labels.__dict__.get(key)
                     if 'base' in key and isinstance(label, QLabel):
                         if line_edit_value:

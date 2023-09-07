@@ -26,8 +26,3 @@ Support dataframes roadmap:
 0. Check correctness of day-summary mode.
 1. Check correctness of section-summary mode.
 2. Check correctness of detailed mode.
-
-Current:
-
-1. Fix appearing of database field after loading from file, now it's broken.
-2. Compare button not enabled after connection to databases.
