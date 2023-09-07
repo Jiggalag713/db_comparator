@@ -1,7 +1,7 @@
 """Module intended to store class with most common application logic"""
 import logging
 
-from PyQt5.QtWidgets import QMessageBox, QStatusBar
+from PyQt5.QtWidgets import QMessageBox, QStatusBar, QLineEdit
 from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 
@@ -11,6 +11,7 @@ from custom_ui_elements.advanced_settings import AdvancedSettingsItem
 from custom_ui_elements.progress_window import ProgressWindow
 from helpers.sql_helper import SqlAlchemyHelper
 from ui_elements.line_edits import SqlLineEdits
+from ui_logic.line_edits import LineEditsLogic
 
 
 class ButtonsLogic:
@@ -25,14 +26,15 @@ class ButtonsLogic:
 
     def clear_all(self) -> None:
         """Method clears all inputs"""
-        self.main_ui.line_edits.prod.host.clear()
-        self.main_ui.line_edits.prod.user.clear()
-        self.main_ui.line_edits.prod.password.clear()
-        self.main_ui.line_edits.prod.base.clear()
-        self.main_ui.line_edits.test.host.clear()
-        self.main_ui.line_edits.test.user.clear()
-        self.main_ui.line_edits.test.password.clear()
-        self.main_ui.line_edits.test.base.clear()
+        prod = self.main_ui.line_edits.prod
+        test = self.main_ui.line_edits.test
+        for key in prod.__dict__.keys():
+            prod_le = prod.__dict__.get(key)
+            test_le = test.__dict__.get(key)
+            if isinstance(prod_le, QLineEdit):
+                prod_le.clear()
+            if isinstance(test_le, QLineEdit):
+                test_le.clear()
         self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
         self.main_ui.line_edits.excluded_tables.clear()
@@ -52,14 +54,15 @@ class ButtonsLogic:
         logging_level = self.variables.system_config.logging_level
         self.variables.system_config.logger.setLevel(logging_level)
 
-    def start_work(self, use_dataframes: bool, schema_checking: bool) -> None:
+    def start_work(self, schema_checking: bool) -> None:
         """Method starts process of comparing databases"""
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.logger.info('Comparing started!')
-            progress = ProgressWindow(self.variables.sql_variables, use_dataframes,
+            progress = ProgressWindow(self.variables.sql_variables,
                                       schema_checking,
-                                      self.variables.default_values.selected_schema_columns)
+                                      self.variables.default_values.selected_schema_columns,
+                                      self.variables.system_config.result_file)
             progress.exec()
         else:
             if not self.variables.sql_variables.prod.tables:
@@ -84,6 +87,7 @@ class ButtonsLogic:
                             line_edits_instance: SqlLineEdits) -> None:
         """Method sets sql credentials to SqlVariables class instance"""
         sql_instance.credentials.host = line_edits_instance.host.text()
+        sql_instance.credentials.port = line_edits_instance.port.text()
         sql_instance.credentials.user = line_edits_instance.user.text()
         sql_instance.credentials.password = line_edits_instance.password.text()
         sql_instance.credentials.base = line_edits_instance.base.text()
@@ -98,18 +102,22 @@ class ButtonsLogic:
     def check_host(self, is_prod: bool, sql_instance: SqlAlchemyHelper) -> None:
         """Method implements common checking of connection"""
         sql_instance.warming_up()
-        if is_prod:
-            if sql_instance.tables:
-                self.main_ui.labels.prod.base.show()
-                self.main_ui.line_edits.prod.base.show()
-        else:
-            if sql_instance.tables:
-                self.main_ui.labels.test.base.show()
-                self.main_ui.line_edits.test.base.show()
         try:
             engine = sql_instance.engine
+            if is_prod:
+                self.main_ui.labels.prod.base.show()
+                self.main_ui.line_edits.prod.base.show()
+            else:
+                self.main_ui.labels.test.base.show()
+                self.main_ui.line_edits.test.base.show()
             if isinstance(engine, Engine):
                 engine.connect()
+                if is_prod:
+                    self.main_ui.labels.prod.base.show()
+                    self.main_ui.line_edits.prod.base.show()
+                else:
+                    self.main_ui.labels.test.base.show()
+                    self.main_ui.line_edits.test.base.show()
                 self.logger.info(f"Connection to {sql_instance.credentials.host}:"
                                  f"{sql_instance.credentials.host} "
                                  f"established successfully!")
@@ -124,6 +132,30 @@ class ButtonsLogic:
                                 f"Connection to {sql_instance.credentials.host} "
                                 f"failed\n\n{err.args[0]}",
                                 QMessageBox.Ok, QMessageBox.Ok)
+
+    def set_db(self, instance_type) -> None:
+        """Method sets prod database"""
+        is_prod = True
+        if instance_type != 'prod':
+            is_prod = False
+        line_edits = self.main_ui.line_edits
+        sql_variables = self.variables.sql_variables.__dict__.get(instance_type)
+        if isinstance(sql_variables, SqlAlchemyHelper):
+            line_edits_logic = LineEditsLogic(self.variables)
+            selected_db = line_edits_logic.set_db(sql_variables.databases,
+                                                  sql_variables.credentials.base)
+            sql_line_edit = line_edits.__dict__.get(instance_type)
+            if isinstance(sql_line_edit, SqlLineEdits):
+                sql_line_edit.base.setText(selected_db)
+                sql_line_edit.base.setToolTip(selected_db)
+            sql_instance = self.variables.sql_variables.__dict__.get(instance_type)
+            if isinstance(sql_instance, SqlAlchemyHelper):
+                self.logger.info(f"Connection to {sql_instance.credentials.host}:"
+                                 f"{sql_instance.credentials.port}/{sql_instance.credentials.base} "
+                                 f"established successfully!")
+                self.change_bar_message(is_prod, True, sql_instance)
+            else:
+                self.logger.critical(f'Incompatible types of sql_instance: {type(sql_instance)}')
 
     def change_bar_message(self, stage_type: bool, value: bool,
                            sql_instance: SqlAlchemyHelper) -> None:
@@ -140,6 +172,7 @@ class ButtonsLogic:
                 self.status_bar.showMessage(f'{current_message[0]}, {host_db} connected')
             else:
                 self.status_bar.showMessage(f'{current_message[0]}, {host_db} disconnected')
+        sql_instance.warming_up()
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.main_ui.buttons.btn_set_configuration.setEnabled(True)

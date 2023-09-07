@@ -16,6 +16,7 @@ class SystemConfig:
         self.service_dir: str = self.set_service_dir()
         self.test_dir: str = self.set_test_dir()
         self.path_to_logs: str = self.service_dir + 'DbComparator.log'
+        self.result_file: str = self.service_dir + 'comparation_results.txt'
         self.logging_level = LOGGING_LEVEL
         self.logger: logging.Logger = self.get_logger()
 

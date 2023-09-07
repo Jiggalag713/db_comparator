@@ -9,7 +9,6 @@ class DefaultValues:
                                      'fail_fast': False,
                                      'check_reports': True,
                                      'check_entities': True,
-                                     'use_dataframes': True,
                                      'report_check_type': 'detailed'}
         self.constants = {
             'comparing_step': 10000,
@@ -52,7 +51,6 @@ class DefaultValues:
         checkboxes.get('fail_fast').setChecked(self.checks_customization.get('fail_fast'))
         checkboxes.get('check_reports').setChecked(self.checks_customization.get('check_reports'))
         checkboxes.get('check_entities').setChecked(self.checks_customization.get('check_entities'))
-        checkboxes.get('use_dataframes').setChecked(self.checks_customization.get('use_dataframes'))
 
     @staticmethod
     def radio_buttons_default_values(radio_buttons) -> None:

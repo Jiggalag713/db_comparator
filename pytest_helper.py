@@ -1,5 +1,6 @@
 """Module intended for storing useful test functions"""
 
+
 def get_error_text(actual, expected):
     """Constructs error message, displayed in case of assertion error"""
     return f'AR is {actual} ' \
@@ -24,6 +25,7 @@ def result_dict(variables):
             'path_to_logs': system_values.path_to_logs,
             'prod.base': sql_variables.prod.credentials.base,
             'prod.host': sql_variables.prod.credentials.host,
+            'prod.port': sql_variables.prod.credentials.port,
             'prod.password': sql_variables.prod.credentials.password,
             'prod.user': sql_variables.prod.credentials.user,
             'report_check_type': default_values.mode,
@@ -34,10 +36,10 @@ def result_dict(variables):
             'table_timeout': default_values.constants.get('table_timeout'),
             'test.base': sql_variables.test.credentials.base,
             'test.host': sql_variables.test.credentials.host,
+            'test.port': sql_variables.test.credentials.port,
             'test.password': sql_variables.test.credentials.password,
             'test.user': sql_variables.test.credentials.user,
-            'test_dir': system_values.test_dir,
-            'use_dataframes': variables.default_values.checks_customization.get('use_dataframes')}
+            'test_dir': system_values.test_dir}
 
 
 def customization_checks(variables):
@@ -47,6 +49,5 @@ def customization_checks(variables):
     result.update({'check_reports': result_dict(variables).get('check_reports')})
     result.update({'check_schema': result_dict(variables).get('check_schema')})
     result.update({'fail_fast': result_dict(variables).get('fail_fast')})
-    result.update({'use_dataframes': result_dict(variables).get('use_dataframes')})
     result.update({'report_check_type': result_dict(variables).get('report_check_type')})
     return result

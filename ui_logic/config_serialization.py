@@ -43,7 +43,6 @@ def serialize_check_customization_state(default_values: DefaultValues) -> Dict:
         'check_reports': checks.get('check_reports'),
         'check_schema': checks.get('check_schema'),
         'fail_fast': checks.get('fail_fast'),
-        'use_dataframes': checks.get('use_dataframes'),
         'report_check_type': default_values.mode
     }
 
@@ -55,6 +54,7 @@ def host_properties_to_json(instance_type: str, instance: SqlVariables) -> Dict:
     if isinstance(example, SqlAlchemyHelper):
         return {
             f'{instance_type}.host': example.credentials.host,
+            f'{instance_type}.port': example.credentials.port,
             f'{instance_type}.user': example.credentials.user,
             f'{instance_type}.password': example.credentials.password,
             f'{instance_type}.base': example.credentials.base
@@ -104,10 +104,12 @@ def deserialize_config(variables, config: Dict) -> None:
         if value:
             lineedit_mapping = {
                 'prod.host': sql_variables,
+                'prod.port': sql_variables,
                 'prod.user': sql_variables,
                 'prod.password': sql_variables,
                 'prod.base': sql_variables,
                 'test.host': sql_variables,
+                'test.port': sql_variables,
                 'test.user': sql_variables,
                 'test.password': sql_variables,
                 'test.base': sql_variables,
@@ -120,8 +122,7 @@ def deserialize_config(variables, config: Dict) -> None:
                 'check_schema': default_values.checks_customization,
                 'fail_fast': default_values.checks_customization,
                 'check_reports': default_values.checks_customization,
-                'check_entities': default_values.checks_customization,
-                'use_dataframes': default_values.checks_customization
+                'check_entities': default_values.checks_customization
             }
             values = {
                 'comparing_step': default_values.constants,

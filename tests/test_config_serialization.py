@@ -30,6 +30,7 @@ def test_prod_host_properties_to_json(variables):
     raw = result_dict(variables)
     expected = {
         'prod.host': raw.get('prod.host'),
+        'prod.port': raw.get('prod.port'),
         'prod.user': raw.get('prod.user'),
         'prod.password': raw.get('prod.password'),
         'prod.base': raw.get('prod.base'),
@@ -43,6 +44,7 @@ def test_test_host_properties_to_json(variables):
     raw = result_dict(variables)
     expected = {
         'test.host': raw.get('test.host'),
+        'test.port': raw.get('test.port'),
         'test.user': raw.get('test.user'),
         'test.password': raw.get('test.password'),
         'test.base': raw.get('test.base'),

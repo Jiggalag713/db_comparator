@@ -45,6 +45,5 @@
     "check_reports": true,
     "check_schema": true,
     "fail_fast": true,
-    "use_dataframes": false,
     "report_check_type": "day-sum"
 }

@@ -45,6 +45,9 @@ class Configuration:
         instance.host.textChanged.connect(lambda: self.set_sql_related_value(instance,
                                                                              credentials,
                                                                              'host'))
+        instance.port.textChanged.connect(lambda: self.set_sql_related_value(instance,
+                                                                             credentials,
+                                                                             'port'))
         instance.user.textChanged.connect(lambda: self.set_sql_related_value(instance,
                                                                              credentials,
                                                                              'user'))
@@ -111,11 +114,6 @@ class Configuration:
             check_entities.stateChanged.connect(lambda: self.set_check_box_value(check_entities,
                                                 store,
                                                 'check_entities'))
-        use_dataframes = check_boxes.get('use_dataframes')
-        if isinstance(use_dataframes, QCheckBox):
-            use_dataframes.stateChanged.connect(lambda: self.set_check_box_value(use_dataframes,
-                                                store,
-                                                'use_dataframes'))
 
     @staticmethod
     def set_check_box_value(widget, fields, key) -> None:

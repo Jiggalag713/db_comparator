@@ -19,8 +19,7 @@ class UIElements:
             'check_schema': QCheckBox('Compare schema'),
             'check_reports': QCheckBox('Reports'),
             'fail_fast': QCheckBox('Only first error'),
-            'check_entities': QCheckBox('Entities and others'),
-            'use_dataframes': QCheckBox('Enable dataframes')
+            'check_entities': QCheckBox('Entities and others')
         }
         self.checkboxes_states(True)
 
@@ -38,7 +37,7 @@ class UIElements:
 
     def checkboxes_states(self, is_toggled) -> None:
         """Method intended for setting checkboxes states"""
-        for key in ['check_schema', 'check_reports', 'check_entities', 'use_dataframes']:
+        for key in ['check_schema', 'check_reports', 'check_entities']:
             check_box = self.checkboxes.get(key)
             if isinstance(check_box, QCheckBox):
                 check_box.setChecked(is_toggled)
@@ -81,9 +80,6 @@ class UIElements:
         check_reports = self.checkboxes.get('check_reports')
         if isinstance(check_reports, QCheckBox):
             check_reports.setToolTip('Check report tables')
-        use_dataframes = self.checkboxes.get('use_dataframes')
-        if isinstance(use_dataframes, QCheckBox):
-            use_dataframes.setToolTip('Use dataframes during comparing')
 
 
 @pyqtSlot()

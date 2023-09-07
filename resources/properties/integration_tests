@@ -52,6 +52,5 @@
     "check_reports": true,
     "check_schema": true,
     "fail_fast": false,
-    "use_dataframes": true,
     "report_check_type": "detailed"
 }
