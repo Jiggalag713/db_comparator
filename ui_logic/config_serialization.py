@@ -55,6 +55,7 @@ def host_properties_to_json(instance_type: str, instance: SqlVariables) -> Dict:
     if isinstance(example, SqlAlchemyHelper):
         return {
             f'{instance_type}.host': example.credentials.host,
+            f'{instance_type}.port': example.credentials.port,
             f'{instance_type}.user': example.credentials.user,
             f'{instance_type}.password': example.credentials.password,
             f'{instance_type}.base': example.credentials.base
@@ -104,10 +105,12 @@ def deserialize_config(variables, config: Dict) -> None:
         if value:
             lineedit_mapping = {
                 'prod.host': sql_variables,
+                'prod.port': sql_variables,
                 'prod.user': sql_variables,
                 'prod.password': sql_variables,
                 'prod.base': sql_variables,
                 'test.host': sql_variables,
+                'test.port': sql_variables,
                 'test.user': sql_variables,
                 'test.password': sql_variables,
                 'test.base': sql_variables,

@@ -35,6 +35,7 @@ class SqlLabels:
     def __init__(self, instance_type: str):
         self.instance_type: str = instance_type
         self.host: QLabel = QLabel(f'{instance_type}.host')
+        self.port: QLabel = QLabel(f'{instance_type}.port')
         self.user: QLabel = QLabel(f'{instance_type}.user')
         self.password: QLabel = QLabel(f'{instance_type}.password')
         self.base: QLabel = QLabel(f'{instance_type}.base')

@@ -26,10 +26,12 @@ class ButtonsLogic:
     def clear_all(self) -> None:
         """Method clears all inputs"""
         self.main_ui.line_edits.prod.host.clear()
+        self.main_ui.line_edits.prod.port.clear()
         self.main_ui.line_edits.prod.user.clear()
         self.main_ui.line_edits.prod.password.clear()
         self.main_ui.line_edits.prod.base.clear()
         self.main_ui.line_edits.test.host.clear()
+        self.main_ui.line_edits.test.port.clear()
         self.main_ui.line_edits.test.user.clear()
         self.main_ui.line_edits.test.password.clear()
         self.main_ui.line_edits.test.base.clear()
@@ -84,6 +86,7 @@ class ButtonsLogic:
                             line_edits_instance: SqlLineEdits) -> None:
         """Method sets sql credentials to SqlVariables class instance"""
         sql_instance.credentials.host = line_edits_instance.host.text()
+        sql_instance.credentials.port = line_edits_instance.port.text()
         sql_instance.credentials.user = line_edits_instance.user.text()
         sql_instance.credentials.password = line_edits_instance.password.text()
         sql_instance.credentials.base = line_edits_instance.base.text()
@@ -98,18 +101,16 @@ class ButtonsLogic:
     def check_host(self, is_prod: bool, sql_instance: SqlAlchemyHelper) -> None:
         """Method implements common checking of connection"""
         sql_instance.warming_up()
-        if is_prod:
-            if sql_instance.tables:
-                self.main_ui.labels.prod.base.show()
-                self.main_ui.line_edits.prod.base.show()
-        else:
-            if sql_instance.tables:
-                self.main_ui.labels.test.base.show()
-                self.main_ui.line_edits.test.base.show()
         try:
             engine = sql_instance.engine
             if isinstance(engine, Engine):
                 engine.connect()
+                if is_prod:
+                    self.main_ui.labels.prod.base.show()
+                    self.main_ui.line_edits.prod.base.show()
+                else:
+                    self.main_ui.labels.test.base.show()
+                    self.main_ui.line_edits.test.base.show()
                 self.logger.info(f"Connection to {sql_instance.credentials.host}:"
                                  f"{sql_instance.credentials.host} "
                                  f"established successfully!")

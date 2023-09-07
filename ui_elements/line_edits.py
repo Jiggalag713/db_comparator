@@ -33,6 +33,7 @@ class SqlLineEdits:
     def __init__(self):
         self.host: QLineEdit = QLineEdit()
         # self.prod.le_host.textChanged.connect(lambda: self.check_sqlhost('prod'))
+        self.port: QLineEdit = QLineEdit()
         self.user: QLineEdit = QLineEdit()
         # self.prod.le_user.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.password: QLineEdit = QLineEdit()
@@ -44,6 +45,7 @@ class SqlLineEdits:
     def set_tooltip(self) -> None:
         """Method sets tooltips to instance of class sql-related line edits"""
         self.host.setToolTip(self.host.text())
+        self.port.setToolTip(self.port.text())
         self.user.setToolTip(self.user.text())
         self.base.setToolTip(self.base.text())
 
