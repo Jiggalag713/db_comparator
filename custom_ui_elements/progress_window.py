@@ -3,7 +3,7 @@ import datetime
 import logging
 from typing import List
 
-from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QApplication
+from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QApplication, QPushButton
 from configuration.sql_variables import SqlVariables
 
 
@@ -21,6 +21,9 @@ class ProgressWindow(QDialog):
         self.progress_data: QProgressBar = QProgressBar(self)
         self.schema_label: QLabel = QLabel()
         self.data_label: QLabel = QLabel()
+        btn_ok: QPushButton = QPushButton('OK')
+        if isinstance(btn_ok, QPushButton):
+            btn_ok.clicked.connect(self.ok_pressed)
         self.logger: logging.Logger = sql_variables.logger
         self.result_file = result_file
         schema_checking: QLabel = QLabel('Schema checking')
@@ -31,6 +34,7 @@ class ProgressWindow(QDialog):
         grid.addWidget(data_checking, 2, 0, 1, 1)
         grid.addWidget(self.progress_data, 2, 1, 1, 1)
         grid.addWidget(self.data_label, 3, 0, 1, 2)
+        grid.addWidget(btn_ok, 4, 1, 1, 2)
         self.visible_schema_progress_bar(check_schema, schema_checking)
         self.show()
         self.start(self.sql_variables.tables.to_compare, check_schema, schema_columns)
@@ -76,3 +80,7 @@ class ProgressWindow(QDialog):
             schema_checking.setVisible(False)
             self.progress_schema.setVisible(False)
             self.schema_label.setVisible(False)
+
+    def ok_pressed(self):
+        """Method closes progress window by pressing button"""
+        self.close()
