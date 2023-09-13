@@ -69,14 +69,6 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
         return pd.DataFrame()
 
 
-def is_columns_differs(prod, test, logger):
-    """Check if amount of columns differs"""
-    if len(prod.index) != len(test.index):
-        return False
-    else:
-        return True
-
-
 def highlight_diff(data, color='yellow'):
     """Method intended for highlighting differences in dataframes"""
     attr = f'background-color: {color}'
