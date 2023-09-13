@@ -37,7 +37,7 @@ class ProgressWindow(QDialog):
         grid.addWidget(btn_ok, 4, 1, 1, 2)
         self.visible_schema_progress_bar(check_schema, schema_checking)
         self.show()
-        self.start(self.sql_variables.tables.to_compare, check_schema, schema_columns)
+        self.start(self.sql_variables.tables.get_compare(), check_schema, schema_columns)
 
     def start(self, tables, check_schema, schema_columns) -> None:
         """Method implements changing of progress on progress window"""

@@ -27,9 +27,9 @@ class SqlVariables:
         diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
                                                                 table, columns, self.logger)
         if not diff_df.empty:
-            comparation_result = df_compare_helper.highlight_diff(diff_df).to_html()
-            with open(result_file, encoding="utf-8") as file:
-                file.write(comparation_result)
+            # comparation_result = df_compare_helper.highlight_diff(diff_df).to_html()
+            with open(result_file, "w", encoding="utf-8") as file:
+                file.write(diff_df.to_html())
             if isinstance(diff_df, pd.DataFrame):
                 if not diff_df.empty:
                     self.logger.error(f"Schema of tables {table} differs!")
@@ -80,6 +80,10 @@ class Tables:
             self.to_compare = tables
         else:
             self.to_compare = list(self.all.keys())
+        if self.hard_excluded:
+            for table in self.hard_excluded:
+                if table in self.to_compare:
+                    self.to_compare.remove(table)
         return self.to_compare
 
 
