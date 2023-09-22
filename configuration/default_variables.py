@@ -17,7 +17,6 @@ class DefaultValues:
             'table_timeout': 5,
             'strings_amount': 1000
         }
-        self.send_mail_to = ''
         self.schema_columns: List[str] = []
         self.mode = 'detailed'
         self.selected_schema_columns: List[str] = ['TABLE_CATALOG',

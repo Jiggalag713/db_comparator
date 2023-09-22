@@ -7,7 +7,6 @@ class Labels:
     def __init__(self):
         self.prod: SqlLabels = SqlLabels('prod')
         self.test: SqlLabels = SqlLabels('test')
-        self.send_mail_to: QLabel = QLabel('Send mail to')
         self.checking_mode: QLabel = QLabel('Checking mode:')
         self.included_tables: QLabel = QLabel('Included tables')
         self.excluded_tables: QLabel = QLabel('Excluded tables')
@@ -16,8 +15,6 @@ class Labels:
 
     def set_tooltips(self) -> None:
         """Method intended for setting tooltips to UI labels elements"""
-        self.send_mail_to.setToolTip('Add one or list of e-mails for '
-                                     'receiving results of comparing')
         self.included_tables.setToolTip('Set comma-separated list of '
                                         'tables, which should be compared')
         self.excluded_tables.setToolTip('Set tables, which should not be checked')
