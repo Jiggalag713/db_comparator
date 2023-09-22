@@ -15,8 +15,8 @@ def get_metadata_dataframe_diff(prod_instance, test_instance, table, columns, lo
     """Method implements comparing of two tables schemas using dataframes"""
     prod_schema = get_table_schema_dataframe('prod', table, prod_instance.engine, columns)
     test_schema = get_table_schema_dataframe('test', table, test_instance.engine, columns)
-    result = get_dataframes_diff(prod_schema, test_schema, logger)
     pd.concat([prod_schema, test_schema]).drop_duplicates(keep=False)
+    result = get_dataframes_diff(prod_schema, test_schema, logger)
     return result
     # df_all = pd.concat([prod_columns.set_index('id'), test_columns.set_index('id')],
     # axis='columns', keys=['First', 'Second'])
@@ -52,14 +52,17 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
     # result_dataframe = prod_columns.compare(test_columns)
     try:
         result_dataframe = pd.DataFrame()
-        if prod_columns == test_columns:
-            df_all = pd.concat([prod_columns, test_columns], axis='columns',
-                               keys=['First', 'Second'])
+        sorted_prod = prod_columns.sort_index().sort_index(axis=1)
+        sorted_test = test_columns.sort_index().sort_index(axis=1)
+        if not (sorted_prod == sorted_test).all().all():
+            result = sorted_prod.compare(sorted_test)
+            # df_all = pd.concat([prod_columns, test_columns], axis='columns',
+            #                    keys=['First', 'Second'])
             # df_final = df_all.swaplevel(axis='COLUMN_NAME')[prod_columns.columns[1:]]
-            df_all[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
-            return df_all
-        if result_dataframe:
-            logger.error('Dataframes differs!')
+            # df_all[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
+            return result
+        if not result_dataframe.empty:
+            logger.debug('Dataframes differs!')
         return result_dataframe
     except ValueError as exception:
         logger.warn(exception)

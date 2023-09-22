@@ -73,7 +73,7 @@ def system_variables_to_json(system_config: SystemConfig) -> Dict:
         'logging_level': system_config.logging_level,
         'path_to_logs': system_config.path_to_logs,
         'service_dir': system_config.service_dir,
-        'test_dir': system_config.test_dir
+        'result_dir': system_config.result_dir
     }
 
 

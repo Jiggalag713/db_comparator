@@ -4,6 +4,7 @@ import datetime
 import json
 
 from configuration.variables import Variables
+from helpers.helper import write_to_file
 from ui_logic import config_serialization
 from ui_logic.table_calculation import TableCalculation
 
@@ -30,7 +31,7 @@ def open_file(file_name, sql_variables, logger):
                        'Warn: %s', err.args[1])
 
 
-def start(sql_variables, schema, columns, logger, result_file) -> None:
+def start(sql_variables, schema, columns, logger, result_dir) -> None:
     """Starts headless comparing"""
     start_time = datetime.datetime.now()
     tables = sql_variables.tables.get_compare()
@@ -38,7 +39,8 @@ def start(sql_variables, schema, columns, logger, result_file) -> None:
     if schema:
         schema_start_time = datetime.datetime.now()
         for table in tables:
-            sql_variables.compare_table_metadata(table, columns, result_file)
+            result = sql_variables.compare_table_metadata(table, columns)
+            write_to_file(result, table, result_dir, logger)
             completed = part * (tables.index(table) + 1)
             if tables.index(table) + 1 == len(tables):
                 completed = 100
@@ -82,4 +84,4 @@ common_variables.sql_variables.prod.warming_up()
 common_variables.sql_variables.test.warming_up()
 update_variables(common_variables)
 start(common_variables.sql_variables, check_schema, schema_columns, console_logger,
-      common_variables.system_config.result_file)
+      common_variables.system_config.result_dir)

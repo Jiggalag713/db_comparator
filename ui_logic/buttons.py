@@ -62,7 +62,7 @@ class ButtonsLogic:
             progress = ProgressWindow(self.variables.sql_variables,
                                       schema_checking,
                                       self.variables.default_values.selected_schema_columns,
-                                      self.variables.system_config.result_file)
+                                      self.variables.system_config.result_dir)
             progress.exec()
         else:
             if not self.variables.sql_variables.prod.tables:
