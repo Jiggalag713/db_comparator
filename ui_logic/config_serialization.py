@@ -115,7 +115,6 @@ def deserialize_config(variables, config: Dict) -> None:
                 'test.base': sql_variables,
                 'included_tables': sql_variables.tables,
                 'excluded_tables': sql_variables.tables,
-                'send_mail_to': default_values,
                 'excluded_columns': sql_variables.tables
             }
             checkbox_mapping = {

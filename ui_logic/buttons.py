@@ -35,7 +35,6 @@ class ButtonsLogic:
                 prod_le.clear()
             if isinstance(test_le, QLineEdit):
                 test_le.clear()
-        self.main_ui.line_edits.send_mail_to.clear()
         self.main_ui.line_edits.included_tables.clear()
         self.main_ui.line_edits.excluded_tables.clear()
         self.main_ui.line_edits.excluded_columns.clear()

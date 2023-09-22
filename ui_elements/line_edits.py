@@ -9,7 +9,6 @@ class LineEdits:
     def __init__(self):
         self.prod: SqlLineEdits = SqlLineEdits()
         self.test: SqlLineEdits = SqlLineEdits()
-        self.send_mail_to: QLineEdit = QLineEdit()
         self.excluded_tables: ClickableLineEdit = ClickableLineEdit()
         self.included_tables: ClickableLineEdit = ClickableLineEdit()
         self.excluded_columns: ClickableLineEdit = ClickableLineEdit()
@@ -17,7 +16,6 @@ class LineEdits:
 
     def set_tooltips(self) -> None:
         """Method sets tooltips for non-specific line edits"""
-        self.set_tooltip(self.send_mail_to)
         self.set_tooltip(self.included_tables)
         self.set_tooltip(self.excluded_tables)
         self.set_tooltip(self.excluded_columns)

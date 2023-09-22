@@ -5,12 +5,11 @@ feature which automatically changes comparing step in case of slow or fast conne
 than some hardcoded value, I should decrease comparing step.
 ? 2. Status bar should updates in background, application should ping servers by some timeout
 3. Bug. datetime writed to result file in format datetime(2018-08-09) it's incorrect.
-4. Fix sendmail. # probably with configuring on gmail side.
-5. Add special search lineedits to modal windows like "skip_tables".
-6. Only first error flag not works.
-7. Fix hanging of comparator on huge tables (like creative_page_position for irving).
-8. Make default setting for mysql-port field.
-9. Implement summary file.
+4. Add special search lineedits to modal windows like "skip_tables".
+5. Only first error flag not works.
+6. Fix hanging of comparator on huge tables (like creative_page_position for irving).
+7. Make default setting for mysql-port field.
+8. Implement summary file.
 
 Epics:
 0. Support dataframe comparing.

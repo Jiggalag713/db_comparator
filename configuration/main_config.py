@@ -35,8 +35,7 @@ class Configuration:
                                             self.variables.sql_variables.prod.credentials)
         self.connect_sql_related_line_edits(line_edits.test,
                                             self.variables.sql_variables.test.credentials)
-        self.connect_other_line_edits(line_edits.send_mail_to,
-                                      line_edits.included_tables,
+        self.connect_other_line_edits(line_edits.included_tables,
                                       line_edits.excluded_tables,
                                       line_edits.excluded_columns)
 
@@ -58,12 +57,9 @@ class Configuration:
                                                                              credentials,
                                                                              'base'))
 
-    def connect_other_line_edits(self, send_mail_to, included_tables,
+    def connect_other_line_edits(self, included_tables,
                                  excluded_tables, excluded_columns) -> None:
         """Connects another line_edits with appropriate internal classes attributes"""
-        send_mail_to.textChanged.connect(lambda: set_value(send_mail_to,
-                                         self.variables.default_values.__dict__,
-                                         'send_mail_to', str))
         included_tables.textChanged.connect(lambda: set_value(included_tables,
                                             self.variables.default_values.__dict__,
                                             'included_tables', list))
@@ -198,8 +194,6 @@ class Configuration:
         """Loads values from internal objects to ui line edits"""
         included_tables = self.variables.sql_variables.tables.included
         self.ui_elements.line_edits.included_tables.setText(','.join(included_tables))
-        send_mail_to = self.variables.default_values.send_mail_to
-        self.ui_elements.line_edits.send_mail_to.setText(send_mail_to)
         excluded_tables = self.variables.sql_variables.tables.excluded
         common_excluded_tables = excluded_tables.copy()
         hard_excluded = self.variables.sql_variables.tables.hard_excluded
