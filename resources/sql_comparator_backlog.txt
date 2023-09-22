@@ -3,22 +3,11 @@ Enchancements:
 1. Comparing step should be moved from UI. Instead of manually possibility of setting comparing step I should implement
 feature which automatically changes comparing step in case of slow or fast connection. Logic: if comparing speed lower
 than some hardcoded value, I should decrease comparing step.
-? 2. Status bar should updates in background, application should ping servers by some timeout
-3. Bug. datetime writed to result file in format datetime(2018-08-09) it's incorrect.
-4. Add special search lineedits to modal windows like "skip_tables".
-5. Only first error flag not works.
-6. Fix hanging of comparator on huge tables (like creative_page_position for irving).
-7. Make default setting for mysql-port field.
-8. Implement summary file.
-
-Epics:
-0. Support dataframe comparing.
-1. Present summary information more flexible.
-2. Implement unit tests.
-
-MUST!
-
-1. Implement importing diff-results to html.
+2. Add special search lineedits to modal windows like "skip_tables".
+3. Only first error flag not works.
+4. Fix hanging of comparator on huge tables (like creative_page_position for irving).
+5. Make default setting for mysql-port field.
+6. Implement summary file.
 
 Support dataframes roadmap:
 
