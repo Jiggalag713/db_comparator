@@ -10,7 +10,7 @@ than some hardcoded value, I should decrease comparing step.
 6. Only first error flag not works.
 7. Fix hanging of comparator on huge tables (like creative_page_position for irving).
 8. Make default setting for mysql-port field.
-
+9. Implement summary file.
 
 Epics:
 0. Support dataframe comparing.
@@ -26,7 +26,3 @@ Support dataframes roadmap:
 0. Check correctness of day-summary mode.
 1. Check correctness of section-summary mode.
 2. Check correctness of detailed mode.
-
-Current:
-
-1. Support saving results to file.

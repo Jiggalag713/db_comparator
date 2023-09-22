@@ -44,7 +44,7 @@ def variables():
     inst.sql_variables.test.credentials.user = 'testuser1'
     inst.sql_variables.test.credentials.password = 'testpassword1'
     inst.sql_variables.test.credentials.base = 'test_db1'
-    inst.system_config.test_dir = '/my/perfect/test/dir'
+    inst.system_config.result_dir = '/my/perfect/result/dir'
     return inst
 
 

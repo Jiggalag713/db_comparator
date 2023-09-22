@@ -20,25 +20,15 @@ class SqlVariables:
         self.columns = Columns()
         self.logger: logging.Logger = logger
 
-    def compare_table_metadata(self, table, columns, result_file) -> bool:
+    def compare_table_metadata(self, table, columns) -> pd.DataFrame:
         """Method intended to compare metadata of two tables"""
         start_time = datetime.datetime.now()
         self.logger.info(f"Compare schema for table {table}...")
         diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
                                                                 table, columns, self.logger)
-        if not diff_df.empty:
-            # comparation_result = df_compare_helper.highlight_diff(diff_df).to_html()
-            with open(result_file, "w", encoding="utf-8") as file:
-                file.write(diff_df.to_html())
-            if isinstance(diff_df, pd.DataFrame):
-                if not diff_df.empty:
-                    self.logger.error(f"Schema of tables {table} differs!")
-            else:
-                self.logger.error(f'Incorrect type of diff_df. ER: pandas.DataFrame, '
-                                  f'AR: {type(diff_df)}')
         schema_comparing_time = datetime.datetime.now() - start_time
         self.logger.debug(f"Schema of table {table} compared in {schema_comparing_time}")
-        return True
+        return diff_df
 
     def warn_columns_differs(self, table, uniques) -> None:
         """Print warning logs about differs columns"""
@@ -47,7 +37,7 @@ class SqlVariables:
         self.logger.warning(f"There is some unique columns in {host / base} "
                             f"table {table}: {','.join(uniques)}")
 
-    def compare_data(self, table: str) -> bool:
+    def compare_data(self, table: str) -> pd.DataFrame:
         """Method intended to compare data of two tables"""
         start_time = datetime.datetime.now()
         start_table_check_time = datetime.datetime.now()
@@ -56,7 +46,7 @@ class SqlVariables:
         self.logger.info(f"Table {table} checked in {checking_time}...")
         data_comparing_time = datetime.datetime.now() - start_time
         self.logger.info(f'Comparing finished in {data_comparing_time}')
-        return True
+        return pd.DataFrame()
 
 
 @dataclass

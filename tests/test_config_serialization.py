@@ -60,7 +60,7 @@ def test_system_variables_to_json(variables):
         'logging_level': raw.get('logging_level'),
         'path_to_logs': raw.get('path_to_logs'),
         'service_dir': raw.get('service_dir'),
-        'test_dir': raw.get('test_dir')
+        'result_dir': raw.get('result_dir')
     }
     assert actual == expected, get_error_text(actual, expected)
 

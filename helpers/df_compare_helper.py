@@ -62,7 +62,7 @@ def get_dataframes_diff(prod_columns, test_columns, logger):
             # df_all[(prod_columns != test_columns).any(1)].style.apply(highlight_diff, axis=None)
             return result
         if not result_dataframe.empty:
-            logger.error('Dataframes differs!')
+            logger.debug('Dataframes differs!')
         return result_dataframe
     except ValueError as exception:
         logger.warn(exception)

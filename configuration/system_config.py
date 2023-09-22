@@ -1,5 +1,6 @@
 """Module intended to work with system entities:
 creating directories, logging, etc"""
+import datetime
 import logging
 import os
 import platform
@@ -14,9 +15,8 @@ class SystemConfig:
     def __init__(self):
         self.operating_system: str = self.define_os()
         self.service_dir: str = self.set_service_dir()
-        self.test_dir: str = self.set_test_dir()
+        self.result_dir: str = self.set_result_dir()
         self.path_to_logs: str = self.service_dir + 'DbComparator.log'
-        self.result_file: str = self.service_dir + 'comparation_results.html'
         self.logging_level = LOGGING_LEVEL
         self.logger: logging.Logger = self.get_logger()
 
@@ -24,10 +24,12 @@ class SystemConfig:
         """Method returns path to special db_comparator directory"""
         return self.set_directory("C:\\comparator\\", "/comparator/")
 
-    def set_test_dir(self) -> str:
+    def set_result_dir(self) -> str:
         """Method returns path to service directory,
         intended for storing results of database comparing"""
-        return self.set_directory("C:\\comparator\\test_results\\", "/comparator/test_results/")
+        win_path = f"C:\\comparator\\comparation_results\\{datetime.datetime.now()}\\"
+        linux_path = f"/comparator/test_results/{datetime.datetime.now()}/"
+        return self.set_directory(win_path, linux_path)
 
     @staticmethod
     def define_os() -> str:
@@ -57,6 +59,6 @@ class SystemConfig:
         In case of directory not exists, method creates it."""
         if self.operating_system == "Windows":
             return win_path
-        directory_name = os.path.expanduser('~') + linux_path
+        directory_name = (os.path.expanduser('~') + linux_path).replace(' ', '_')
         Path(directory_name).mkdir(parents=True, exist_ok=True)
         return directory_name

@@ -39,7 +39,7 @@ def result_dict(variables):
             'test.port': sql_variables.test.credentials.port,
             'test.password': sql_variables.test.credentials.password,
             'test.user': sql_variables.test.credentials.user,
-            'test_dir': system_values.test_dir}
+            'result_dir': system_values.result_dir}
 
 
 def customization_checks(variables):

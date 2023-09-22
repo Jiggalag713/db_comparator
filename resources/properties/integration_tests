@@ -21,7 +21,7 @@
     "logging_level": 10,
     "path_to_logs": "/db_comparator/DbComparator.log",
     "service_dir": "/db_comparator/",
-    "test_dir": "/db_comparator/test_results/",
+    "result_dir": "/db_comparator/test_results/",
     "comparing_step": "1",
     "depth_report_check": "7",
     "retry_attempts": "3",
