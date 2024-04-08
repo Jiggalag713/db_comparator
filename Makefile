@@ -20,10 +20,10 @@ cleanup-test-data:
 	 mysql -h localhost -P 33006 --protocol=tcp -u root -ptest1 < ./tests/cleanup_test_data.sql
 
 run-infra:
-	docker-compose up -d --build
+	docker compose up -d --build
 
 tear-down:
-	docker-compose down
+	docker compose down
 
 mysql-local-connect:
 	mysql -h localhost -P 33006 --protocol=tcp -u root -ptest1

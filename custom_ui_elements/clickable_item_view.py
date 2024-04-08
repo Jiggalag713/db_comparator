@@ -1,6 +1,6 @@
 """Module contains abstract clickable item view class"""
 import collections
-from typing import List, Any, Dict, Optional
+from typing import List, Any, Dict
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -10,14 +10,14 @@ from PyQt5.QtWidgets import QListView, QGridLayout, QPushButton, QDialog
 class ClickableItemsView(QDialog):
     """Implements abstract class clickable items view"""
     def __init__(self, item_list: Any, selected_items: List[str],
-                 hard_excluded: Optional[Dict] = None,
+                 hard_excluded: Dict | None = None,
                  include: bool = False):
         super().__init__()
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(10)
         self.setLayout(grid)
         self.selected_items: List[str] = selected_items
-        self.hard_excluded: Optional[Dict] = hard_excluded
+        self.hard_excluded: Dict | None = hard_excluded
         self.item_list = self.get_sorted(item_list)
         self.model: QStandardItemModel = QStandardItemModel()
 

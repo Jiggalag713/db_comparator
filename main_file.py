@@ -4,7 +4,7 @@
 import json
 import os
 import sys
-from typing import NoReturn, Optional, Any
+from typing import NoReturn, Any
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QCheckBox
@@ -115,7 +115,7 @@ class MainWindow(QMainWindow):
         return file_menu
 
     @staticmethod
-    def get_state(checkbox: Optional[Any]) -> bool:
+    def get_state(checkbox: Any | None) -> bool:
         """Returns current state of checkbox"""
         if isinstance(checkbox, QCheckBox):
             return checkbox.isChecked()

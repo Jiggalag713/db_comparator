@@ -1,7 +1,7 @@
 """Module contains implementation of class, intended to work with sql"""
 import logging
 from dataclasses import dataclass
-from typing import Optional, List, Dict
+from typing import List, Dict
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
@@ -13,11 +13,11 @@ class SqlAlchemyHelper:
         self.meta = sqlalchemy.schema.MetaData()
         self.credentials = credentials
         self.logger: logging.Logger = logger
-        self.engine: Optional[sqlalchemy.engine.Engine] = self.get_engine()
+        self.engine: sqlalchemy.engine.Engine | None = self.get_engine()
         self.databases: List[str] = self.get_databases()
         self.tables = self.get_tables()
 
-    def get_engine(self) -> Optional[sqlalchemy.engine.Engine]:
+    def get_engine(self) -> sqlalchemy.engine.Engine | None:
         """Method returns engine or None"""
         if all([self.credentials.host, self.credentials.user,
                self.credentials.password, self.credentials.base]):
