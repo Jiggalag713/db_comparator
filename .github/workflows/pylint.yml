@@ -18,7 +18,7 @@ jobs:
       uses: ./.github/
     - name: Install dependencies
       run: |
-        poetry install
+        poetry install --no-root
     - name: Analysing the code with pylint
       run: |
         echo "/home/runner/work/dbComparator/dbComparator" >> $GITHUB_PATH
