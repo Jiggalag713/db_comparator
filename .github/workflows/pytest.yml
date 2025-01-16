@@ -18,7 +18,7 @@ jobs:
       uses: ./.github/
     - name: Install dependencies
       run: |
-        poetry install
+        poetry install --no-root
     - name: Run tests with pytest
       run: |
         poetry run python3 -m pytest -vv
