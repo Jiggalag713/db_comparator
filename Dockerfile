@@ -16,6 +16,6 @@ COPY . /db_comparator/
 
 WORKDIR /db_comparator
 
-RUN poetry install
+RUN poetry install --no-root
 
 CMD ["poetry", "run", "python3", "headless.py", "--config", "./resources/properties/integration_tests"]

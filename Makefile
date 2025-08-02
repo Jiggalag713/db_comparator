@@ -28,3 +28,5 @@ tear-down:
 mysql-local-connect:
 	mysql -h localhost -P 33006 --protocol=tcp -u root -ptest1
 
+mysql-show-databases:
+	mysql -h localhost -P 33006 --protocol=tcp -u root -ptest1 -e "show databases;"
