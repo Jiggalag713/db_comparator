@@ -8,7 +8,10 @@ def get_table_schema_dataframe(instance_type, table, engine, columns):
     query = f"select {','.join(columns)} from information_schema.columns " \
             f"where table_schema='{instance_type}' and " \
             f"table_name='{table}';"
-    return pd.read_sql(query, engine)
+    with engine.connect() as conn:
+        df = pd.read_sql(sql=query,
+                         con=conn.connection)
+    return df
 
 
 def get_metadata_dataframe_diff(prod_instance, test_instance, table, columns, logger):
