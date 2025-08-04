@@ -31,16 +31,19 @@ def open_file(file_name, sql_variables, logger):
                        'Warn: %s', err.args[1])
 
 
-def start(sql_variables, schema, columns, logger, result_dir) -> None:
+def start(variables, schema, columns, logger) -> None:
     """Starts headless comparing"""
     start_time = datetime.datetime.now()
+    sql_variables = variables.sql_variables
+    metadata_dir = variables.system_config.metadata_dir
+    data_dir = variables.system_config.data_dir
     tables = sql_variables.tables.get_compare()
     part = 100 // len(tables)
     if schema:
         schema_start_time = datetime.datetime.now()
         for table in tables:
             result = sql_variables.compare_table_metadata(table, columns)
-            write_to_file(result, table, result_dir, logger)
+            write_to_file(result, table, metadata_dir, logger)
             completed = part * (tables.index(table) + 1)
             if tables.index(table) + 1 == len(tables):
                 completed = 100
@@ -83,5 +86,4 @@ schema_columns = common_variables.default_values.selected_schema_columns
 common_variables.sql_variables.prod.warming_up()
 common_variables.sql_variables.test.warming_up()
 update_variables(common_variables)
-start(common_variables.sql_variables, check_schema, schema_columns, console_logger,
-      common_variables.system_config.result_dir)
+start(common_variables, check_schema, schema_columns, console_logger)

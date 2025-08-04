@@ -48,6 +48,7 @@ class ProgressWindow(QDialog):
         if check_schema:
             start_time = datetime.datetime.now()
             self.setWindowTitle("Comparing metadata...")
+            # TODO: add creating metadata directory
             for table in tables:
                 completed = part * (tables.index(table) + 1)
                 if tables.index(table) + 1 == len(tables):
@@ -66,6 +67,7 @@ class ProgressWindow(QDialog):
         else:
             self.logger.info("Schema checking disabled...")
         self.setWindowTitle("Comparing data...")
+        # TODO: add creating of data directory
         start_time = datetime.datetime.now()
         for table in tables:
             completed = part * (tables.index(table) + 1)
@@ -74,6 +76,7 @@ class ProgressWindow(QDialog):
             self.progress_data.setValue(completed)
             self.data_label.setText(f'Processing of {table} table...')
             result = self.sql_variables.compare_data(table)
+            # TODO: add writing results to file
             if write_to_file(result, table, result_dir, self.logger):
                 self.result_label.setOpenExternalLinks(True)
                 link = f'<a href={result_dir}{table}.html>{result_dir}{table}.html</a>'

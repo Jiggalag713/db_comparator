@@ -16,20 +16,27 @@ class SystemConfig:
         self.operating_system: str = self.define_os()
         self.service_dir: str = self.set_service_dir()
         self.result_dir: str = self.set_result_dir()
+        self.metadata_dir: str = self.set_dir("metadata")
+        self.data_dir: str = self.set_dir("data")
         self.path_to_logs: str = self.service_dir + 'DbComparator.log'
         self.logging_level = LOGGING_LEVEL
         self.logger: logging.Logger = self.get_logger()
 
     def set_service_dir(self) -> str:
         """Method returns path to special db_comparator directory"""
-        return self.set_directory("C:\\comparator\\", "/comparator/")
+        if self.operating_system == "Windows":
+            return self.set_directory("C:\\comparator\\")
+        else:
+            return self.set_directory("/comparator/")
 
     def set_result_dir(self) -> str:
         """Method returns path to service directory,
         intended for storing results of database comparing"""
-        win_path = f"C:\\comparator\\comparation_results\\{datetime.datetime.now()}\\"
-        linux_path = f"/comparator/test_results/{datetime.datetime.now()}/"
-        return self.set_directory(win_path, linux_path)
+        if self.operating_system == "Windows":
+            path = f"C:\\comparator\\comparation_results\\{datetime.datetime.now()}\\"
+        else:
+            path = f"/comparator/test_results/{datetime.datetime.now()}/"
+        return self.set_directory(path)
 
     @staticmethod
     def define_os() -> str:
@@ -46,7 +53,7 @@ class SystemConfig:
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
-        file_handler = logging.FileHandler(self.service_dir + 'dbcomparator.log')
+        file_handler = logging.FileHandler(self.path_to_logs)
         file_handler.setLevel(self.logging_level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
@@ -54,11 +61,22 @@ class SystemConfig:
         logger.info('Logger successfully initialized')
         return logger
 
-    def set_directory(self, win_path: str, linux_path: str) -> str:
+    def set_directory(self, path: str) -> str:
         """Method intended for checking if given directory exists.
         In case of directory not exists, method creates it."""
         if self.operating_system == "Windows":
-            return win_path
-        directory_name = (os.path.expanduser('~') + linux_path).replace(' ', '_')
+            return path
+        directory_name = (os.path.expanduser('~') + path).replace(' ', '_')
+        Path(directory_name).mkdir(parents=True, exist_ok=True)
+        return directory_name
+
+    def set_dir(self, path: str):
+        """Method returns path to directory where will be stored results of comparing metadata of databases
+        in current run"""
+        if self.operating_system == "Windows":
+            divider = "\\"
+        else:
+            divider = "/"
+        directory_name = self.result_dir + divider + path + divider
         Path(directory_name).mkdir(parents=True, exist_ok=True)
         return directory_name
