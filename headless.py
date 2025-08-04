@@ -54,7 +54,8 @@ def start(variables, schema, columns, logger) -> None:
         logger.info("Schema checking disabled...")
     schema_checking_time = datetime.datetime.now() - start_time
     for table in tables:
-        sql_variables.compare_data(table)
+        result = sql_variables.compare_data(table)
+        write_to_file(result, table, data_dir, logger)
         completed = part * (tables.index(table) + 1)
         if tables.index(table) + 1 == len(tables):
             completed = 100

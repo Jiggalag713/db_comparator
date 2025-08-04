@@ -1,23 +1,22 @@
 """Module intended to store progress window class"""
 import datetime
 import logging
-from typing import List
 
 from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QApplication, QPushButton
 from configuration.sql_variables import SqlVariables
+from configuration.variables import Variables
 from helpers.helper import write_to_file
 
 
 class ProgressWindow(QDialog):
     """Class contained implementation of progress window"""
-    def __init__(self, sql_variables: SqlVariables, check_schema: bool,
-                 schema_columns: List[str], result_dir):
+    def __init__(self, variables: Variables, check_schema: bool):
         super().__init__()
         self.setGeometry(50, 50, 500, 300)
         grid: QGridLayout = QGridLayout()
         grid.setSpacing(5)
         self.setLayout(grid)
-        self.sql_variables: SqlVariables = sql_variables
+        self.sql_variables: SqlVariables = variables.sql_variables
         self.progress_schema: QProgressBar = QProgressBar(self)
         self.progress_data: QProgressBar = QProgressBar(self)
         self.schema_label: QLabel = QLabel()
@@ -26,7 +25,7 @@ class ProgressWindow(QDialog):
         btn_ok: QPushButton = QPushButton('OK')
         if isinstance(btn_ok, QPushButton):
             btn_ok.clicked.connect(self.ok_pressed)
-        self.logger: logging.Logger = sql_variables.logger
+        self.logger: logging.Logger = variables.sql_variables.logger
         schema_checking: QLabel = QLabel('Schema checking')
         data_checking: QLabel = QLabel('Data checking')
         grid.addWidget(schema_checking, 0, 0, 1, 1)
@@ -39,16 +38,19 @@ class ProgressWindow(QDialog):
         grid.addWidget(btn_ok, 5, 1, 1, 2)
         self.visible_schema_progress_bar(check_schema, schema_checking)
         self.show()
-        self.start(self.sql_variables.tables.get_compare(), check_schema, schema_columns,
-                   result_dir)
+        self.start(variables)
 
-    def start(self, tables, check_schema, schema_columns, result_dir) -> None:
+    def start(self, variables) -> None:
         """Method implements changing of progress on progress window"""
+        tables = variables.sql_variables.tables.get_compare()
+        check_schema = variables.default_values.checks_customization.get('check_schema')
+        schema_columns = variables.default_values.selected_schema_columns
         part = 100 // len(tables)
+        metadata_dir = variables.system_config.metadata_dir
+        data_dir = variables.system_config.data_dir
         if check_schema:
             start_time = datetime.datetime.now()
             self.setWindowTitle("Comparing metadata...")
-            # TODO: add creating metadata directory
             for table in tables:
                 completed = part * (tables.index(table) + 1)
                 if tables.index(table) + 1 == len(tables):
@@ -56,9 +58,9 @@ class ProgressWindow(QDialog):
                 self.progress_schema.setValue(completed)
                 self.schema_label.setText(f'Processing of {table} table...')
                 result = self.sql_variables.compare_table_metadata(table, schema_columns)
-                if write_to_file(result, table, result_dir, self.logger):
+                if write_to_file(result, table, metadata_dir, self.logger):
                     self.result_label.setOpenExternalLinks(True)
-                    link = f'<a href={result_dir}{table}.html>{result_dir}{table}.html</a>'
+                    link = f'<a href={metadata_dir}{table}.html>{metadata_dir}{table}.html</a>'
                     self.result_label.setText(f' Result of comparing wrote to {link}')
                 QApplication.processEvents()
             comparing_time = datetime.datetime.now() - start_time
@@ -77,9 +79,9 @@ class ProgressWindow(QDialog):
             self.data_label.setText(f'Processing of {table} table...')
             result = self.sql_variables.compare_data(table)
             # TODO: add writing results to file
-            if write_to_file(result, table, result_dir, self.logger):
+            if write_to_file(result, table, data_dir, self.logger):
                 self.result_label.setOpenExternalLinks(True)
-                link = f'<a href={result_dir}{table}.html>{result_dir}{table}.html</a>'
+                link = f'<a href={data_dir}{table}.html>{data_dir}{table}.html</a>'
                 self.result_label.setText(f' Result of comparing wrote to {link}')
             QApplication.processEvents()
         data_comparing_time = datetime.datetime.now() - start_time
