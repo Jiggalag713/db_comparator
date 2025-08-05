@@ -2,6 +2,7 @@
 import argparse
 import datetime
 import json
+import logging
 
 from configuration.variables import Variables
 from helpers.helper import write_to_file
@@ -14,7 +15,6 @@ def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Console db_comparator')
     parser.add_argument('--config', type=str, help='Path to config (/home/user/Desktop/1.txt)',
                         required=True)
-    parser.add_argument('--check_schema', type=bool, help='Check schema if true', default=True)
     return parser.parse_args()
 
 
@@ -31,37 +31,57 @@ def open_file(file_name, sql_variables, logger):
                        'Warn: %s', err.args[1])
 
 
-def start(variables, schema, columns, logger) -> None:
+def start(variables) -> None:
+    # TODO: method should be refactored
     """Starts headless comparing"""
     start_time = datetime.datetime.now()
     sql_variables = variables.sql_variables
-    metadata_dir = variables.system_config.metadata_dir
+    logger: logging.Logger = variables.sql_variables.logger
+    check_schema = variables.default_values.checks_customization.get('check_schema')
     data_dir = variables.system_config.data_dir
     tables = sql_variables.tables.get_compare()
     part = 100 // len(tables)
-    if schema:
-        schema_start_time = datetime.datetime.now()
-        for table in tables:
-            result = sql_variables.compare_table_metadata(table, columns)
-            write_to_file(result, table, metadata_dir, logger)
-            completed = part * (tables.index(table) + 1)
-            if tables.index(table) + 1 == len(tables):
-                completed = 100
-            logger.info(f'Checked table {table}, {completed}% of total tables')
-        comparing_time = datetime.datetime.now() - schema_start_time
-        logger.info(f'Comparing of schemas finished in {comparing_time}')
+    if check_schema:
+        schema_checking_time = check_tables_metadata(variables, tables, part)
     else:
         logger.info("Schema checking disabled...")
-    schema_checking_time = datetime.datetime.now() - start_time
+        schema_checking_time = datetime.timedelta(0)
+    check_tables_data(variables, tables, part)
+    data_comparing_time = datetime.datetime.now() - schema_checking_time
+    logger.info(f'Data compared in {data_comparing_time}')
+
+
+def check_tables_metadata(variables, tables, part):
+    """Method compare table's metadata"""
+    schema_start_time = datetime.datetime.now()
+    sql_variables = variables.sql_variables
+    logger: logging.Logger = variables.sql_variables.logger
+    schema_columns = common_variables.default_values.selected_schema_columns
+    metadata_dir = variables.system_config.metadata_dir
     for table in tables:
-        result = sql_variables.compare_data(table)
+        result = sql_variables.compare_table_metadata(table, schema_columns)
+        write_to_file(result, table, metadata_dir, logger)
+        completed = part * (tables.index(table) + 1)
+        if tables.index(table) + 1 == len(tables):
+            completed = 100
+        logger.info(f'Checked table {table}, {completed}% of total tables')
+    comparing_time = datetime.datetime.now() - schema_start_time
+    logger.info(f'Comparing of schemas finished in {comparing_time}')
+    return comparing_time
+
+
+def check_tables_data(variables, tables, part):
+    """Method compares table's data"""
+    for table in tables:
+        result = variables.sql_variables.compare_data(table)
+        data_dir = variables.system_config.data_dir
+        logger: logging.Logger = variables.sql_variables.logger
         write_to_file(result, table, data_dir, logger)
         completed = part * (tables.index(table) + 1)
         if tables.index(table) + 1 == len(tables):
             completed = 100
         logger.info(f'Checked table {table}, {completed}% of total tables')
-    data_comparing_time = datetime.datetime.now() - schema_checking_time
-    logger.info(f'Data compared in {data_comparing_time}')
+
 
 
 def update_variables(variables) -> None:
@@ -79,7 +99,6 @@ def update_variables(variables) -> None:
 
 args = get_args()
 config_name = args.config
-check_schema = args.check_schema
 common_variables = Variables()
 console_logger = common_variables.system_config.logger
 open_file(config_name, common_variables, console_logger)
@@ -87,4 +106,4 @@ schema_columns = common_variables.default_values.selected_schema_columns
 common_variables.sql_variables.prod.warming_up()
 common_variables.sql_variables.test.warming_up()
 update_variables(common_variables)
-start(common_variables, check_schema, schema_columns, console_logger)
+start(common_variables)

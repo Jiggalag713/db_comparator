@@ -41,6 +41,7 @@ class ProgressWindow(QDialog):
         self.start(variables)
 
     def start(self, variables) -> None:
+        # TODO: method should be refactored
         """Method implements changing of progress on progress window"""
         tables = variables.sql_variables.tables.get_compare()
         check_schema = variables.default_values.checks_customization.get('check_schema')
@@ -69,7 +70,6 @@ class ProgressWindow(QDialog):
         else:
             self.logger.info("Schema checking disabled...")
         self.setWindowTitle("Comparing data...")
-        # TODO: add creating of data directory
         start_time = datetime.datetime.now()
         for table in tables:
             completed = part * (tables.index(table) + 1)
