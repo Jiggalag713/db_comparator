@@ -1,6 +1,5 @@
 """Module intended to work with system entities:
 creating directories, logging, etc"""
-import datetime
 import logging
 import os
 import platform
@@ -17,7 +16,7 @@ class SystemConfig:
     def __init__(self):
         self.operating_system: str = self.define_os()
         self.directories = Directories(self.operating_system)
-        self.path_to_logs: str = self.service_dir + 'DbComparator.log'
+        self.path_to_logs: str = self.directories.service_dir + 'DbComparator.log'
         self.logging_level = LOGGING_LEVEL
         self.logger: logging.Logger = self.get_logger()
 
@@ -60,6 +59,6 @@ class SystemConfig:
             divider = "\\"
         else:
             divider = "/"
-        directory_name = self.result_dir + divider + path + divider
+        directory_name = self.directories.result_dir + divider + path + divider
         Path(directory_name).mkdir(parents=True, exist_ok=True)
         return directory_name
