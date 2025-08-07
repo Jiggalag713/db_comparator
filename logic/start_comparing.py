@@ -22,7 +22,7 @@ def start(variables, progress_window=None) -> None:
 
 
 def check_tables_metadata(variables, tables, progress_window):
-    """Method compare table's metadata"""
+    """Method compares table's metadata"""
     schema_start_time = datetime.datetime.now()
     logger: logging.Logger = variables.sql_variables.logger
     if progress_window is not None:
@@ -32,11 +32,13 @@ def check_tables_metadata(variables, tables, progress_window):
     schema_comparing_time = datetime.datetime.now() - schema_start_time
     logger.info(f'Comparing of schemas finished in {schema_comparing_time}')
     if progress_window is not None:
-        progress_window.schema_label.setText(f'Schemas successfully compared in {schema_comparing_time}...')
+        progress_window.schema_label.setText(f'Schemas successfully compared '
+                                             f'in {schema_comparing_time}...')
     return schema_comparing_time
 
 
 def check_table_metadata(table, tables, variables, progress_window):
+    """Method compares metadata of one proper table"""
     schema_columns = variables.default_values.selected_schema_columns
     result = variables.sql_variables.compare_table_metadata(table, schema_columns)
     metadata_dir = variables.system_config.directories.metadata_dir
@@ -69,7 +71,8 @@ def check_tables_data(variables, tables, progress_window):
     data_comparing_time = datetime.datetime.now() - data_start_time
     logger.info(f'Comparing of data finished in {data_comparing_time}')
     if progress_window is not None:
-        progress_window.data_label.setText(f'Data successfully compared in {data_comparing_time}...')
+        progress_window.data_label.setText(f'Data successfully compared '
+                                           f'in {data_comparing_time}...')
     return data_comparing_time
 
 

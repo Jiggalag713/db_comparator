@@ -5,7 +5,7 @@ import os
 import platform
 from pathlib import Path
 
-from configuration.Directories import Directories
+from configuration.directories import Directories
 
 LOGGING_LEVEL = logging.DEBUG
 

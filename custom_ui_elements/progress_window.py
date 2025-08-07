@@ -1,8 +1,7 @@
 """Module intended to store progress window class"""
-import datetime
 import logging
 
-from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QApplication, QPushButton
+from PyQt5.QtWidgets import QDialog, QProgressBar, QGridLayout, QLabel, QPushButton
 from configuration.sql_variables import SqlVariables
 from configuration.variables import Variables
 from logic.start_comparing import start

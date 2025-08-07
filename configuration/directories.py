@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 class Directories:
+    """Class stores implementation of directory configuration"""
     def __init__(self, operating_system):
         self.operating_system = operating_system
         self.service_dir: str = self.set_service_dir()

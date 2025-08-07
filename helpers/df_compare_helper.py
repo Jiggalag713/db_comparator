@@ -9,9 +9,9 @@ def get_table_schema_dataframe(instance_type, table, engine, columns):
             f"where table_schema='{instance_type}' and " \
             f"table_name='{table}';"
     with engine.connect() as conn:
-        df = pd.read_sql(sql=query,
+        dataframe = pd.read_sql(sql=query,
                          con=conn.connection)
-    return df
+    return dataframe
 
 
 def get_metadata_dataframe_diff(prod_instance, test_instance, table, columns, logger):
