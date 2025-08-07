@@ -68,7 +68,7 @@ class ProgressWindow(QDialog):
         """Method compare metadata of one table"""
         schema_columns = variables.default_values.selected_schema_columns
         result = variables.sql_variables.compare_table_metadata(table, schema_columns)
-        metadata_dir = variables.system_config.metadata_dir
+        metadata_dir = variables.system_config.directories.metadata_dir
         write_to_file(result, table, metadata_dir, self.logger)
         completed = (100 // len(tables)) * (tables.index(table) + 1)
         if tables.index(table) + 1 == len(tables):
@@ -95,7 +95,7 @@ class ProgressWindow(QDialog):
 
     def check_table_data(self, table, tables, variables):
         result = self.sql_variables.compare_data(table)
-        data_dir = variables.system_config.data_dir
+        data_dir = variables.system_config.directories.data_dir
         write_to_file(result, table, data_dir, self.logger)
         completed = (100 // len(tables)) * (tables.index(table) + 1)
         if tables.index(table) + 1 == len(tables):

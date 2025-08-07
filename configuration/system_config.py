@@ -6,6 +6,8 @@ import os
 import platform
 from pathlib import Path
 
+from configuration.Directories import Directories
+
 LOGGING_LEVEL = logging.DEBUG
 
 
@@ -14,29 +16,10 @@ class SystemConfig:
      creating directories, logging, etc"""
     def __init__(self):
         self.operating_system: str = self.define_os()
-        self.service_dir: str = self.set_service_dir()
-        self.result_dir: str = self.set_result_dir()
-        self.metadata_dir: str = self.set_dir("metadata")
-        self.data_dir: str = self.set_dir("data")
+        self.directories = Directories(self.operating_system)
         self.path_to_logs: str = self.service_dir + 'DbComparator.log'
         self.logging_level = LOGGING_LEVEL
         self.logger: logging.Logger = self.get_logger()
-
-    def set_service_dir(self) -> str:
-        """Method returns path to special db_comparator directory"""
-        if self.operating_system == "Windows":
-            return self.set_directory("C:\\comparator\\")
-        else:
-            return self.set_directory("/comparator/")
-
-    def set_result_dir(self) -> str:
-        """Method returns path to service directory,
-        intended for storing results of database comparing"""
-        if self.operating_system == "Windows":
-            path = f"C:\\comparator\\comparation_results\\{datetime.datetime.now()}\\"
-        else:
-            path = f"/comparator/test_results/{datetime.datetime.now()}/"
-        return self.set_directory(path)
 
     @staticmethod
     def define_os() -> str:
@@ -71,8 +54,8 @@ class SystemConfig:
         return directory_name
 
     def set_dir(self, path: str):
-        """Method returns path to directory where will be stored results of comparing metadata of databases
-        in current run"""
+        """Method returns path to directory where will be stored results of comparing metadata
+        of databases in current run"""
         if self.operating_system == "Windows":
             divider = "\\"
         else:

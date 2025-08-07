@@ -39,7 +39,7 @@ def check_tables_metadata(variables, tables, progress_window):
 def check_table_metadata(table, tables, variables, progress_window):
     schema_columns = variables.default_values.selected_schema_columns
     result = variables.sql_variables.compare_table_metadata(table, schema_columns)
-    metadata_dir = variables.system_config.metadata_dir
+    metadata_dir = variables.system_config.directories.metadata_dir
     logger: logging.Logger = variables.sql_variables.logger
     write_to_file(result, table, metadata_dir, logger)
     completed = (100 // len(tables)) * (tables.index(table) + 1)
@@ -76,7 +76,7 @@ def check_tables_data(variables, tables, progress_window):
 def check_table_data(table, tables, variables, progress_window):
     """Method compares data in one proper table"""
     result = variables.sql_variables.compare_data(table)
-    data_dir = variables.system_config.data_dir
+    data_dir = variables.system_config.directories.data_dir
     logger: logging.Logger = variables.sql_variables.logger
     write_to_file(result, table, data_dir, logger)
     completed = (100 // len(tables)) * (tables.index(table) + 1)
