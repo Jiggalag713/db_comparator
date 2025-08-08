@@ -4,7 +4,7 @@
 import json
 import os
 import sys
-from typing import NoReturn, Any
+from typing import NoReturn, Any, Union
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QAction, qApp, QCheckBox
@@ -48,14 +48,15 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.status_bar = self.statusBar()
-        self.status_bar.showMessage('Prod disconnected, test disconnected')
+        if self.status_bar is not None:
+            self.status_bar.showMessage('Prod disconnected, test disconnected')
         self.main_window = MainUI(self.status_bar)
         self.setCentralWidget(self.main_window)
         self.menubar = self.menuBar()
         table_calculation = TableCalculation(self.main_window.configuration.variables)
         self.logic = ButtonsLogic(self.main_window, table_calculation)
         self.line_edits_logic = LineEditsLogic(self.main_window.configuration.variables)
-        self.menu: QMenu = self.get_menu()
+        self.menu = self.get_menu()
         self.add_connects(table_calculation)
 
         self.setGeometry(300, 300, 900, 600)
@@ -83,7 +84,7 @@ class MainWindow(QMainWindow):
         line_edits.prod.base.clicked.connect(lambda: self.logic.set_db('prod'))
         line_edits.test.base.clicked.connect(lambda: self.logic.set_db('test'))
 
-    def get_menu(self) -> QMenu:
+    def get_menu(self) -> Union[QMenu, None, Any]:
         """Method builds main window menu"""
         open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
         open_action.setShortcut('Ctrl+O')
@@ -107,11 +108,13 @@ class MainWindow(QMainWindow):
         exit_action.setStatusTip('Exit application')
         exit_action.triggered.connect(qApp.quit)
 
-        file_menu = self.menubar.addMenu('&File')
-        file_menu.addAction(open_action)
-        file_menu.addAction(save_action)
-        file_menu.addAction(compare_action)
-        file_menu.addAction(exit_action)
+        if self.menubar is not None:
+            file_menu = self.menubar.addMenu('&File')
+        if file_menu is not None:
+            file_menu.addAction(open_action)
+            file_menu.addAction(save_action)
+            file_menu.addAction(compare_action)
+            file_menu.addAction(exit_action)
         return file_menu
 
     @staticmethod
