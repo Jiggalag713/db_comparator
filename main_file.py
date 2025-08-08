@@ -110,12 +110,13 @@ class MainWindow(QMainWindow):
 
         if self.menubar is not None:
             file_menu = self.menubar.addMenu('&File')
-        if file_menu is not None:
-            file_menu.addAction(open_action)
-            file_menu.addAction(save_action)
-            file_menu.addAction(compare_action)
-            file_menu.addAction(exit_action)
-        return file_menu
+            if file_menu is not None:
+                file_menu.addAction(open_action)
+                file_menu.addAction(save_action)
+                file_menu.addAction(compare_action)
+                file_menu.addAction(exit_action)
+            return file_menu
+        return None
 
     @staticmethod
     def get_state(checkbox: Any | None) -> bool:
