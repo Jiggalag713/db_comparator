@@ -2,10 +2,12 @@
     "prod.host": "mysql",
     "prod.user": "root",
     "prod.password": "test1",
+    "prod.port": "33006",
     "prod.base": "prod",
     "test.host": "mysql",
     "test.user": "root",
     "test.password": "test1",
+    "test.port": "33006",
     "test.base": "test",
     "included": {
         "differ_schema": [

@@ -84,7 +84,7 @@ class ClickableItemsView(QDialog):
         checked_tables = []
         for idx in range(amount):
             item = self.model.item(idx, 0)
-            if item.checkState() == 2:
+            if item is not None and item.checkState() == 2:
                 checked_tables.append(item.text())
         self.selected_items = checked_tables
         self.init_items(include)
@@ -95,7 +95,7 @@ class ClickableItemsView(QDialog):
         amount = self.model.rowCount()
         for idx in range(amount):
             item = self.model.item(idx, 0)
-            if item.checkState() == 2:
+            if item is not None and item.checkState() == 2:
                 item.setCheckState(Qt.CheckState(0))
         self.selected_items = []
         self.init_items(include)
