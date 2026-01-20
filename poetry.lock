@@ -13,26 +13,6 @@ files = [
 ]
 
 [[package]]
-name = "attrs"
-version = "25.3.0"
-description = "Classes Without Boilerplate"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "attrs-25.3.0-py3-none-any.whl", hash = "sha256:427318ce031701fea540783410126f03899a97ffc6f61596ad581ac2e40e3bc3"},
-    {file = "attrs-25.3.0.tar.gz", hash = "sha256:75d7cefc7fb576747b2c81b4442d4d4a1ce0900973527c011d1030fd3bf4af1b"},
-]
-
-[package.extras]
-benchmark = ["cloudpickle ; platform_python_implementation == \"CPython\"", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pympler", "pytest (>=4.3.0)", "pytest-codspeed", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pytest-xdist[psutil]"]
-cov = ["cloudpickle ; platform_python_implementation == \"CPython\"", "coverage[toml] (>=5.3)", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pytest-xdist[psutil]"]
-dev = ["cloudpickle ; platform_python_implementation == \"CPython\"", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pre-commit-uv", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pytest-xdist[psutil]"]
-docs = ["cogapp", "furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier"]
-tests = ["cloudpickle ; platform_python_implementation == \"CPython\"", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pytest-xdist[psutil]"]
-tests-mypy = ["mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\"", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.10\""]
-
-[[package]]
 name = "cffi"
 version = "1.17.1"
 description = "Foreign Function Interface for Python calling C code."
@@ -812,6 +792,21 @@ files = [
 ]
 
 [[package]]
+name = "pygments"
+version = "2.19.2"
+description = "Pygments is a syntax highlighting package written in Python."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b"},
+    {file = "pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887"},
+]
+
+[package.extras]
+windows-terminal = ["colorama (>=0.4.6)"]
+
+[[package]]
 name = "pylint"
 version = "3.3.7"
 description = "python code static checker"
@@ -918,25 +913,25 @@ files = [
 
 [[package]]
 name = "pytest"
-version = "7.2.1"
+version = "9.0.2"
 description = "pytest: simple powerful testing with Python"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "pytest-7.2.1-py3-none-any.whl", hash = "sha256:c7c6ca206e93355074ae32f7403e8ea12163b1163c976fee7d4d84027c162be5"},
-    {file = "pytest-7.2.1.tar.gz", hash = "sha256:d45e0952f3727241918b8fd0f376f5ff6b301cc0777c6f9a556935c92d8a7d42"},
+    {file = "pytest-9.0.2-py3-none-any.whl", hash = "sha256:711ffd45bf766d5264d487b917733b453d917afd2b0ad65223959f59089f875b"},
+    {file = "pytest-9.0.2.tar.gz", hash = "sha256:75186651a92bd89611d1d9fc20f0b4345fd827c41ccd5c299a868a05d70edf11"},
 ]
 
 [package.dependencies]
-attrs = ">=19.2.0"
-colorama = {version = "*", markers = "sys_platform == \"win32\""}
-iniconfig = "*"
-packaging = "*"
-pluggy = ">=0.12,<2.0"
+colorama = {version = ">=0.4", markers = "sys_platform == \"win32\""}
+iniconfig = ">=1.0.1"
+packaging = ">=22"
+pluggy = ">=1.5,<2"
+pygments = ">=2.7.2"
 
 [package.extras]
-testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
+dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests", "setuptools", "xmlschema"]
 
 [[package]]
 name = "python-dateutil"
@@ -1225,4 +1220,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "6781b49170e66cb227919784870a8c4348942d53d547d76ced8c0a65edc6a46c"
+content-hash = "b8cea1ef4cd326ee1fae24b2ad8619b7e2af5a2237e61ad893dcaa6cfeac391b"
