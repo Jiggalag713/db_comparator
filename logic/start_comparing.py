@@ -1,7 +1,7 @@
 """Stores logic for comparing"""
-import datetime
 import logging
 
+from datetime import datetime, timedelta, timezone
 from PyQt5.QtWidgets import QApplication
 
 from helpers.helper import write_to_file
@@ -16,20 +16,20 @@ def start(variables, progress_window=None) -> None:
         metadata_comparing_time = check_tables_metadata(variables, tables, progress_window)
     else:
         logger.info("Schema checking disabled...")
-        metadata_comparing_time = datetime.timedelta(0)
+        metadata_comparing_time = timedelta(0)
     data_comparing_time = check_tables_data(variables, tables, progress_window)
     logger.info(f"Comparing task finished takes {metadata_comparing_time + data_comparing_time}")
 
 
 def check_tables_metadata(variables, tables, progress_window):
     """Method compares table's metadata"""
-    schema_start_time = datetime.datetime.now()
+    schema_start_time = datetime.now(timezone.utc)
     logger: logging.Logger = variables.sql_variables.logger
     if progress_window is not None:
         progress_window.setWindowTitle("Comparing metadata...")
     for table in tables:
         check_table_metadata(table, tables, variables, progress_window)
-    schema_comparing_time = datetime.datetime.now() - schema_start_time
+    schema_comparing_time = datetime.now(timezone.utc) - schema_start_time
     logger.info(f'Comparing of schemas finished in {schema_comparing_time}')
     if progress_window is not None:
         progress_window.schema_label.setText(f'Schemas successfully compared '
@@ -62,13 +62,13 @@ def check_table_metadata(table, tables, variables, progress_window):
 
 def check_tables_data(variables, tables, progress_window):
     """Method compares table's data"""
-    data_start_time = datetime.datetime.now()
+    data_start_time = datetime.now(timezone.utc)
     logger: logging.Logger = variables.sql_variables.logger
     if progress_window is not None:
         progress_window.setWindowTitle("Comparing data...")
     for table in tables:
         check_table_data(table, tables, variables, progress_window)
-    data_comparing_time = datetime.datetime.now() - data_start_time
+    data_comparing_time = datetime.now(timezone.utc) - data_start_time
     logger.info(f'Comparing of data finished in {data_comparing_time}')
     if progress_window is not None:
         progress_window.data_label.setText(f'Data successfully compared '

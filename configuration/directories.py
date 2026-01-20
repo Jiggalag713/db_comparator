@@ -1,6 +1,6 @@
 """Module stores directory configuration"""
-import datetime
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -23,9 +23,9 @@ class Directories:
         """Method returns path to service directory,
         intended for storing results of database comparing"""
         if self.operating_system == "Windows":
-            path = f"C:\\comparator\\comparation_results\\{datetime.datetime.now()}\\"
+            path = f"C:\\comparator\\comparation_results\\{datetime.now(timezone.utc)}\\"
         else:
-            path = f"/comparator/test_results/{datetime.datetime.now()}/"
+            path = f"/comparator/test_results/{datetime.now(timezone.utc)}/"
         return self.set_directory(path)
 
     def set_directory(self, path: str) -> str:
