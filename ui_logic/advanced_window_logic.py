@@ -3,6 +3,7 @@ import logging
 from typing import Any
 
 import sqlalchemy
+from sqlalchemy import text
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.default_variables import DefaultValues
@@ -98,8 +99,8 @@ class AdvancedWindowLogic:
         schema_columns = ClickableItemsView(self.default_values.schema_columns,
                                             selected_schema_columns)
         schema_columns.exec_()
-        text = ','.join(schema_columns.selected_items)
-        self.main_ui.line_edits.schema_columns.setText(text)
+        selected_items_text = ','.join(schema_columns.selected_items)
+        self.main_ui.line_edits.schema_columns.setText(selected_items_text)
         self.default_values.selected_schema_columns = schema_columns.selected_items
         tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
         self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)
@@ -116,8 +117,10 @@ class AdvancedWindowLogic:
                                            base=base)
         engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
         if isinstance(engine, sqlalchemy.engine.Engine):
-            result = engine.execute("describe information_schema.columns;")
-            raw = result.fetchall()
-            for item in raw:
-                columns.append(item[0])
+            with engine.connect() as conn:
+                sql_statement = text("describe information_schema.columns;")
+                result = conn.execute(sql_statement)
+                raw = result.fetchall()
+                for item in raw:
+                    columns.append(item[0])
         return columns
