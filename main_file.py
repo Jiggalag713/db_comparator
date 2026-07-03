@@ -48,14 +48,15 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.status_bar = self.statusBar()
-        self.status_bar.showMessage('Prod disconnected, test disconnected')
+        if self.status_bar:
+            self.status_bar.showMessage('Prod disconnected, test disconnected')
         self.main_window = MainUI(self.status_bar)
         self.setCentralWidget(self.main_window)
         self.menubar = self.menuBar()
         table_calculation = TableCalculation(self.main_window.configuration.variables)
         self.logic = ButtonsLogic(self.main_window, table_calculation)
         self.line_edits_logic = LineEditsLogic(self.main_window.configuration.variables)
-        self.menu: QMenu = self.get_menu()
+        self.menu: QMenu | Any | None = self.get_menu()
         self.add_connects(table_calculation)
 
         self.setGeometry(300, 300, 900, 600)
@@ -83,7 +84,7 @@ class MainWindow(QMainWindow):
         line_edits.prod.base.clicked.connect(lambda: self.logic.set_db('prod'))
         line_edits.test.base.clicked.connect(lambda: self.logic.set_db('test'))
 
-    def get_menu(self) -> QMenu:
+    def get_menu(self) -> QMenu | Any | None:
         """Method builds main window menu"""
         open_action: QAction = QAction(QIcon('open.png'), '&Open', self.main_window)
         open_action.setShortcut('Ctrl+O')
@@ -107,12 +108,15 @@ class MainWindow(QMainWindow):
         exit_action.setStatusTip('Exit application')
         exit_action.triggered.connect(qApp.quit)
 
-        file_menu = self.menubar.addMenu('&File')
-        file_menu.addAction(open_action)
-        file_menu.addAction(save_action)
-        file_menu.addAction(compare_action)
-        file_menu.addAction(exit_action)
-        return file_menu
+        if self.menubar:
+            file_menu = self.menubar.addMenu('&File')
+            if file_menu:
+                file_menu.addAction(open_action)
+                file_menu.addAction(save_action)
+                file_menu.addAction(compare_action)
+                file_menu.addAction(exit_action)
+            return file_menu
+        return None
 
     @staticmethod
     def get_state(checkbox: Any | None) -> bool:
@@ -129,7 +133,7 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def write_to_file(data, logger) -> None:
-        """Writes properties, converted to json, to file"""
+        """Writes properties, converted to JSON, to file"""
         file_name, _ = QFileDialog.getSaveFileName(QFileDialog(),
                                                    "QFileDialog.getSaveFileName()", "",
                                                    "All Files (*);;Text Files (*.txt)")

@@ -27,15 +27,12 @@ class LineEdits:
 
 
 class SqlLineEdits:
-    """Intended for specific line edits, related to sql variables"""
+    """Intended for specific line edits, related to SQL variables"""
     def __init__(self):
         self.host: QLineEdit = QLineEdit()
-        # self.prod.le_host.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.port: QLineEdit = QLineEdit()
         self.user: QLineEdit = QLineEdit()
-        # self.prod.le_user.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.password: QLineEdit = QLineEdit()
-        # self.prod.le_password.textChanged.connect(lambda: self.check_sqlhost('prod'))
         self.base: ClickableLineEdit = ClickableLineEdit()
         self.prepare_line_edits()
         self.set_tooltip()

@@ -84,7 +84,7 @@ class ButtonsLogic:
     @staticmethod
     def set_sql_credentials(sql_instance: SqlAlchemyHelper,
                             line_edits_instance: SqlLineEdits) -> None:
-        """Method sets sql credentials to SqlVariables class instance"""
+        """Method sets SQL credentials to SqlVariables class instance"""
         sql_instance.credentials.host = line_edits_instance.host.text()
         sql_instance.credentials.port = line_edits_instance.port.text()
         sql_instance.credentials.user = line_edits_instance.user.text()

@@ -1,14 +1,14 @@
-"""Module contains implementation of class, intended to work with sql"""
+"""Module contains implementation of class, intended to work with SQL"""
 import logging
 from dataclasses import dataclass
 from typing import List, Dict
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine
 
 
 class SqlAlchemyHelper:
-    """Class implements work with sql"""
+    """Class implements work with SQL"""
     def __init__(self, credentials, logger):
         self.meta = sqlalchemy.schema.MetaData()
         self.credentials = credentials
@@ -54,7 +54,7 @@ class SqlAlchemyHelper:
                         self.logger.error(f'Database {self.credentials.base} '
                                           f'is not found in database list!')
                 return db_list
-            except sqlalchemy.exc.OperationalError as exception:
+            except exc.OperationalError as exception:
                 self.logger.error(exception)
                 return []
         return []
@@ -85,7 +85,7 @@ class SqlAlchemyHelper:
 
 @dataclass
 class SqlCredentials:
-    """Class intended for storing sql credentials"""
+    """Class intended for storing SQL credentials"""
     host: str = ''
     port: str = ''
     user: str = ''
