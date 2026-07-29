@@ -19,23 +19,19 @@ class SqlAlchemyHelper:
 
     def get_engine(self) -> sqlalchemy.engine.Engine | None:
         """Method returns engine or None"""
-        if all([self.credentials.host, self.credentials.user,
+        if all([self.credentials.host, self.credentials.port, self.credentials.user,
                self.credentials.password, self.credentials.base]):
             self.logger.debug(f'Engine to {self.credentials.host}:{self.credentials.port}/'
                               f'{self.credentials.base} successfully generated with credentials...')
-            connect_dict = {"host": self.credentials.host, "port": int(self.credentials.port)}
             return create_engine(f'mysql+pymysql://{self.credentials.user}:'
                                  f'{self.credentials.password}@'
-                                 f'{self.credentials.host}/{self.credentials.base}',
-                                 connect_args=connect_dict)
+                                 f'{self.credentials.host}:{self.credentials.port}/{self.credentials.base}')
         if all([self.credentials.host, self.credentials.port, self.credentials.user,
                 self.credentials.password]):
             self.logger.debug(f'Engine to {self.credentials.host}:{self.credentials.port} '
                               f'successfully generated with credentials...')
-            connect_dict = {"host": self.credentials.host, "port": int(self.credentials.port)}
             return create_engine(f'mysql+pymysql://{self.credentials.user}:'
-                                 f'{self.credentials.password}@{self.credentials.host}',
-                                 connect_args=connect_dict)
+                                 f'{self.credentials.password}@{self.credentials.host}:{self.credentials.port}')
         self.logger.debug('There is no some connection parameters, engine is not generated...')
         self.logger.debug(f'host is {self.credentials.host}, port is {self.credentials.port}, '
                           f'user is {self.credentials.user}, '
