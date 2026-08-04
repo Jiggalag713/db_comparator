@@ -19,7 +19,7 @@ dependencies = [
 [dependency-groups]
 test = [
     "pytest>=9.0.3",
-    "sqlalchemy==1.4.46",
+    "sqlalchemy==2.0.51",
     "mypy"
 ]
 lint = [
