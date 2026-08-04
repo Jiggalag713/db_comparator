@@ -2,31 +2,43 @@
 name = "dbcomparator"
 version = "0.1.0"
 description = "Application is designed to compare relational databases"
-readme = {file = "README.md", content-type = "text/markdown"}
-maintainers = [
-    {name = "Pavel Kiselev", email = "pal_andreich@mail.ru"}
-]
-requires-python = ">=3.12"
+authors = [
+    { name = "Pavel Kiselev", email = "pal_andreich@mail.ru"}]
+readme = "README.md"
+requires-python = ">=3.10"
 dependencies = [
-    "pymysql (==1.1.1)",
-    "pyqt5 (==5.15.11)",
-    "sqlalchemy(==2.0.42)",
-    "pandas (==2.3.1)",
-    "pylint (==3.3.7)",
-    "jinja2 (==3.1.6)",
-    "cryptography (==45.0.6)",
-    # optional below
-    "pylint (==3.3.7)",
-    "pytest (==9.0.2)",
-    "mypy (==1.0.0)",
-    "radon (==5.1.0)",
-    "pre-commit (==3.1.1)",
-    "types-pymysql (==1.0.19.5)",
-    "sqlalchemy (==2.0.42)"
+    "pymysql>=1.1.1",
+    "pyqt5>=5.15.7",
+    "sqlalchemy>=1.4.46",
+    "pandas>=1.5.3",
+    "pylint>=2.15.10",
+    "jinja2>=3.1.6",
+    "cryptography (>=46.0.7, <49.0.0)"
+]
+
+[dependency-groups]
+test = [
+    "pytest>=9.0.3",
+    "sqlalchemy==2.0.51",
+    "mypy"
+]
+lint = [
+    "pylint>=2.15.10",
+    "mypy>=1.0.0",
+    "radon>=5.1.0",
+    "pre-commit>=3.1.1",
+    "types-pymysql>=1.0.19.5"
+]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" }
 ]
 
 [tool.poetry]
 package-mode = false
+
+[tool.poetry.group.dev]
+optional = true
 
 [build-system]
 requires = ["poetry-core"]

@@ -13,7 +13,7 @@ sudo apt-get install python3
 4. Install mysql-server. Ubuntu:
 
 ```
-sudo apt-get install mysql-server
+sudo apt-get install mysql-server pipx
 ```
 
 5. Install pipx:

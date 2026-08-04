@@ -2,8 +2,7 @@
 import logging
 from typing import Any
 
-import sqlalchemy
-from sqlalchemy import text
+from sqlalchemy import engine, text
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.default_variables import DefaultValues
@@ -115,11 +114,10 @@ class AdvancedWindowLogic:
         base = 'information_schema'
         info_schema_creds = SqlCredentials(host=host, port=port, user=user, password=password,
                                            base=base)
-        engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
-        if isinstance(engine, sqlalchemy.engine.Engine):
-            with engine.connect() as conn:
-                sql_statement = text("describe information_schema.columns;")
-                result = conn.execute(sql_statement)
+        sql_engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
+        if isinstance(sql_engine, engine.Engine):
+            with sql_engine.connect() as connection:
+                result = connection.execute(text("describe information_schema.columns;"))
                 raw = result.fetchall()
                 for item in raw:
                     columns.append(item[0])

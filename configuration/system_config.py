@@ -1,5 +1,6 @@
 """Module intended to work with system entities:
 creating directories, logging, etc"""
+import datetime
 import logging
 import os
 import platform
@@ -19,6 +20,17 @@ class SystemConfig:
         self.path_to_logs: str = self.directories.service_dir + 'DbComparator.log'
         self.logging_level = LOGGING_LEVEL
         self.logger: logging.Logger = self.get_logger()
+
+    def set_service_dir(self) -> str:
+        """Method returns path to special db_comparator directory"""
+        return self.set_directory("C:\\comparator\\", "/comparator/")
+
+    def set_result_dir(self) -> str:
+        """Method returns path to service directory,
+        intended for storing results of database comparing"""
+        win_path = f"C:\\comparator\\comparison_results\\{datetime.datetime.now()}\\"
+        linux_path = f"/comparator/test_results/{datetime.datetime.now()}/"
+        return self.set_directory(win_path, linux_path)
 
     @staticmethod
     def define_os() -> str:
