@@ -2,7 +2,7 @@
 import logging
 from typing import Any
 
-import sqlalchemy
+from sqlalchemy import engine, text
 from PyQt5.QtWidgets import QLineEdit
 
 from configuration.default_variables import DefaultValues
@@ -98,8 +98,8 @@ class AdvancedWindowLogic:
         schema_columns = ClickableItemsView(self.default_values.schema_columns,
                                             selected_schema_columns)
         schema_columns.exec_()
-        text = ','.join(schema_columns.selected_items)
-        self.main_ui.line_edits.schema_columns.setText(text)
+        items_text = ','.join(schema_columns.selected_items)
+        self.main_ui.line_edits.schema_columns.setText(items_text)
         self.default_values.selected_schema_columns = schema_columns.selected_items
         tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
         self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)
@@ -114,10 +114,12 @@ class AdvancedWindowLogic:
         base = 'information_schema'
         info_schema_creds = SqlCredentials(host=host, port=port, user=user, password=password,
                                            base=base)
-        engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
-        if isinstance(engine, sqlalchemy.engine.Engine):
-            result = engine.execute("describe information_schema.columns;")
-            raw = result.fetchall()
-            for item in raw:
-                columns.append(item[0])
+        sql_engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
+        if sql_engine is not None:
+            if isinstance(sql_engine, engine.Engine):
+                with sql_engine.connect() as connection:
+                    result = connection.execute(text("describe information_schema.columns;"))
+                    raw = result.fetchall()
+                    for item in raw:
+                        columns.append(item[0])
         return columns

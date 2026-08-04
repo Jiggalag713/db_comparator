@@ -13,14 +13,14 @@ sudo apt-get install python3
 4. Install mysql-server. Ubuntu:
 
 ```
-sudo apt-get install mysql-server
+sudo apt-get install mysql-server pipx
 ```
 
 
 5. Install poetry 
 
 ```
-curl -sSL https://install.python-poetry.org | python3 -
+pipx install poetry
 ```
 
 6. Install dependencies

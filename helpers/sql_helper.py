@@ -1,14 +1,14 @@
-"""Module contains implementation of class, intended to work with sql"""
+"""Module contains implementation of class, intended to work with SQL"""
 import logging
 from dataclasses import dataclass
 from typing import List, Dict
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine
 
 
 class SqlAlchemyHelper:
-    """Class implements work with sql"""
+    """Class implements work with SQL"""
     def __init__(self, credentials, logger):
         self.meta = sqlalchemy.schema.MetaData()
         self.credentials = credentials
@@ -19,23 +19,21 @@ class SqlAlchemyHelper:
 
     def get_engine(self) -> sqlalchemy.engine.Engine | None:
         """Method returns engine or None"""
-        if all([self.credentials.host, self.credentials.user,
+        if all([self.credentials.host, self.credentials.port, self.credentials.user,
                self.credentials.password, self.credentials.base]):
             self.logger.debug(f'Engine to {self.credentials.host}:{self.credentials.port}/'
                               f'{self.credentials.base} successfully generated with credentials...')
-            connect_dict = {"host": self.credentials.host, "port": int(self.credentials.port)}
             return create_engine(f'mysql+pymysql://{self.credentials.user}:'
                                  f'{self.credentials.password}@'
-                                 f'{self.credentials.host}/{self.credentials.base}',
-                                 connect_args=connect_dict)
+                                 f'{self.credentials.host}:{self.credentials.port}/'
+                                 f'{self.credentials.base}')
         if all([self.credentials.host, self.credentials.port, self.credentials.user,
                 self.credentials.password]):
             self.logger.debug(f'Engine to {self.credentials.host}:{self.credentials.port} '
                               f'successfully generated with credentials...')
-            connect_dict = {"host": self.credentials.host, "port": int(self.credentials.port)}
             return create_engine(f'mysql+pymysql://{self.credentials.user}:'
-                                 f'{self.credentials.password}@{self.credentials.host}',
-                                 connect_args=connect_dict)
+                                 f'{self.credentials.password}@{self.credentials.host}:'
+                                 f'{self.credentials.port}')
         self.logger.debug('There is no some connection parameters, engine is not generated...')
         self.logger.debug(f'host is {self.credentials.host}, port is {self.credentials.port}, '
                           f'user is {self.credentials.user}, '
@@ -54,7 +52,7 @@ class SqlAlchemyHelper:
                         self.logger.error(f'Database {self.credentials.base} '
                                           f'is not found in database list!')
                 return db_list
-            except sqlalchemy.exc.OperationalError as exception:
+            except exc.OperationalError as exception:
                 self.logger.error(exception)
                 return []
         return []
@@ -85,7 +83,7 @@ class SqlAlchemyHelper:
 
 @dataclass
 class SqlCredentials:
-    """Class intended for storing sql credentials"""
+    """Class intended for storing SQL credentials"""
     host: str = ''
     port: str = ''
     user: str = ''

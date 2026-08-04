@@ -2,7 +2,7 @@
 
 
 def write_to_file(result, table, result_dir, logger):
-    """Method intended to write comparation results to file in html format"""
+    """Method intended to write results of comparison to file in HTML format"""
     result_file = f'{result_dir}{table}.html'
     if not result.empty:
         with open(result_file, "w", encoding="utf-8") as file:

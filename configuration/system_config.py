@@ -27,7 +27,7 @@ class SystemConfig:
     def set_result_dir(self) -> str:
         """Method returns path to service directory,
         intended for storing results of database comparing"""
-        win_path = f"C:\\comparator\\comparation_results\\{datetime.datetime.now()}\\"
+        win_path = f"C:\\comparator\\comparison_results\\{datetime.datetime.now()}\\"
         linux_path = f"/comparator/test_results/{datetime.datetime.now()}/"
         return self.set_directory(win_path, linux_path)
 
