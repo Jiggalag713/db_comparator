@@ -16,21 +16,26 @@ sudo apt-get install python3
 sudo apt-get install mysql-server pipx
 ```
 
+5. Install pipx:
 
-5. Install poetry 
+```
+sudo apt-get install pipx
+```
+
+6. Install poetry 
 
 ```
 pipx install poetry
 ```
 
-6. Install dependencies
+7. Install dependencies
 
 ```
 poetry install
 ```
 
-7. Run script main_file.py.
-8. Have fun.
+8. Run script main_file.py.
+9. Have fun.
 
 To run comparator from command line
 ```

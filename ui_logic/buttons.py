@@ -58,10 +58,8 @@ class ButtonsLogic:
         if all([self.variables.sql_variables.prod.tables,
                 self.variables.sql_variables.test.tables]):
             self.logger.info('Comparing started!')
-            progress = ProgressWindow(self.variables.sql_variables,
-                                      schema_checking,
-                                      self.variables.default_values.selected_schema_columns,
-                                      self.variables.system_config.result_dir)
+            progress = ProgressWindow(self.variables,
+                                      schema_checking)
             progress.exec()
         else:
             if not self.variables.sql_variables.prod.tables:

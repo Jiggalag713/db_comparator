@@ -31,7 +31,7 @@ def result_dict(variables):
             'report_check_type': default_values.mode,
             'retry_attempts': default_values.constants.get('retry_attempts'),
             'schema_columns': default_values.selected_schema_columns,
-            'service_dir': system_values.service_dir,
+            'service_dir': system_values.directories.service_dir,
             'strings_amount': default_values.constants.get('strings_amount'),
             'table_timeout': default_values.constants.get('table_timeout'),
             'test.base': sql_variables.test.credentials.base,
@@ -39,7 +39,7 @@ def result_dict(variables):
             'test.port': sql_variables.test.credentials.port,
             'test.password': sql_variables.test.credentials.password,
             'test.user': sql_variables.test.credentials.user,
-            'result_dir': system_values.result_dir}
+            'result_dir': system_values.directories.result_dir}
 
 
 def customization_checks(variables):
