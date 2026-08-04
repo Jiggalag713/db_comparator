@@ -55,12 +55,12 @@ class SystemConfig:
         logger.info('Logger successfully initialized')
         return logger
 
-    def set_directory(self, path: str) -> str:
+    def set_directory(self, win_path: str, linux_path:str) -> str:
         """Method intended for checking if given directory exists.
         In case of directory not exists, method creates it."""
         if self.operating_system == "Windows":
-            return path
-        directory_name = (os.path.expanduser('~') + path).replace(' ', '_')
+            return win_path
+        directory_name = (os.path.expanduser('~') + linux_path).replace(' ', '_')
         Path(directory_name).mkdir(parents=True, exist_ok=True)
         return directory_name
 
