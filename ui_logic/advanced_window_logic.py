@@ -98,8 +98,8 @@ class AdvancedWindowLogic:
         schema_columns = ClickableItemsView(self.default_values.schema_columns,
                                             selected_schema_columns)
         schema_columns.exec_()
-        items_text = ','.join(schema_columns.selected_items)
-        self.main_ui.line_edits.schema_columns.setText(items_text)
+        selected_items_text = ','.join(schema_columns.selected_items)
+        self.main_ui.line_edits.schema_columns.setText(selected_items_text)
         self.default_values.selected_schema_columns = schema_columns.selected_items
         tooltip_text = self.main_ui.line_edits.schema_columns.text().replace(',', ',\n')
         self.main_ui.line_edits.schema_columns.setToolTip(tooltip_text)
@@ -115,11 +115,10 @@ class AdvancedWindowLogic:
         info_schema_creds = SqlCredentials(host=host, port=port, user=user, password=password,
                                            base=base)
         sql_engine = SqlAlchemyHelper(info_schema_creds, self.logger).engine
-        if sql_engine is not None:
-            if isinstance(sql_engine, engine.Engine):
-                with sql_engine.connect() as connection:
-                    result = connection.execute(text("describe information_schema.columns;"))
-                    raw = result.fetchall()
-                    for item in raw:
-                        columns.append(item[0])
+        if isinstance(sql_engine, engine.Engine):
+            with sql_engine.connect() as connection:
+                result = connection.execute(text("describe information_schema.columns;"))
+                raw = result.fetchall()
+                for item in raw:
+                    columns.append(item[0])
         return columns

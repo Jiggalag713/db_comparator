@@ -1,7 +1,7 @@
 """Module contains class with some sql-related data which would
 be useful during comparing of databases"""
-import datetime
 import logging
+from datetime import datetime, timezone
 from typing import List, Dict
 from dataclasses import dataclass, field
 
@@ -22,11 +22,11 @@ class SqlVariables:
 
     def compare_table_metadata(self, table, columns) -> pd.DataFrame:
         """Method intended to compare metadata of two tables"""
-        start_time = datetime.datetime.now()
+        start_time = datetime.now(timezone.utc)
         self.logger.info(f"Compare schema for table {table}...")
         diff_df = df_compare_helper.get_metadata_dataframe_diff(self.prod, self.test,
                                                                 table, columns, self.logger)
-        schema_comparing_time = datetime.datetime.now() - start_time
+        schema_comparing_time = datetime.now(timezone.utc) - start_time
         self.logger.debug(f"Schema of table {table} compared in {schema_comparing_time}")
         return diff_df
 
@@ -39,12 +39,12 @@ class SqlVariables:
 
     def compare_data(self, table: str) -> pd.DataFrame:
         """Method intended to compare data of two tables"""
-        start_time = datetime.datetime.now()
-        start_table_check_time = datetime.datetime.now()
+        start_time = datetime.now(timezone.utc)
+        start_table_check_time = datetime.now(timezone.utc)
         self.logger.info(f"Table {table} processing started now...")
-        checking_time = datetime.datetime.now() - start_table_check_time
+        checking_time = datetime.now(timezone.utc) - start_table_check_time
         self.logger.info(f"Table {table} checked in {checking_time}...")
-        data_comparing_time = datetime.datetime.now() - start_time
+        data_comparing_time = datetime.now(timezone.utc) - start_time
         self.logger.info(f'Comparing finished in {data_comparing_time}')
         return pd.DataFrame()
 

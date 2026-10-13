@@ -87,7 +87,7 @@ class Configuration:
 
     def set_check_boxes_variables(self) -> None:
         """Connects check_boxes with appropriate variables in
-        sql_variables/default_variables object"""
+        SQL_variables/default_variables object"""
         check_boxes = self.ui_elements.checkboxes
         store = self.variables.default_values.checks_customization
         check_schema = check_boxes.get('check_schema')
@@ -118,7 +118,7 @@ class Configuration:
 
     def set_radio_buttons_variables(self) -> None:
         """Connects radio_buttons with appropriate variables in
-        sql_variables/default_variables object"""
+        SQL_variables/default_variables object"""
         radio_buttons = self.ui_elements.radio_buttons
         day_sum = radio_buttons.get('day-sum')
         if isinstance(day_sum, QRadioButton):
