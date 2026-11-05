@@ -1208,14 +1208,14 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pylint"
-version = "4.0.6"
+version = "4.0.9"
 description = "python code static checker"
 optional = false
 python-versions = ">=3.10.0"
 groups = ["main", "dev", "lint"]
 files = [
-    {file = "pylint-4.0.6-py3-none-any.whl", hash = "sha256:d11a0e1fdb7b1cd46ec5d6fc78fee8b95f28695b2d6140e5809925f61e32ea54"},
-    {file = "pylint-4.0.6.tar.gz", hash = "sha256:52f19191bee08bf103f9705ad1a0ece4aa5a0a4ef2bdcbd969375a1e6f6579d5"},
+    {file = "pylint-4.0.9-py3-none-any.whl", hash = "sha256:c4ba5bbaf1e70ecf05f08cd7d6091ea04824b79a2b2d9f5b10dc25fc34cb1124"},
+    {file = "pylint-4.0.9.tar.gz", hash = "sha256:6f1305780229ae720e89b8aff2b3ff857cbb268fbab98c8b586960267667ad34"},
 ]
 
 [package.dependencies]
@@ -1226,7 +1226,7 @@ dill = [
     {version = ">=0.3.6", markers = "python_version == \"3.11\""},
     {version = ">=0.3.7", markers = "python_version >= \"3.12\""},
 ]
-isort = ">=5,!=5.13,<9"
+isort = ">=5,!=5.13,<10"
 mccabe = ">=0.6,<0.8"
 platformdirs = ">=2.2"
 tomli = {version = ">=1.1", markers = "python_version < \"3.11\""}
@@ -1725,4 +1725,4 @@ typing-extensions = {version = ">=4.16", markers = "python_version < \"3.11\""}
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "0c09ecb8d334d28ed40f435b227573d77c15c769af453bcafbad53b4d2bfe7f0"
+content-hash = "3b33ee68c81313326c52dba15d40e8cdcd91d919d36492af2be8a503b8b466f2"
